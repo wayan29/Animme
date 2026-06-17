@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nonton Anime - AnimMe</title>
+    <link rel="icon" href="data:," type="image/x-icon">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .player-container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 0 4%;
+        }
+        
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            min-height: 360px;
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .video-wrapper iframe,
+        .video-wrapper video {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+            display: block;
+            background-color: #000;
+        }
+
+        .video-wrapper video {
+            object-fit: contain;
+        }
+
+        .player-loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #bdbdbd;
+        }
+
+        .loader-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.25);
+            border-top-color: #e50914;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .player-error {
+            color: #e50914;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .player-alert {
+            display: none;
+            margin-bottom: 30px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: rgba(229, 9, 20, 0.1);
+            color: #f5f5f5;
+            font-size: 0.95rem;
+        }
+
+        .player-alert.visible {
+            display: block;
+        }
+
+        .player-alert.error {
+            background: rgba(229, 9, 20, 0.2);
+        }
+        
+        .streaming-section {
+            background-color: #222;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .quality-group {
+            margin-bottom: 20px;
+        }
+        
+        .quality-label {
+            color: #e50914;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+        
+        .server-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .episode-info {
+            background-color: #222;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .episode-title {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .episode-meta {
+            display: flex;
+            gap: 15px;
+            color: #999;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+        
+        .server-section {
+            margin-bottom: 30px;
+        }
+        
+        .server-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .server-btn {
+            padding: 12px 24px;
+            background-color: #333;
+            color: #fff;
+            border: 2px solid #444;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .server-btn:hover {
+            background-color: #444;
+            transform: translateY(-2px);
+        }
+        
+        .server-btn.active {
+            background-color: #e50914;
+            border-color: #e50914;
+        }
+        
+        .server-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .download-section {
+            background-color: #222;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .download-list {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .download-item {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .download-quality {
+            font-weight: bold;
+            color: #e50914;
+            margin-bottom: 10px;
+        }
+        
+        .download-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .download-btn {
+            padding: 8px 16px;
+            background-color: #555;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .download-btn:hover {
+            background-color: #e50914;
+        }
+        
+        .navigation-section {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .nav-btn {
+            flex: 1;
+            padding: 15px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background-color: #e50914;
+        }
+        
+        .nav-btn.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-btn:hover {
+            background-color: #e50914;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #999;
+        }
+        
+        .error {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+            color: #e50914;
+            background-color: #222;
+            border-radius: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .episode-title {
+                font-size: 1.4rem;
+            }
+            
+            .navigation-section {
+                flex-direction: column;
+            }
+            
+            .player-container {
+                padding: 0 15px;
+                margin-top: 80px;
+            }
+            
+            .video-wrapper {
+                min-height: 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v1/home'">AnimMe</h1>
+            <div class="nav-menu">
+                <a href="/v1/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link">Anime Ongoing</a>
+                <a href="/completed" class="nav-link">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link">Semua Anime</a>
+                <a href="/genres" class="nav-link">Genre</a>
+                <a href="/schedule" class="nav-link">Jadwal Rilis</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="player-container">
+        <a href="javascript:history.back()" class="back-btn">← Kembali</a>
+        
+        <div id="playerContent">
+            <div class="loading">Memuat video player...</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+
+    </footer>
+
+    <script src="/vendor/oplayer/core.min.js"></script>
+    <script src="/vendor/oplayer/ui.min.js"></script>
+    <script src="/shared/oplayer-init.js"></script>
+    <script src="/v1/player.js"></script>
+</body>
+</html>

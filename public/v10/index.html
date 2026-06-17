@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V10 - Vidku</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <link rel="icon" href="/placeholder.svg" type="image/svg+xml">
+    <style>
+        body.server-v10 .v10-home-carousel {
+            position: relative;
+            min-height: 420px;
+            margin-bottom: 28px;
+            border-radius: 26px;
+            overflow: hidden;
+            border: 1px solid rgba(239, 68, 68, 0.14);
+            background: #090b11;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        body.server-v10 .v10-carousel-container {
+            position: relative;
+            min-height: 420px;
+            height: 420px;
+        }
+
+        body.server-v10 .v10-carousel-slide {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: minmax(240px, 320px) 1fr;
+            gap: 28px;
+            padding: 30px;
+            text-decoration: none;
+            color: #fff;
+            background:
+                linear-gradient(90deg, rgba(7, 8, 12, 0.94) 0%, rgba(7, 8, 12, 0.88) 35%, rgba(7, 8, 12, 0.5) 100%),
+                radial-gradient(circle at top right, rgba(239, 68, 68, 0.16), transparent 30%);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+
+        body.server-v10 .v10-carousel-slide.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        body.server-v10 .v10-carousel-poster {
+            width: 100%;
+            height: 100%;
+            min-height: 360px;
+            object-fit: cover;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.38);
+        }
+
+        body.server-v10 .v10-carousel-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        body.server-v10 .v10-carousel-kicker {
+            color: #f87171;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            margin-bottom: 12px;
+        }
+
+        body.server-v10 .v10-carousel-title {
+            font-size: 2.6rem;
+            line-height: 1.08;
+            color: #fff;
+            margin-bottom: 14px;
+        }
+
+        body.server-v10 .v10-carousel-meta {
+            color: #cbd5e1;
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 780px;
+            margin: 0;
+        }
+
+        body.server-v10 .v10-carousel-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        body.server-v10 .v10-carousel-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        body.server-v10 .v10-carousel-badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            padding: 0 12px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #e5e7eb;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        body.server-v10 .v10-carousel-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 0 18px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        body.server-v10 .v10-carousel-cta.primary {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            border-color: transparent;
+        }
+
+        body.server-v10 .v10-carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(7, 8, 12, 0.72);
+            color: #fff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        body.server-v10 .v10-carousel-btn.prev { left: 18px; }
+        body.server-v10 .v10-carousel-btn.next { right: 18px; }
+
+        body.server-v10 .v10-carousel-indicators {
+            position: absolute;
+            left: 30px;
+            bottom: 22px;
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        body.server-v10 .v10-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(255, 255, 255, 0.28);
+            cursor: pointer;
+        }
+
+        body.server-v10 .v10-indicator.active {
+            width: 28px;
+            background: #ef4444;
+        }
+
+        body.server-v10 .anime-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+            gap: 18px;
+        }
+
+        body.server-v10 .v10-home-card {
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(180deg, rgba(17, 19, 28, 0.98), rgba(10, 12, 18, 0.98));
+            border: 1px solid rgba(239, 68, 68, 0.08);
+            border-radius: 18px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+            min-height: 424px;
+        }
+
+        body.server-v10 .v10-home-card .anime-poster {
+            position: relative;
+            aspect-ratio: 3 / 4.2;
+        }
+
+        body.server-v10 .v10-home-card .anime-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        body.server-v10 .v10-home-card .anime-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px 16px 18px;
+            flex: 1;
+        }
+
+        body.server-v10 .v10-home-card-meta,
+        body.server-v10 .v10-home-card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        body.server-v10 .v10-home-card .anime-title {
+            color: #fff;
+            font-size: 1rem;
+            line-height: 1.45;
+            min-height: 2.9em;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        body.server-v10 .v10-home-card-footer {
+            margin-top: auto;
+        }
+
+        body.server-v10 .v10-home-card-link {
+            color: #f87171;
+            font-weight: 700;
+            font-size: 0.82rem;
+        }
+
+        @media (max-width: 768px) {
+            body.server-v10 .v10-home-carousel,
+            body.server-v10 .v10-carousel-container {
+                min-height: 520px;
+                height: 520px;
+            }
+
+            body.server-v10 .v10-carousel-slide {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            body.server-v10 .v10-carousel-poster {
+                min-height: 260px;
+                max-height: 320px;
+            }
+
+            body.server-v10 .v10-carousel-title {
+                font-size: 1.8rem;
+            }
+
+            body.server-v10 .anime-row {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+            }
+        }
+
+        body.server-v10 .v10-home-card-placeholder {
+            pointer-events: none;
+            border-style: dashed;
+            opacity: 0.55;
+        }
+
+        body.server-v10 .v10-home-card-placeholder .anime-poster {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+        }
+
+        body.server-v10 .v10-home-card-placeholder .anime-title,
+        body.server-v10 .v10-home-card-placeholder .anime-episode,
+        body.server-v10 .v10-home-card-placeholder .anime-type,
+        body.server-v10 .v10-home-card-placeholder .v10-home-card-link {
+            color: rgba(255, 255, 255, 0.68);
+        }
+    </style>
+</head>
+<body class="server-v10 home-with-sidebar">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v10/'">AnimMe V10</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7">V7 - Nekopoi</option>
+                        <option value="v8">V8 - Kusonime</option>
+                        <option value="v9">V9 - Auratail</option>
+                        <option value="v10" selected>V10 - Vidku</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v10/" class="nav-link active">🏠 Beranda</a>
+                <a href="/v10/anime-list" class="nav-link">📺 Episode Terbaru</a>
+                <a href="/v10/schedule" class="nav-link">📅 Jadwal Tayang</a>
+                <a href="/v10/airing" class="nav-link">🟢 Sedang Tayang</a>
+                <a href="/v10/az-list" class="nav-link">🔤 A-Z Anime List</a>
+                <a href="/v10/advanced-search" class="nav-link">🎯 Advanced Search</a>
+                <a href="/v10/tv-show" class="nav-link">📡 TV Show</a>
+                <a href="/v10/movie" class="nav-link">🎬 Movie</a>
+                <a href="/v10/all-anime" class="nav-link">📚 Semua Anime</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v10/'">AnimMe V10 - Vidku</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari anime..." class="search-input">
+                    <button onclick="searchAnime()" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <section class="v10-home-carousel" id="heroCarousel">
+                <div class="v10-carousel-container" id="carouselContainer">
+                    <div class="loading">Memuat banner rekomendasi...</div>
+                </div>
+                <button class="v10-carousel-btn prev" id="carouselPrev" aria-label="Previous">‹</button>
+                <button class="v10-carousel-btn next" id="carouselNext" aria-label="Next">›</button>
+                <div class="v10-carousel-indicators" id="carouselIndicators"></div>
+            </section>
+
+            <main class="main-content">
+                <div id="errorContainer" style="display:none;"></div>
+
+                <section class="v10-hero-banner">
+                    <div class="v10-hero-copy">
+                        <span class="v10-hero-kicker">VIDKU HOME</span>
+                        <h2>Streaming anime cepat dengan fokus ke update, ongoing, dan shortcut Vidku.</h2>
+                        <p>Pusat akses untuk trending title, episode baru, dan katalog Vidku dengan navigasi yang lebih konsisten dengan detail serta episode page V10.</p>
+                    </div>
+                    <div class="v10-hero-stats">
+                        <div class="v10-hero-stat">
+                            <span class="label">Trending</span>
+                            <strong id="heroTrendingCount">0</strong>
+                        </div>
+                        <div class="v10-hero-stat">
+                            <span class="label">Airing</span>
+                            <strong id="heroAiringCount">0</strong>
+                        </div>
+                        <div class="v10-hero-stat">
+                            <span class="label">Baru</span>
+                            <strong id="heroLatestCount">0</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="anime-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 class="section-title" style="margin-bottom: 0;">⭐ Rekomendasi Vidku</h3>
+                        <span class="section-badge" id="recommendedCount">0</span>
+                    </div>
+                    <div class="anime-row" id="recommendedAnime">
+                        <div class="loading">Memuat rekomendasi anime...</div>
+                    </div>
+                </section>
+
+                <section class="v10-home-shortcuts">
+                    <a href="/v10/anime-list" class="v10-home-shortcut-card">
+                        <span class="shortcut-label">Episode Terbaru</span>
+                        <strong>Rilis baru yang siap ditonton</strong>
+                    </a>
+                    <a href="/v10/schedule" class="v10-home-shortcut-card">
+                        <span class="shortcut-label">Jadwal Tayang</span>
+                        <strong>Pantau anime yang tayang per hari</strong>
+                    </a>
+                    <a href="/v10/airing" class="v10-home-shortcut-card">
+                        <span class="shortcut-label">Sedang Tayang</span>
+                        <strong>Katalog anime ongoing Vidku</strong>
+                    </a>
+                    <a href="/v10/az-list" class="v10-home-shortcut-card">
+                        <span class="shortcut-label">A-Z Anime List</span>
+                        <strong>Urut alfabet untuk browsing cepat</strong>
+                    </a>
+                    <a href="/v10/advanced-search" class="v10-home-shortcut-card">
+                        <span class="shortcut-label">Advanced Search</span>
+                        <strong>Filter judul, genre, status, dan type</strong>
+                    </a>
+                    <a href="/v10/tv-show" class="v10-home-shortcut-card">
+                        <span class="shortcut-label">TV Show &amp; Movie</span>
+                        <strong>Buka koleksi TV Show atau Movie</strong>
+                    </a>
+                </section>
+
+                <!-- Trending Anime -->
+                <section class="anime-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 class="section-title" style="margin-bottom: 0;">📈 Trending Anime</h3>
+                        <span class="section-badge" id="trendingCount">0</span>
+                    </div>
+                    <div class="anime-row" id="trendingAnime">
+                        <div class="loading">Memuat trending anime...</div>
+                    </div>
+                </section>
+
+                <!-- Sedang Tayang (Airing) -->
+                <section class="anime-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 class="section-title" style="margin-bottom: 0;">📺 Sedang Tayang</h3>
+                        <span class="section-badge" id="airingCount">0</span>
+                    </div>
+                    <div class="anime-row" id="airingAnime">
+                        <div class="loading">Memuat anime sedang tayang...</div>
+                    </div>
+                </section>
+
+                <!-- Episode Baru (Latest Episodes) -->
+                <section class="anime-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 class="section-title" style="margin-bottom: 0;">🔥 Episode Baru</h3>
+                        <span class="section-badge" id="latestCount">0</span>
+                    </div>
+                    <div class="anime-row" id="latestEpisodes">
+                        <div class="loading">Memuat episode terbaru...</div>
+                    </div>
+                </section>
+                
+                <!-- Pagination for Latest Episodes -->
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button class="pagination-btn" id="prevPageBtn" disabled>← Sebelumnya</button>
+                    <span class="pagination-info">Halaman <span id="currentPage">1</span></span>
+                    <button class="pagination-btn" id="nextPageBtn">Selanjutnya →</button>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V10 - Powered by Vidku.me</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v10/app.js"></script>
+</body>
+</html>

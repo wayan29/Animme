@@ -1,0 +1,646 @@
+:root {
+    --primary: #ef4444;
+    --primary-dark: #b91c1c;
+    --primary-glow: rgba(239, 68, 68, 0.3);
+    --bg-main: #0a0a0c;
+    --bg-card: rgba(22, 22, 28, 0.7);
+    --bg-sidebar: #111116;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(15, 15, 20, 0.8);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.server-v10.episode-page {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+}
+
+/* Sidebar Refined */
+body.server-v10.episode-page .sidebar {
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+    padding: 24px 16px;
+}
+
+body.server-v10.episode-page .logo {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    padding: 0 8px;
+}
+
+body.server-v10.episode-page .sidebar-menu .nav-link {
+    border-radius: var(--radius-md);
+    margin-bottom: 4px;
+    padding: 12px 16px;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+body.server-v10.episode-page .sidebar-menu .nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    transform: translateX(4px);
+}
+
+body.server-v10.episode-page .sidebar-menu .nav-link.active {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--primary);
+}
+
+/* Topbar Glassmorphism Refined */
+body.server-v10.episode-page .topbar {
+    background: rgba(10, 10, 12, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0 4%;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+body.server-v10.episode-page .sidebar {
+    background: #0f0f12;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 32px 20px;
+    width: 280px;
+    transition: var(--transition);
+}
+
+body.server-v10.episode-page .content-area {
+    background: var(--bg-main);
+    margin-left: 280px;
+    min-height: 100vh;
+}
+
+body.server-v10.episode-page .menu-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    margin-right: 16px;
+}
+
+body.server-v10.episode-page .search-container {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 4px 4px 4px 16px;
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+    width: 100%;
+    margin-left: auto;
+}
+
+body.server-v10.episode-page .search-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    padding: 8px 0;
+    width: 100%;
+    outline: none;
+    font-size: 0.9rem;
+}
+
+body.server-v10.episode-page .search-btn {
+    background: var(--primary);
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+body.server-v10.episode-page .search-btn:hover {
+    background: var(--primary-dark);
+    transform: scale(1.02);
+}
+
+/* Sidebar Responsive Fix */
+@media (max-width: 1024px) {
+    body.server-v10.episode-page .sidebar {
+        transform: translateX(-100%);
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        z-index: 2000;
+    }
+
+    body.server-v10.episode-page .sidebar.active {
+        transform: translateX(0);
+    }
+
+    body.server-v10.episode-page .content-area {
+        margin-left: 0;
+    }
+}
+
+/* Layout Spacing */
+body.server-v10.episode-page .v10-watch-shell {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    padding: 24px 4%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Main Player Card */
+body.server-v10.episode-page .player-section.player-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+body.server-v10.episode-page .player-toolbar {
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid var(--border-color);
+}
+
+body.server-v10.episode-page .player-heading {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+body.server-v10.episode-page .player-subtitle {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Video Frame */
+body.server-v10.episode-page .video-frame {
+    margin: 0 24px;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+body.server-v10.episode-page #videoContainer,
+body.server-v10.episode-page #videoContainer iframe,
+body.server-v10.episode-page #videoContainer video {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0;
+}
+
+/* Server & Quality Selection */
+body.server-v10.episode-page .player-sources,
+body.server-v10.episode-page .quality-list {
+    padding: 20px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+body.server-v10.episode-page .server-pill,
+body.server-v10.episode-page .quality-pill,
+body.server-v10.episode-page .control-chip {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    padding: 8px 16px;
+    border-radius: 10px;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+body.server-v10.episode-page .server-pill:hover,
+body.server-v10.episode-page .quality-pill:hover,
+body.server-v10.episode-page .control-chip:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+body.server-v10.episode-page .server-pill.active,
+body.server-v10.episode-page .quality-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+/* Quick Strip Meta */
+body.server-v10.episode-page .v10-quick-strip {
+    padding: 16px 24px 24px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 12px;
+}
+
+body.server-v10.episode-page .v10-quick-chip {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+/* Episode Info Section */
+body.server-v10.episode-page .episode-info {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-top: 24px;
+}
+
+body.server-v10.episode-page .episode-kicker {
+    color: var(--primary);
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+}
+
+body.server-v10.episode-page .episode-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+body.server-v10.episode-page .episode-description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* Navigation Buttons */
+body.server-v10.episode-page .episode-nav {
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+body.server-v10.episode-page .nav-btn {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    padding: 14px;
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+body.server-v10.episode-page .nav-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+body.server-v10.episode-page .nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Sidebar Columns */
+body.server-v10.episode-page .v10-side-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 24px;
+}
+
+body.server-v10.episode-page .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Episode List Panel */
+body.server-v10.episode-page .player-episode-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+body.server-v10.episode-page .player-episode-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+body.server-v10.episode-page .player-episode-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+}
+
+body.server-v10.episode-page .player-episode-link {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+body.server-v10.episode-page .player-episode-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+body.server-v10.episode-page .player-episode-link.active {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Download Links */
+body.server-v10.episode-page .download-links-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+body.server-v10.episode-page .download-link-chip {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--text-main);
+    text-decoration: none;
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+body.server-v10.episode-page .download-link-chip:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+
+/* Custom Player UI Enhancements */
+body.server-v10.episode-page .custom-player-ui {
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.6) 100%);
+}
+
+body.server-v10.episode-page .center-play-btn {
+    width: 72px;
+    height: 72px;
+    background: var(--primary);
+    box-shadow: 0 0 30px var(--primary-glow);
+    font-size: 1.5rem;
+}
+
+body.server-v10.episode-page .seek-bar::-webkit-slider-runnable-track {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body.server-v10.episode-page .seek-bar::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
+    margin-top: -5px;
+    background: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 1024px) {
+    body.server-v10.episode-page .v10-watch-shell {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    body.server-v10.episode-page .topbar {
+        padding: 0 16px;
+        justify-content: space-between;
+    }
+    
+    body.server-v10.episode-page .topbar-title {
+        font-size: 1.1rem;
+        flex: 1;
+    }
+
+    body.server-v10.episode-page .search-container {
+        width: auto;
+        max-width: none;
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin-left: 0;
+    }
+
+    body.server-v10.episode-page .search-input,
+    body.server-v10.episode-page .search-btn {
+        display: none;
+    }
+
+    body.server-v10.episode-page .search-container.active {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 72px;
+        background: var(--bg-main);
+        z-index: 3000;
+        display: flex;
+        padding: 0 16px;
+        align-items: center;
+        gap: 12px;
+    }
+
+    body.server-v10.episode-page .search-container.active .search-input {
+        display: block;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 10px 16px;
+    }
+
+    body.server-v10.episode-page .search-container.active .search-btn {
+        display: block;
+    }
+    
+    body.server-v10.episode-page .search-icon-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 8px;
+    }
+
+    body.server-v10.episode-page .search-icon-mobile svg {
+        fill: #fff;
+        width: 20px;
+        height: 20px;
+    }
+
+    body.server-v10.episode-page .search-close-btn {
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: none;
+    }
+
+    body.server-v10.episode-page .search-container.active .search-close-btn {
+        display: block;
+    }
+}
+
+/* Layout polish: keep V10 episode page consistent with the red theme */
+body.server-v10.episode-page .episode-info-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+body.server-v10.episode-page .episode-info-header > div {
+    flex: 1 1 240px;
+    min-width: 0;
+}
+
+body.server-v10.episode-page .episode-back-link,
+body.server-v10.episode-page .download-link-chip {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+body.server-v10.episode-page .episode-back-link:hover,
+body.server-v10.episode-page .download-link-chip:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+body.server-v10.episode-page .server-pill:hover,
+body.server-v10.episode-page .server-pill.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px var(--primary-glow);
+    color: #fff;
+}
+
+body.server-v10.episode-page .quality-list-container {
+    padding: 0 24px;
+    margin-top: 4px;
+}
+
+body.server-v10.episode-page .quality-list {
+    padding: 16px 0 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin: 0;
+}
+
+body.server-v10.episode-page .player-sources {
+    margin-bottom: 0;
+}
+
+body.server-v10.episode-page .v10-quick-strip {
+    flex-wrap: wrap;
+}
+
+body.server-v10.episode-page .v10-quick-chip {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.server-v10.episode-page .player-status {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+    body.server-v10.episode-page .v10-watch-shell {
+        padding: 16px;
+        gap: 18px;
+    }
+
+    body.server-v10.episode-page .player-toolbar,
+    body.server-v10.episode-page .episode-info,
+    body.server-v10.episode-page .v10-side-panel {
+        padding: 18px;
+    }
+
+    body.server-v10.episode-page .video-frame {
+        margin: 0 14px;
+        border-radius: 10px;
+    }
+
+    body.server-v10.episode-page .player-sources {
+        padding: 16px 14px;
+    }
+
+    body.server-v10.episode-page .quality-list-container {
+        padding: 0 14px;
+    }
+
+    body.server-v10.episode-page .v10-quick-strip {
+        padding: 14px;
+        gap: 8px;
+    }
+
+    body.server-v10.episode-page .episode-nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    body.server-v10.episode-page .download-links-grid {
+        grid-template-columns: 1fr;
+    }
+}

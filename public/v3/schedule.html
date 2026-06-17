@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Rilis - Kuramanime V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-main: #141414;
+            --bg-panel: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-muted: #9ea0a8;
+            --accent: #e50914;
+            --accent-soft: rgba(229, 9, 20, 0.16);
+            --accent-strong: rgba(229, 9, 20, 0.45);
+            --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.45);
+            --shadow-accent: 0 12px 32px rgba(229, 9, 20, 0.35);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 12% 20%, rgba(229, 9, 20, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 88% 12%, rgba(229, 9, 20, 0.12) 0%, transparent 50%),
+                var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            text-shadow: 0 0 18px rgba(229, 9, 20, 0.35);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            text-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        .day-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: var(--bg-panel);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .day-tab {
+            padding: 12px 24px;
+            border: 1px solid var(--border-soft);
+            background: var(--bg-card);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--text-muted);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .day-tab:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent-strong);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .day-tab.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-accent);
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .anime-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-accent);
+            border-color: var(--accent-strong);
+        }
+
+        .anime-poster {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .anime-info {
+            padding: 15px;
+        }
+
+        .anime-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+            min-height: 2.8em;
+        }
+
+        .next-episode {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .schedule-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .schedule-icon {
+            color: var(--accent);
+        }
+
+        .tags {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            padding: 3px 8px;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-strong);
+            border-radius: 5px;
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
+
+        .schedule-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--accent);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-accent);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--bg-panel);
+            border-radius: 15px;
+            margin: 40px 0;
+            border: 1px solid var(--border-soft);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+        }
+
+        /* Desktop: Maksimal 6 kolom */
+        @media (min-width: 1200px) {
+            .anime-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .anime-poster {
+                height: 220px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .day-tabs {
+                gap: 8px;
+                padding: 15px;
+            }
+
+            .day-tab {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo" onclick="window.location.href='/v3/home'">🎌 AnimMe V3</div>
+            <div class="nav-links">
+                <a href="/v3/home">Beranda</a>
+                <a href="/v3/ongoing">Sedang Tayang</a>
+                <a href="/v3/finished">Selesai Tayang</a>
+                <a href="/v3/movie">Film</a>
+                <a href="/v3/schedule" class="active">Jadwal Rilis</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>📅 Jadwal Rilis</h1>
+            <p>Jadwal rilis episode anime berdasarkan hari dalam seminggu</p>
+        </div>
+
+        <div class="day-tabs" id="dayTabs">
+            <div class="day-tab active" onclick="loadSchedule('senin')" data-day="senin">Senin</div>
+            <div class="day-tab" onclick="loadSchedule('selasa')" data-day="selasa">Selasa</div>
+            <div class="day-tab" onclick="loadSchedule('rabu')" data-day="rabu">Rabu</div>
+            <div class="day-tab" onclick="loadSchedule('kamis')" data-day="kamis">Kamis</div>
+            <div class="day-tab" onclick="loadSchedule('jumat')" data-day="jumat">Jumat</div>
+            <div class="day-tab" onclick="loadSchedule('sabtu')" data-day="sabtu">Sabtu</div>
+            <div class="day-tab" onclick="loadSchedule('minggu')" data-day="minggu">Minggu</div>
+        </div>
+
+        <div id="loadingIndicator" class="loading" style="display: block;">
+            ⏳ Memuat jadwal rilis...
+        </div>
+
+        <div id="animeGrid" class="anime-grid" style="display: none;"></div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <div class="empty-state-icon">📭</div>
+            <div class="empty-state-text">Tidak ada jadwal rilis untuk hari ini</div>
+        </div>
+    </div>
+
+    <script>
+        let currentDay = 'senin';
+
+        function updateActiveTab(day) {
+            document.querySelectorAll('.day-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            const activeTab = document.querySelector(`.day-tab[data-day="${day}"]`);
+            if (activeTab) {
+                activeTab.classList.add('active');
+            }
+        }
+
+        async function loadSchedule(day = 'senin') {
+            try {
+                currentDay = day;
+                updateActiveTab(day);
+
+                // Show loading
+                document.getElementById('loadingIndicator').style.display = 'block';
+                document.getElementById('animeGrid').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'none';
+
+                const response = await fetch(`/api/v3/kuramanime/schedule?day=${day}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    const animeList = data.data.schedule_list || [];
+
+                    // Hide loading
+                    document.getElementById('loadingIndicator').style.display = 'none';
+
+                    if (animeList.length === 0) {
+                        document.getElementById('emptyState').style.display = 'block';
+                    } else {
+                        renderAnimeGrid(animeList);
+                        document.getElementById('animeGrid').style.display = 'grid';
+                    }
+                } else {
+                    throw new Error(data.message || 'Failed to load data');
+                }
+            } catch (error) {
+                console.error('Error loading schedule:', error);
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+            }
+        }
+
+        function renderAnimeGrid(animeList) {
+            const grid = document.getElementById('animeGrid');
+            grid.innerHTML = '';
+
+            animeList.forEach(anime => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.onclick = () => window.location.href = `/v3/detail?animeId=${anime.anime_id}&slug=${anime.slug}`;
+
+                // Build tags
+                let tagsHTML = '';
+                if (anime.tags && anime.tags.length > 0) {
+                    anime.tags.forEach(tag => {
+                        tagsHTML += `<span class="tag">${tag.label}</span>`;
+                    });
+                }
+
+                // Schedule badge
+                const scheduleBadge = anime.next_episode ?
+                    `<div class="schedule-badge">📅 ${anime.schedule_day || currentDay}</div>` : '';
+
+                // Next episode info
+                const nextEpisodeHTML = anime.next_episode_text ?
+                    `<div class="next-episode">
+                        <span>📺</span>
+                        <span>${anime.next_episode_text}</span>
+                    </div>` : '';
+
+                // Release time
+                const scheduleHTML = anime.schedule_time ?
+                    `<div class="schedule-info">
+                        <span class="schedule-icon">🕐</span>
+                        <span>${anime.schedule_time}</span>
+                    </div>` : '';
+
+                card.innerHTML = `
+                    <img src="${anime.poster}" alt="${anime.title}" class="anime-poster" onerror="this.src='https://via.placeholder.com/180x260?text=No+Image'">
+                    ${scheduleBadge}
+                    <div class="anime-info">
+                        <div class="anime-title">${anime.title}</div>
+                        ${nextEpisodeHTML}
+                        ${scheduleHTML}
+                        <div class="tags">
+                            ${tagsHTML}
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // Load default day (Senin)
+        loadSchedule('senin');
+    </script>
+</body>
+</html>

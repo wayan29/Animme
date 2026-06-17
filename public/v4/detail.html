@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V4 - Detail Anime</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v4 {
+            --primary-color: #ff6b6b;
+            --secondary-color: #ee5a6f;
+            --accent-color: #ffd700;
+        }
+
+        .detail-header {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 8px;
+        }
+
+        .detail-poster {
+            width: 200px;
+            height: 280px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .detail-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-subtitle {
+            font-size: 1rem;
+            color: #aaa;
+            margin-bottom: 1rem;
+        }
+
+        .detail-description {
+            color: #ddd;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-item {
+            padding: 1rem;
+            background: #1a1a1a;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #999;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .episodes-section {
+            margin-top: 2rem;
+        }
+
+        .episodes-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .episodes-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .episode-card {
+            padding: 1rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 8px;
+            border: 2px solid rgba(255, 107, 107, 0.2);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .episode-card:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #252535 0%, #1e2640 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .episode-card:active {
+            transform: translateY(-1px);
+        }
+
+        a.episode-card {
+            -webkit-tap-highlight-color: rgba(255, 107, 107, 0.2);
+        }
+
+        .episode-title {
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .episode-date {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #333;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .detail-header {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-poster {
+                width: 100%;
+                height: 300px;
+            }
+
+            .detail-title {
+                font-size: 1.5rem;
+            }
+
+            .episodes-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="server-v4">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <a href="/v4/home" style="color: var(--primary-color); text-decoration: none; font-weight: bold;">← Beranda</a>
+            <a href="/v4/completed" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Completed</a>
+        </div>
+        <h1 style="margin: 0; flex: 1; color: var(--primary-color);">AnimMe V4 - Detail Anime</h1>
+        <select id="serverSelect" style="padding: 0.5rem; border-radius: 4px;">
+            <option value="v1">V1 - Otakudesu</option>
+            <option value="v2">V2 - Samehadaku</option>
+            <option value="v3">V3 - Kuramanime</option>
+            <option value="v4" selected>V4 - Anichin</option>
+            <option value="v5">V5 - Anoboy</option>
+        </select>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div id="errorContainer" style="display: none;"></div>
+
+        <div id="loadingContainer" class="loading">
+            <div class="loading-spinner"></div>
+            <p>Memuat detail anime...</p>
+        </div>
+
+        <div id="detailContainer" style="display: none;">
+            <!-- Detail header akan diisi oleh JS -->
+        </div>
+    </main>
+
+    <script>
+        // Simple detail page implementation
+        const API_BASE = '/api/v4/anichin';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+
+            if (!slug) {
+                showError('Slug anime tidak ditemukan');
+                return;
+            }
+
+            loadAnimeDetail(slug);
+            setupServerSelector();
+        });
+
+        async function loadAnimeDetail(slug) {
+            try {
+                const response = await fetch(`${API_BASE}/detail/${encodeURIComponent(slug)}`);
+                const data = await response.json();
+
+                if (data.status === 'success' && data.data) {
+                    renderDetail(data.data);
+                } else {
+                    showError('Gagal memuat detail anime');
+                }
+            } catch (error) {
+                console.error('Error loading anime detail:', error);
+                showError('Terjadi kesalahan saat memuat data');
+            }
+        }
+
+        function renderDetail(anime) {
+            document.getElementById('loadingContainer').style.display = 'none';
+            const container = document.getElementById('detailContainer');
+            container.style.display = 'block';
+
+            const poster = anime.poster || '/images/placeholder.jpg';
+
+            let html = `
+                <div class="detail-header">
+                    <div class="detail-poster" style="background-image: url('${poster}');"></div>
+                    <div class="detail-info">
+                        <div class="detail-title">${escapeHtml(anime.title)}</div>
+                        ${anime.alternative_title ? `<div class="detail-subtitle">${escapeHtml(anime.alternative_title)}</div>` : ''}
+                        ${anime.description ? `<div class="detail-description">${escapeHtml(anime.description)}</div>` : ''}
+                        <div class="info-grid">
+                            ${anime.info ? Object.entries(anime.info).map(([key, value]) => `
+                                <div class="info-item">
+                                    <div class="info-label">${escapeHtml(key)}</div>
+                                    <div class="info-value">${escapeHtml(value)}</div>
+                                </div>
+                            `).join('') : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (anime.episodes && anime.episodes.length > 0) {
+                html += `
+                    <div class="episodes-section">
+                        <div class="episodes-title">Episode (${anime.episodes.length})</div>
+                        <div class="episodes-list">
+                            ${anime.episodes.map(ep => {
+                                // Extract slug from episode URL or slug field
+                                const episodeSlug = ep.slug || extractSlugFromUrl(ep.url || ep.href || '');
+                                const episodeUrl = episodeSlug ? `/v4/episode?slug=${encodeURIComponent(episodeSlug)}` : '#';
+
+                                return `
+                                    <a href="${episodeUrl}" class="episode-card" style="text-decoration: none; color: inherit; display: block;">
+                                        <div class="episode-title">${escapeHtml(ep.title)}</div>
+                                        ${ep.date ? `<div class="episode-date">${escapeHtml(ep.date)}</div>` : ''}
+                                    </a>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function showError(message) {
+            document.getElementById('loadingContainer').style.display = 'none';
+            document.getElementById('errorContainer').innerHTML = `<div class="error">${message}</div>`;
+            document.getElementById('errorContainer').style.display = 'block';
+        }
+
+        function setupServerSelector() {
+            const selector = document.getElementById('serverSelect');
+            selector.addEventListener('change', (e) => {
+                const version = e.target.value;
+                switch(version) {
+                    case 'v1':
+                        window.location.href = '/v1/home';
+                        break;
+                    case 'v2':
+                        window.location.href = '/v2/home';
+                        break;
+                    case 'v3':
+                        window.location.href = '/v3/home';
+                        break;
+                    case 'v4':
+                        window.location.href = '/v4/home';
+                        break;
+                }
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return String(text).replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function extractSlugFromUrl(url) {
+            if (!url) return '';
+
+            try {
+                // Remove domain if present
+                const path = url.startsWith('http') ? new URL(url).pathname : url;
+
+                // Remove leading/trailing slashes
+                const slug = path.replace(/^\/+|\/+$/g, '');
+
+                return slug;
+            } catch (e) {
+                console.error('[V4 Detail] Error extracting slug:', e);
+                return url;
+            }
+        }
+    </script>
+</body>
+</html>

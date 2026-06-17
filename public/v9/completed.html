@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V9 - Completed</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+</head>
+<body class="server-v9">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v9/home'">AnimMe V9</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7">V7 - Nekopoi</option>
+                        <option value="v8">V8 - Kusonime</option>
+                        <option value="v9" selected>V9 - Auratail</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v9/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v9/completed" class="nav-link active">✅ Selesai Tayang</a>
+                <a href="/v9/ongoing" class="nav-link">📺 Ongoing</a>
+                <a href="/v9/popular" class="nav-link">🔥 Populer</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v9/home'">AnimMe V9 - Completed</div>
+            </header>
+
+            <main class="main-content">
+                <div class="page-header">
+                    <h1>✅ Selesai Tayang</h1>
+                    <p>Daftar anime yang sudah selesai ditayang</p>
+                </div>
+
+                <div class="anime-grid" id="completedList">
+                    <div class="loading">Memuat data...</div>
+                </div>
+
+                <div class="pagination" id="pagination" style="display: none;">
+                    <button id="prevPage" class="page-btn">‹ Previous</button>
+                    <span id="pageInfo">Page 1 of 1</span>
+                    <button id="nextPage" class="page-btn">Next ›</button>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V9 - Powered by Auratail.vip</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Basic completed page functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const serverSelect = document.getElementById('serverSelect');
+            if (serverSelect) {
+                serverSelect.value = 'v9';
+                serverSelect.addEventListener('change', (e) => {
+                    window.location.href = `/${e.target.value}/completed`;
+                });
+            }
+
+            // For now, show a simple message
+            document.getElementById('completedList').innerHTML = 
+                '<div class="info-message">Halaman Completed akan segera tersedia. Kembali ke <a href="/v9/home">Beranda</a>.</div>';
+        });
+    </script>
+</body>
+</html>

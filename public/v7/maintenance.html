@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V7 - Maintenance</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <link rel="icon" href="/placeholder.svg" type="image/svg+xml">
+</head>
+<body class="server-v7 home-with-sidebar">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v7/home'">AnimMe V7</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7" selected>V7 - Nekopoi</option>
+                        <option value="v8">V8 - Kusonime</option>
+                        <option value="v9">V9 - Auratail</option>
+                        <option value="v10">V10 - Vidku</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v7/home" class="nav-link active">Beranda</a>
+                <a href="/v7/search" class="nav-link">Pencarian</a>
+                <a href="/v7/list" class="nav-link">Daftar</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title">AnimMe V7 - Nekopoi</div>
+            </header>
+
+            <main class="main-content">
+                <section class="anime-section">
+                    <div style="max-width:720px;margin:60px auto;padding:32px;border-radius:24px;background:rgba(20,20,30,.92);border:1px solid rgba(255,255,255,.08);text-align:center;">
+                        <h2 style="margin-bottom:16px;">V7 Nekopoi Maintenance</h2>
+                        <p style="margin-bottom:12px;">Server Nekopoi sementara dinonaktifkan karena source sedang memasang anti-bot.</p>
+                        <p style="opacity:.8;margin-bottom:24px;">Supaya tidak menampilkan data/error rusak, halaman dan API V7 untuk sementara masuk mode maintenance.</p>
+                        <a href="/v10/" class="watch-btn">Pindah ke server lain</a>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const serverSelect = document.getElementById('serverSelect');
+            const menuToggle = document.getElementById('menuToggle');
+            const menuCloseBtn = document.getElementById('menuCloseBtn');
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+
+            if (serverSelect) {
+                serverSelect.addEventListener('change', (event) => {
+                    const map = {
+                        v1: '/v1/home',
+                        v2: '/v2/home',
+                        v3: '/v3/home',
+                        v4: '/v4/home',
+                        v5: '/v5/home',
+                        v6: '/v6/home',
+                        v7: '/v7/home',
+                        v8: '/v8/home',
+                        v9: '/v9/home',
+                        v10: '/v10/'
+                    };
+                    window.location.href = map[event.target.value] || '/';
+                });
+            }
+
+            const openMenu = () => {
+                sidebar?.classList.add('active');
+                backdrop?.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+
+            const closeMenu = () => {
+                sidebar?.classList.remove('active');
+                backdrop?.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            menuToggle?.addEventListener('click', openMenu);
+            menuCloseBtn?.addEventListener('click', closeMenu);
+            backdrop?.addEventListener('click', closeMenu);
+        });
+    </script>
+</body>
+</html>

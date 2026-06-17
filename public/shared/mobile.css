@@ -1,0 +1,1012 @@
+/* Mobile-First Responsive Design */
+
+/* Tablets & Smaller Desktops */
+@media (max-width: 1024px) {
+    .home-with-sidebar .home-layout {
+        flex-direction: column;
+    }
+
+    .home-with-sidebar .sidebar {
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+
+    .home-with-sidebar .sidebar-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(20, 20, 20, 0.8);
+    }
+
+    .home-with-sidebar .content-area {
+        margin-left: 0;
+    }
+
+    .home-with-sidebar .topbar {
+        padding: 18px 20px;
+        gap: 16px;
+    }
+
+    .home-with-sidebar .topbar-title {
+        font-size: 1.1rem;
+    }
+
+    .home-with-sidebar .menu-toggle {
+        display: inline-flex;
+    }
+
+    .home-with-sidebar .topbar .search-container {
+        margin-left: 0;
+        flex: 1;
+    }
+
+    .home-with-sidebar .hero-carousel {
+        margin-top: 0;
+    }
+
+    .sidebar-open {
+        overflow: hidden;
+    }
+
+    .sidebar-open .sidebar {
+        transform: translateX(0);
+        box-shadow: 18px 0 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .sidebar-open .sidebar-backdrop {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-filter-toggle {
+        display: flex;
+    }
+
+    .mobile-filter-toggle.hidden {
+        display: none !important;
+    }
+
+    .mobile-filter-toggle .label {
+        font-size: 0.85rem;
+    }
+
+    .anime-filters {
+        padding: 0 15px;
+        margin: 0 15px 20px;
+    }
+
+    .anime-filters.mobile-collapsible {
+        padding: 0 15px;
+        margin: 0 15px 0;
+        max-height: 0;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-4px);
+    }
+
+    .anime-filters.mobile-collapsible.mobile-open {
+        max-height: 1200px;
+        opacity: 1;
+        pointer-events: auto;
+        padding: 20px 15px;
+        margin-bottom: 20px;
+        transform: translateY(0);
+    }
+
+    .filter-row {
+        grid-template-columns: 1fr !important;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .filter-row:last-of-type {
+        margin-bottom: 0;
+    }
+
+    .filter-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .filter-group label {
+        font-size: 0.85rem;
+    }
+
+    .filter-group input,
+    .filter-group select,
+    .filter-group button {
+        padding: 12px 14px;
+        font-size: 0.9rem;
+    }
+
+    .genre-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .genre-checkbox {
+        font-size: 0.8rem;
+        padding: 10px 12px;
+    }
+
+    .pagination-controls {
+        flex-direction: column;
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .pagination-btn {
+        width: 100%;
+        padding: 12px;
+    }
+
+    .pagination-info {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Extra Small Devices (< 480px) */
+@media (max-width: 480px) {
+    /* Typography */
+    body {
+        font-size: 14px;
+    }
+    
+    /* Navbar */
+    .navbar {
+        padding: 12px 0;
+    }
+
+    .home-with-sidebar .topbar {
+        padding: 16px 15px;
+        gap: 12px;
+    }
+
+    .home-with-sidebar .topbar-title {
+        flex: 1;
+        text-align: center;
+        font-size: 1rem;
+    }
+    
+    .nav-container {
+        padding: 0 15px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .server-selector {
+        width: 100%;
+        justify-content: center;
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    
+    .server-select {
+        width: 100%;
+        max-width: 300px;
+        font-size: 13px;
+        padding: 8px 12px;
+    }
+    
+    .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+    }
+    
+    /* Hide V1-only menu items on mobile for V2 server */
+    .server-v2 .v1-only {
+        display: none !important;
+    }
+    
+    .nav-link {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+    
+    .search-container {
+        width: auto;
+        position: relative;
+    }
+    
+    /* Hide full search bar on mobile by default */
+    .search-input,
+    .search-btn {
+        display: none;
+    }
+    
+    /* Show search icon button */
+    .search-icon-mobile {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: rgba(229, 9, 20, 0.2);
+        border: 1px solid #e50914;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .search-icon-mobile:hover,
+    .search-icon-mobile:active {
+        background-color: #e50914;
+        transform: scale(1.1);
+    }
+    
+    .search-icon-mobile svg {
+        width: 20px;
+        height: 20px;
+        fill: #fff;
+    }
+    
+
+    
+    /* Expanded search state */
+    .search-container.active {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        background-color: #141414;
+        padding: 15px;
+        z-index: 2000;
+        flex-direction: row;
+        gap: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    
+    .search-container.active .search-input {
+        display: block;
+        flex: 1;
+        font-size: 16px;
+        padding: 12px;
+    }
+    
+    .search-container.active .search-btn {
+        display: block;
+        padding: 12px 20px;
+        white-space: nowrap;
+    }
+    
+    .search-container.active .search-icon-mobile {
+        display: none !important;
+    }
+    
+    /* Close button for search */
+    .search-close-btn {
+        display: none;
+    }
+    
+    .search-container.active .search-close-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background-color: transparent;
+        border: 1px solid #666;
+        border-radius: 50%;
+        cursor: pointer;
+        color: #fff;
+        font-size: 20px;
+        line-height: 1;
+    }
+    
+    /* Hero Section */
+    .hero {
+        height: 60vh;
+        min-height: 400px;
+    }
+    
+    .hero-content {
+        padding: 0 15px;
+    }
+    
+    .hero-title {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .hero-description {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 15px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .hero-btn {
+        width: 100%;
+        font-size: 0.9rem;
+        padding: 10px 20px;
+        justify-content: center;
+    }
+    
+    /* Section Titles */
+    .section-title {
+        font-size: 1.3rem;
+        margin: 20px 15px 15px;
+    }
+    
+    /* Anime Cards */
+    .anime-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 0 10px;
+    }
+    
+    .anime-card {
+        border-radius: 6px;
+    }
+    
+    .anime-poster {
+        height: 180px;
+        border-radius: 6px 6px 0 0;
+    }
+    
+    .anime-info {
+        padding: 8px;
+    }
+    
+    .anime-title {
+        font-size: 0.8rem;
+        line-height: 1.2;
+        margin-bottom: 4px;
+    }
+    
+    .anime-meta {
+        font-size: 0.7rem;
+    }
+    
+    .page-ongoing .completed-header {
+        padding: 90px 0 24px;
+    }
+
+    .page-ongoing .anime-list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 0 4px;
+    }
+
+    .page-ongoing .anime-info {
+        padding: 16px;
+    }
+    
+    .page-completed .completed-header {
+        padding: 90px 0 24px;
+    }
+
+    .page-completed .anime-list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 0 4px;
+    }
+
+    .page-completed .anime-info {
+        padding: 16px;
+    }
+
+    .page-all-anime.server-v2 .all-anime-header {
+        padding: 90px 0 24px;
+    }
+
+    .page-all-anime.server-v2 .anime-list {
+        grid-template-columns: 1fr;
+        gap: 14px;
+        padding: 0 4px;
+    }
+
+    .page-all-anime.server-v2 .anime-info {
+        padding: 16px;
+    }
+
+    .server-v3 .home-anime-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 0 8px;
+    }
+
+    .server-v3 .home-anime-card {
+        border-radius: 8px;
+        min-height: 240px;
+    }
+
+    .server-v3 .home-anime-poster {
+        height: 150px;
+    }
+
+    .server-v3 .home-anime-info {
+        padding: 10px;
+    }
+
+    .server-v3 .home-anime-title {
+        font-size: 0.75rem;
+    }
+
+    .server-v3 .home-anime-meta {
+        font-size: 0.65rem;
+    }
+
+    /* V3 Home specific improvements */
+    .server-v3 .main-content {
+        padding: 0 8px;
+    }
+
+    .server-v3 .anime-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 0;
+    }
+
+    .server-v3 .anime-card {
+        border-radius: 8px;
+    }
+
+    .server-v3 .anime-poster {
+        height: 180px;
+    }
+
+    .server-v3 .anime-info {
+        padding: 10px;
+    }
+
+    /* Detail Page */
+    .detail-container {
+        padding: 80px 15px 20px;
+        margin: 0;
+    }
+    
+    .back-btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        margin-bottom: 15px;
+    }
+    
+    .detail-header {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .detail-poster {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .detail-info h1 {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+    }
+    
+    .detail-meta {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .meta-item {
+        font-size: 0.85rem;
+    }
+    
+    .genre-tag {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+    
+    .detail-synopsis h3 {
+        font-size: 1.1rem;
+    }
+    
+    .detail-synopsis p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+    
+    .episode-section {
+        padding: 15px;
+    }
+    
+    .episode-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    
+    .episode-btn {
+        font-size: 0.8rem;
+        padding: 10px;
+    }
+    
+    /* Player Page */
+    .player-container {
+        padding: 80px 10px 20px;
+    }
+    
+    .video-player {
+        height: 250px;
+        border-radius: 6px;
+    }
+    
+    .video-title {
+        font-size: 1.1rem;
+        padding: 15px 10px;
+    }
+    
+    .server-selector {
+        padding: 15px 10px;
+        gap: 6px;
+    }
+    
+    .server-btn {
+        font-size: 0.75rem;
+        padding: 8px 12px;
+    }
+    
+    .episode-navigation {
+        padding: 15px 10px;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .nav-btn {
+        flex: 1;
+        min-width: 120px;
+        font-size: 0.85rem;
+        padding: 10px;
+    }
+    
+    .download-section {
+        padding: 15px 10px;
+    }
+    
+    /* Schedule Page */
+    .schedule-container {
+        padding: 80px 10px 20px;
+    }
+    
+    .schedule-day-section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    .schedule-day-title {
+        font-size: 1.2rem;
+    }
+    
+    .schedule-anime-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .schedule-anime-poster {
+        height: 180px;
+    }
+    
+    .schedule-anime-title {
+        font-size: 0.8rem;
+    }
+    
+    /* Genre Page */
+    .genre-container,
+    .genre-detail-container {
+        padding: 80px 15px 20px;
+    }
+    
+    .genre-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    
+    .genre-card {
+        padding: 15px 10px;
+    }
+    
+    .genre-card-title {
+        font-size: 0.9rem;
+    }
+    
+    /* Search Page */
+    .search-container-page {
+        padding: 80px 15px 20px;
+    }
+    
+    .search-box-container {
+        padding: 0 10px;
+        gap: 8px;
+    }
+    
+    .search-box-input {
+        font-size: 14px;
+    }
+    
+    .search-result-item {
+        padding: 12px;
+    }
+    
+    .search-result-title {
+        font-size: 1.1rem;
+    }
+    
+    .search-result-info {
+        font-size: 0.8rem;
+    }
+    
+    /* Pagination */
+    .pagination {
+        padding: 15px;
+        gap: 4px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .pagination-btn {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+        min-width: 35px;
+    }
+    
+    /* Footer */
+    .footer {
+        padding: 20px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .footer-note {
+        font-size: 0.75rem;
+        margin-top: 10px;
+    }
+    
+    /* Utility Classes */
+    .loading {
+        font-size: 1rem;
+        padding: 30px;
+    }
+    
+    .error {
+        font-size: 0.9rem;
+        padding: 20px;
+    }
+    
+    /* Touch Optimization */
+    .anime-card,
+    .home-anime-card,
+    .episode-btn,
+    .genre-card,
+    .nav-btn,
+    .server-btn,
+    .pagination-btn,
+    .comment-item {
+        min-height: 44px; /* iOS minimum touch target */
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(229, 9, 20, 0.2);
+    }
+
+    /* Better touch feedback for anime cards */
+    .anime-card:active,
+    .home-anime-card:active,
+    .comment-item:active {
+        opacity: 0.8;
+        transform: scale(0.98);
+        transition: all 0.1s ease;
+    }
+
+    /* Ensure links in cards don't have default link styling */
+    a.anime-card,
+    a.home-anime-card,
+    a.comment-item,
+    a.carousel-slide {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+    }
+
+    /* Carousel banner clickable - subtle feedback */
+    a.carousel-slide:active .carousel-content {
+        opacity: 0.9;
+        transform: scale(0.99);
+        transition: all 0.15s ease;
+    }
+
+    /* Make sure carousel buttons are tappable on mobile */
+    .carousel-btn,
+    .indicator {
+        -webkit-tap-highlight-color: rgba(229, 9, 20, 0.3);
+        touch-action: manipulation;
+    }
+
+    /* Prevent zoom on input focus (iOS) */
+    input[type="text"],
+    input[type="search"] {
+        font-size: 16px !important; /* Prevents iOS zoom */
+    }
+}
+
+@media (max-width: 360px) {
+    .server-v3 .home-anime-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .server-v3 .home-anime-card {
+        min-height: 260px;
+    }
+
+    .server-v3 .home-anime-poster {
+        height: 160px;
+    }
+
+    .server-v3 .anime-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .server-v3 .anime-poster {
+        height: 200px;
+    }
+
+    .server-v3 .section-title {
+        font-size: 1.2rem;
+        margin: 18px 15px 12px;
+    }
+
+    .genre-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pagination-btn {
+        width: 100%;
+    }
+}
+
+/* Small Mobile Devices (481px - 600px) */
+@media (min-width: 481px) and (max-width: 600px) {
+    .anime-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+    
+    .schedule-anime-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .episode-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .genre-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Tablets Portrait (601px - 768px) - Already covered in main CSS */
+
+/* Landscape Orientation Optimizations */
+@media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+        height: 100vh;
+    }
+    
+    .navbar {
+        padding: 8px 0;
+    }
+    
+    .hero-title {
+        font-size: 1.8rem;
+    }
+    
+    .hero-description {
+        display: none; /* Hide in landscape to save space */
+    }
+}
+
+/* High DPI Displays (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .anime-poster,
+    .schedule-anime-poster,
+    .detail-poster {
+        image-rendering: -webkit-optimize-contrast;
+        image-rendering: crisp-edges;
+    }
+}
+
+/* Dark Mode Support (if system prefers) */
+@media (prefers-color-scheme: dark) {
+    /* Already dark by default, but could add adjustments */
+}
+
+    /* Anime Grid - Mobile */
+    .anime-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px;
+        padding: 0 10px;
+    }
+
+    .anime-grid .anime-poster {
+        padding-top: 130%;
+    }
+
+    .anime-grid .anime-card {
+        border-radius: 10px;
+    }
+
+    .anime-grid .anime-overlay {
+        padding: 8px;
+    }
+
+    .anime-grid .anime-type,
+    .anime-grid .anime-rating {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+
+    .anime-grid .anime-info {
+        padding: 12px;
+    }
+
+    .anime-grid .anime-title {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+
+    .anime-grid .anime-status {
+        font-size: 0.7rem;
+        margin-bottom: 2px;
+    }
+
+    .anime-grid .genre-tag {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    /* Items Per Page Control - Mobile */
+    .items-per-page-control {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .items-per-page-control label {
+        font-size: 0.85rem;
+    }
+
+    .items-select {
+        width: 100%;
+        min-width: unset;
+        padding: 12px 14px;
+    }
+
+    /* Detail V2 - Mobile */
+    .detail-header {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+    }
+    
+    .detail-header .anime-poster {
+        margin-bottom: 30px;
+    }
+    
+    .detail-info h1 {
+        font-size: 1.8rem;
+    }
+    
+    .tabs-header {
+        overflow-x: auto;
+    }
+    
+    .tab-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .recommendation-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px;
+    }
+    
+    .recommendation-poster {
+        height: 200px;
+    }
+}
+
+/* Tablet - Recommendation Grid */
+@media (min-width: 769px) and (max-width: 1199px) {
+    .recommendation-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+/* Desktop - Recommendation Grid */
+@media (min-width: 1200px) {
+    .recommendation-grid {
+        grid-template-columns: repeat(6, 1fr) !important;
+    }
+}
+
+/* V1 home: use a normal grid on mobile instead of a long horizontal carousel */
+@media (max-width: 768px) {
+    .home-with-sidebar.server-v1 .anime-row.anime-row-scroll {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow-x: visible;
+        gap: 12px;
+        padding: 0 10px;
+        scroll-snap-type: none;
+    }
+
+    .home-with-sidebar.server-v1 .anime-row.anime-row-scroll .anime-card {
+        flex: initial;
+        min-width: 0;
+        scroll-snap-align: unset;
+    }
+
+    .home-with-sidebar.server-v1 .anime-row.anime-row-scroll .anime-poster {
+        height: 210px;
+    }
+}
+
+@media (max-width: 380px) {
+    .home-with-sidebar.server-v1 .anime-row.anime-row-scroll {
+        gap: 10px;
+    }
+
+    .home-with-sidebar.server-v1 .anime-row.anime-row-scroll .anime-poster {
+        height: 185px;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Desktop - Hide mobile search icon, show normal search */
+@media (min-width: 769px) {
+    .search-icon-mobile,
+    .search-close-btn {
+        display: none !important;
+    }
+    
+    .search-container .search-input,
+    .search-container .search-btn {
+        display: block !important;
+    }
+}

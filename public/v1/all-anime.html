@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semua Anime - AnimMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+</head>
+<body class="server-v1 page-all-anime">
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v1/home'">AnimMe</h1>
+            <div class="server-selector">
+                <select id="serverSelect" class="server-select">
+                    <option value="v1">V1 - Otakudesu</option>
+                    <option value="v2">V2 - Samehadaku</option>
+                    <option value="v3">V3 - Kuramanime</option>
+                    <option value="v4">V4 - Anichin</option>
+                    <option value="v5">V5 - Anoboy</option>
+                </select>
+            </div>
+            <div class="nav-menu">
+                <a href="/v1/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link v1-only">Anime Ongoing</a>
+                <a href="/completed" class="nav-link v1-only">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link active">Semua Anime</a>
+                <a href="/genres" class="nav-link v1-only">Genre</a>
+                <a href="/schedule" class="nav-link v1-only">Jadwal Rilis</a>
+                <a href="/anime-terbaru" class="nav-link v2-only">Anime Terbaru</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="all-anime-header">
+            <h2 id="pageTitle">Daftar Lengkap Anime</h2>
+            <p id="pageDescription">Semua anime A-Z</p>
+        </section>
+
+        <button class="mobile-filter-toggle v2-only hidden" id="mobileFilterToggle" type="button" aria-expanded="false">
+            <span class="label">Filter &amp; Urutkan</span>
+            <span class="chevron"></span>
+        </button>
+
+        <!-- V2 Filters (Samehadaku) -->
+        <div class="anime-filters v2-only hidden" id="animeFilters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Cari Judul:</label>
+                    <input type="text" id="filterTitle" placeholder="Ketik judul anime...">
+                </div>
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="filterStatus">
+                        <option value="">Semua</option>
+                        <option value="Currently Airing">Currently Airing</option>
+                        <option value="Finished Airing">Finished Airing</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Type:</label>
+                    <select id="filterType">
+                        <option value="">Semua</option>
+                        <option value="TV">TV</option>
+                        <option value="Movie">Movie</option>
+                        <option value="OVA">OVA</option>
+                        <option value="ONA">ONA</option>
+                        <option value="Special">Special</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Urutkan:</label>
+                    <select id="filterOrder">
+                        <option value="title">A-Z</option>
+                        <option value="titlereverse">Z-A</option>
+                        <option value="popular">Popular</option>
+                        <option value="latest">Latest Added</option>
+                        <option value="update">Latest Update</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Genre Filter (Multi-select) -->
+            <div class="filter-row genre-filter-row">
+                <div class="filter-group genre-filter-group">
+                    <label>Genre:</label>
+                    <button class="btn btn-toggle" onclick="toggleGenrePanel()" id="genreToggleBtn">
+                        Pilih Genre ▼
+                    </button>
+                </div>
+                <div class="filter-group">
+                    <button class="btn btn-primary" onclick="applyFilters()">Terapkan</button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">Reset</button>
+                </div>
+            </div>
+            
+            <!-- Genre Panel (Collapsible) -->
+            <div class="genre-panel" id="genrePanel" style="display: none;">
+                <div class="genre-grid" id="genreGrid">
+                    <!-- Genres will be loaded dynamically -->
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="action"> Action
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="adventure"> Adventure
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="comedy"> Comedy
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="drama"> Drama
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="ecchi"> Ecchi
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="fantasy"> Fantasy
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="harem"> Harem
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="historical"> Historical
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="isekai"> Isekai
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="mystery"> Mystery
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="reincarnation"> Reincarnation
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="romance"> Romance
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="school"> School
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="sci-fi"> Sci-Fi
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="seinen"> Seinen
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="shounen"> Shounen
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="slice-of-life"> Slice of Life
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="sports"> Sports
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="super-power"> Super Power
+                    </label>
+                    <label class="genre-checkbox">
+                        <input type="checkbox" name="genre" value="supernatural"> Supernatural
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- V1 Alphabet Nav (Otakudesu) -->
+        <div class="alphabet-nav v1-only" id="alphabetNav">
+            <div class="loading">Memuat navigasi...</div>
+        </div>
+
+        <!-- Anime Container (for both V1 and V2) -->
+        <div class="all-anime-container" id="allAnimeContainer">
+            <div class="loading">Memuat daftar anime...</div>
+        </div>
+
+        <!-- Pagination Controls (V2) -->
+        <div class="pagination-container v2-only" id="paginationContainer" style="display: none;">
+            <div class="pagination-controls">
+                <button id="prevPageBtn" class="pagination-btn" onclick="goToPreviousPage()">
+                    ← Previous
+                </button>
+                <div class="pagination-info" id="paginationInfo">
+                    Page 1 of 1
+                </div>
+                <button id="nextPageBtn" class="pagination-btn" onclick="goToNextPage()">
+                    Next →
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+
+    </footer>
+
+    <script src="/v1/list-ui.js"></script>
+    <script src="/v1/all-anime.js"></script>
+</body>
+</html>

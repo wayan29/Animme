@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime List A-Z - AnimMe V5</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v5 {
+            --primary-color: #9db56e;
+            --secondary-color: #8ca55d;
+            --accent-color: #ffd700;
+        }
+
+        .server-v5 .sidebar {
+            background: linear-gradient(180deg, #1a1a1a 0%, #2a2a1a 100%);
+        }
+
+        .server-v5 .topbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a1a 100%);
+        }
+
+        .alphabet-filter {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a1a 100%);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .filter-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .alphabet-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .letter-btn {
+            min-width: 45px;
+            height: 45px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(157, 181, 110, 0.1);
+            color: #ccc;
+            border: 1px solid rgba(157, 181, 110, 0.3);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .letter-btn:hover {
+            background: rgba(157, 181, 110, 0.2);
+            border-color: var(--primary-color);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .letter-btn.active {
+            background: var(--primary-color);
+            color: #000;
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .list-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .list-count {
+            background: var(--accent-color);
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .anime-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a1a 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(157, 181, 110, 0.1);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 25px rgba(157, 181, 110, 0.4);
+            border-color: rgba(157, 181, 110, 0.4);
+        }
+
+        .anime-poster {
+            width: 100%;
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .anime-info {
+            padding: 16px;
+        }
+
+        .anime-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.8em;
+        }
+
+        .anime-type {
+            background: rgba(157, 181, 110, 0.2);
+            color: var(--primary-color);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            display: inline-block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid #333;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .alphabet-buttons {
+                gap: 0.4rem;
+            }
+
+            .letter-btn {
+                min-width: 38px;
+                height: 38px;
+                font-size: 0.9rem;
+            }
+
+            .anime-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .anime-poster {
+                height: 175px;
+            }
+        }
+    </style>
+</head>
+<body class="server-v5 home-with-sidebar">
+    <div class="home-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v5/home'">AnimMe V5</h1>
+                <button class="sidebar-close" id="menuCloseBtn">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <select id="serverSelect" class="server-select">
+                    <option value="v1">V1 - Otakudesu</option>
+                    <option value="v2">V2 - Samehadaku</option>
+                    <option value="v3">V3 - Kuramanime</option>
+                    <option value="v4">V4 - Anichin</option>
+                    <option value="v5" selected>V5 - Anoboy</option>
+                </select>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v5/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v5/latest" class="nav-link">🆕 Latest Release</a>
+                <a href="/v5/azlist" class="nav-link active">📚 Anime List A-Z</a>
+                <a href="/v5/search" class="nav-link">🔍 Cari Anime</a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title">AnimMe V5 - Anime List A-Z</div>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Cari anime..." class="search-input">
+                    <button onclick="searchAnime()" class="search-btn">Cari</button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div id="errorContainer" style="display: none;"></div>
+
+                <!-- Alphabet Filter -->
+                <div class="alphabet-filter">
+                    <div class="filter-title">Filter by Alphabet</div>
+                    <div class="alphabet-buttons" id="alphabetNav">
+                        <div class="loading">Loading filters...</div>
+                    </div>
+                </div>
+
+                <!-- Anime List -->
+                <div class="list-header">
+                    <h2 class="list-title" id="listTitle">Anime List - A</h2>
+                    <span class="list-count" id="animeCount">0</span>
+                </div>
+
+                <div class="anime-grid" id="animeGrid">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Memuat anime list...</p>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>AnimMe V5 - Powered by Anoboy</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v5/azlist.js?v=20251101"></script>
+</body>
+</html>

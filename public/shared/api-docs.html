@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe API Documentation</title>
+    <link rel="icon" href="data:," type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0f0f0f;
+            color: #e5e5e5;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
+            border-bottom: 3px solid #e50914;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            color: #e50914;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #999;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            background: #e50914;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 0 5px;
+        }
+        
+        .badge.v2 {
+            background: #0080ff;
+        }
+        
+        .section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #2a2a2a;
+        }
+        
+        h2 {
+            color: #e50914;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2a2a2a;
+        }
+        
+        h3 {
+            color: #fff;
+            font-size: 1.4rem;
+            margin: 25px 0 15px;
+        }
+        
+        .endpoint {
+            background: #222;
+            border-left: 4px solid #e50914;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+        
+        .endpoint.v2 {
+            border-left-color: #0080ff;
+        }
+        
+        .method {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #4CAF50;
+            color: #fff;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-right: 10px;
+        }
+        
+        .url {
+            font-family: 'Courier New', monospace;
+            color: #4fc3f7;
+            font-size: 1.1rem;
+        }
+        
+        .description {
+            margin: 15px 0;
+            color: #bbb;
+        }
+        
+        .params {
+            margin: 15px 0;
+        }
+        
+        .param-item {
+            background: #1a1a1a;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            border-left: 3px solid #666;
+        }
+        
+        .param-name {
+            font-family: 'Courier New', monospace;
+            color: #ffb74d;
+            font-weight: 600;
+        }
+        
+        .param-type {
+            color: #81c784;
+            font-style: italic;
+            margin-left: 10px;
+        }
+        
+        .param-required {
+            color: #f44336;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .param-optional {
+            color: #999;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        pre {
+            background: #0a0a0a;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border: 1px solid #333;
+            margin: 15px 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            color: #4fc3f7;
+            font-size: 0.95rem;
+        }
+        
+        .example {
+            margin: 20px 0;
+        }
+        
+        .example-title {
+            color: #ffb74d;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .response {
+            margin: 20px 0;
+        }
+        
+        .response-title {
+            color: #81c784;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .note {
+            background: rgba(255, 183, 77, 0.1);
+            border-left: 4px solid #ffb74d;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .note-title {
+            color: #ffb74d;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .warning {
+            background: rgba(244, 67, 54, 0.1);
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .warning-title {
+            color: #f44336;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .info {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .info-title {
+            color: #2196F3;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        
+        th {
+            background: #222;
+            color: #e50914;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background: #1f1f1f;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #e50914;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 10px 10px 10px 0;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #b8070f;
+        }
+        
+        .btn-secondary {
+            background: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #444;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            border-top: 1px solid #2a2a2a;
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+            
+            pre {
+                padding: 15px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎬 AnimMe API</h1>
+        <p class="subtitle">Public API untuk Streaming Anime Indonesia</p>
+        <div style="margin-top: 20px;">
+            <span class="badge">V1 - Otakudesu</span>
+            <span class="badge v2">V2 - Samehadaku</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Quick Start -->
+        <div class="section">
+            <h2>🚀 Quick Start</h2>
+            
+            <div class="info">
+                <div class="info-title">Base URL</div>
+                <code>http://localhost:5000</code>
+                <p style="margin-top: 10px; color: #999;">Ganti dengan domain Anda saat production</p>
+            </div>
+            
+            <h3>Test API (Copy & Run di Terminal)</h3>
+            <pre><code># V1 - Get Homepage
+curl "http://localhost:5000/api/homepage"
+
+# V2 - Get Homepage
+curl "http://localhost:5000/api/v2/homepage"
+
+# V1 - Search Anime
+curl "http://localhost:5000/api/search?q=naruto"
+
+# V2 - All Anime dengan Filter
+curl "http://localhost:5000/api/v2/all-anime?genre=action&page=1"</code></pre>
+        </div>
+
+        <!-- V1 API Endpoints -->
+        <div class="section">
+            <h2><span class="badge">V1</span> Otakudesu API Endpoints</h2>
+            
+            <!-- Homepage -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/homepage</span>
+                </div>
+                <p class="description">Mendapatkan anime yang sedang ongoing dari homepage Otakudesu</p>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/homepage</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": [
+    {
+      "title": "One Piece",
+      "slug": "one-piece-subtitle-indonesia",
+      "poster": "/img/...",
+      "episode": "Episode 1090",
+      "release_day": "Minggu",
+      "release_time": "09:30"
+    }
+  ]
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/search</span>
+                </div>
+                <p class="description">Mencari anime berdasarkan judul</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">q</span>
+                        <span class="param-type">string</span>
+                        <span class="param-required">required</span>
+                        <p style="margin-top: 5px; color: #999;">Kata kunci pencarian anime</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/search?q=naruto</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": [
+    {
+      "title": "Naruto Shippuden",
+      "slug": "naruto-shippuden-subtitle-indonesia",
+      "poster": "/img/...",
+      "genres": ["Action", "Adventure", "Shounen"]
+    }
+  ]
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Anime Detail -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/anime/:slug</span>
+                </div>
+                <p class="description">Mendapatkan detail lengkap anime</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">slug</span>
+                        <span class="param-type">string</span>
+                        <span class="param-required">required</span>
+                        <p style="margin-top: 5px; color: #999;">URL slug anime (dari search atau homepage)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/anime/one-piece-subtitle-indonesia</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": {
+    "title": "One Piece",
+    "japanese_title": "ワンピース",
+    "poster": "/img/...",
+    "synopsis": "...",
+    "genres": ["Action", "Adventure", "Comedy"],
+    "status": "Ongoing",
+    "rating": "8.5",
+    "studio": "Toei Animation",
+    "episode_count": "1090+",
+    "episodes": [
+      {
+        "episode_number": "1090",
+        "title": "...",
+        "release_date": "...",
+        "slug": "one-piece-episode-1090-subtitle-indonesia"
+      }
+    ]
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Episode -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/episode/:slug</span>
+                </div>
+                <p class="description">Mendapatkan link streaming dan download episode</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">slug</span>
+                        <span class="param-type">string</span>
+                        <span class="param-required">required</span>
+                        <p style="margin-top: 5px; color: #999;">URL slug episode</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/episode/one-piece-episode-1090-subtitle-indonesia</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": {
+    "title": "One Piece Episode 1090",
+    "anime_title": "One Piece",
+    "episode_number": "1090",
+    "streaming_servers": [
+      {
+        "name": "Desustream",
+        "url": "https://..."
+      }
+    ],
+    "download_links": {
+      "360p": [
+        {"provider": "Google Drive", "url": "https://..."}
+      ],
+      "480p": [...],
+      "720p": [...],
+      "1080p": [...]
+    },
+    "prev_episode": "...",
+    "next_episode": "..."
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Ongoing Anime -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/ongoing</span>
+                </div>
+                <p class="description">Mendapatkan list anime yang sedang ongoing dengan pagination</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <span class="param-optional">optional (default: 1)</span>
+                        <p style="margin-top: 5px; color: #999;">Nomor halaman</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/ongoing?page=1</code></pre>
+                </div>
+            </div>
+
+            <!-- Completed Anime -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/completed</span>
+                </div>
+                <p class="description">Mendapatkan list anime yang sudah tamat dengan pagination</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <span class="param-optional">optional (default: 1)</span>
+                        <p style="margin-top: 5px; color: #999;">Nomor halaman</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/completed?page=1</code></pre>
+                </div>
+            </div>
+
+            <!-- All Anime A-Z -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/all-anime</span>
+                </div>
+                <p class="description">Mendapatkan list semua anime diurutkan A-Z</p>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/all-anime</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": {
+    "A": [
+      {
+        "title": "Attack on Titan",
+        "slug": "attack-on-titan-subtitle-indonesia",
+        "genres": ["Action", "Drama"]
+      }
+    ],
+    "B": [...],
+    ...
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Schedule -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/schedule</span>
+                </div>
+                <p class="description">Mendapatkan jadwal rilis anime per hari</p>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/schedule</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": {
+    "Senin": [
+      {
+        "title": "One Piece",
+        "slug": "...",
+        "time": "09:30"
+      }
+    ],
+    "Selasa": [...],
+    ...
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Genres -->
+            <div class="endpoint">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/genres/:genre</span>
+                </div>
+                <p class="description">Mendapatkan anime berdasarkan genre dengan pagination</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">genre</span>
+                        <span class="param-type">string</span>
+                        <span class="param-required">required</span>
+                        <p style="margin-top: 5px; color: #999;">Nama genre (action, adventure, comedy, dll)</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <span class="param-optional">optional (default: 1)</span>
+                        <p style="margin-top: 5px; color: #999;">Nomor halaman</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/genres/action?page=1</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- V2 API Endpoints -->
+        <div class="section">
+            <h2><span class="badge v2">V2</span> Samehadaku API Endpoints</h2>
+            
+            <!-- Homepage V2 -->
+            <div class="endpoint v2">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/v2/homepage</span>
+                </div>
+                <p class="description">Mendapatkan anime terbaru dari homepage Samehadaku</p>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/v2/homepage</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": [
+    {
+      "title": "Jujutsu Kaisen Season 2",
+      "slug": "jujutsu-kaisen-season-2",
+      "poster": "/img/...",
+      "type": "TV",
+      "status": "Ongoing",
+      "rating": "8.5",
+      "episode": "Episode 24",
+      "genres": ["Action", "Supernatural"]
+    }
+  ]
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Anime Terbaru -->
+            <div class="endpoint v2">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/v2/anime-terbaru</span>
+                </div>
+                <p class="description">Mendapatkan list anime terbaru dengan pagination</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <span class="param-optional">optional (default: 1)</span>
+                        <p style="margin-top: 5px; color: #999;">Nomor halaman</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">pages_to_load</span>
+                        <span class="param-type">number</span>
+                        <span class="param-optional">optional (default: 1, max: 5)</span>
+                        <p style="margin-top: 5px; color: #999;">Jumlah halaman yang di-load sekaligus</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/v2/anime-terbaru?page=1&pages_to_load=2</code></pre>
+                </div>
+            </div>
+
+            <!-- All Anime V2 -->
+            <div class="endpoint v2">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/v2/all-anime</span>
+                </div>
+                <p class="description">Mendapatkan daftar semua anime dengan filter dan pagination</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">page</span>
+                        <span class="param-type">number</span>
+                        <span class="param-optional">optional (default: 1)</span>
+                        <p style="margin-top: 5px; color: #999;">Nomor halaman</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">title</span>
+                        <span class="param-type">string</span>
+                        <span class="param-optional">optional</span>
+                        <p style="margin-top: 5px; color: #999;">Cari berdasarkan judul</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">status</span>
+                        <span class="param-type">string</span>
+                        <span class="param-optional">optional</span>
+                        <p style="margin-top: 5px; color: #999;">Filter status: "Currently Airing" / "Finished Airing"</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">type</span>
+                        <span class="param-type">string</span>
+                        <span class="param-optional">optional</span>
+                        <p style="margin-top: 5px; color: #999;">Filter tipe: "TV" / "Movie" / "OVA" / "ONA" / "Special"</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">order</span>
+                        <span class="param-type">string</span>
+                        <span class="param-optional">optional</span>
+                        <p style="margin-top: 5px; color: #999;">Urutan: "title" / "latest" / "popular" / "rating"</p>
+                    </div>
+                    <div class="param-item">
+                        <span class="param-name">genre</span>
+                        <span class="param-type">string[]</span>
+                        <span class="param-optional">optional (multiple allowed)</span>
+                        <p style="margin-top: 5px; color: #999;">Filter genre (bisa lebih dari 1)</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Requests:</div>
+                    <pre><code># Basic
+GET /api/v2/all-anime?page=1
+
+# Dengan Filter
+GET /api/v2/all-anime?type=TV&status=Currently%20Airing&order=popular
+
+# Multi Genre
+GET /api/v2/all-anime?genre=action&genre=fantasy&page=1
+
+# Kombinasi
+GET /api/v2/all-anime?title=naruto&type=TV&genre=action&order=rating</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": {
+    "animeData": [
+      {
+        "title": "Jujutsu Kaisen",
+        "slug": "jujutsu-kaisen",
+        "poster": "/img/...",
+        "type": "TV",
+        "status": "Ongoing",
+        "rating": "8.73",
+        "synopsis": "...",
+        "genres": ["Action", "Supernatural"]
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 22,
+      "has_next_page": true,
+      "has_previous_page": false,
+      "next_page": 2,
+      "previous_page": 0
+    },
+    "filters": {
+      "status_options": [...],
+      "type_options": [...],
+      "order_options": [...],
+      "genre_options": [...]
+    },
+    "currentFilters": {
+      "title": "",
+      "status": "",
+      "type": "TV",
+      "order": "popular",
+      "genre": ["action"]
+    },
+    "total_results": 30
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Anime Detail V2 -->
+            <div class="endpoint v2">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/v2/anime/:slug</span>
+                </div>
+                <p class="description">Mendapatkan detail lengkap anime dari Samehadaku</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">slug</span>
+                        <span class="param-type">string</span>
+                        <span class="param-required">required</span>
+                        <p style="margin-top: 5px; color: #999;">URL slug anime</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/v2/anime/boruto-naruto-next-generations</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": {
+    "title": "Boruto: Naruto Next Generations",
+    "japanese_title": "BORUTO -ボルト- NARUTO NEXT GENERATIONS",
+    "poster": "/img/...",
+    "synopsis": "...",
+    "genres": ["Action", "Adventure", "Martial Arts"],
+    "type": "TV",
+    "status": "Ongoing",
+    "episode_count": "293",
+    "release_date": "Apr 5, 2017",
+    "studio": "Pierrot",
+    "duration": "24 min per ep",
+    "score": "5.85",
+    "rating": "PG-13",
+    "produser": "TV Tokyo, Shueisha",
+    "episodes": [
+      {
+        "episode_number": "293",
+        "title": "...",
+        "slug": "boruto-naruto-next-generations-episode-293"
+      }
+    ],
+    "batch_downloads": [...]
+  }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Episode V2 -->
+            <div class="endpoint v2">
+                <div>
+                    <span class="method">GET</span>
+                    <span class="url">/api/v2/episode/:slug</span>
+                </div>
+                <p class="description">Mendapatkan link streaming dan download episode dari Samehadaku</p>
+                
+                <div class="params">
+                    <div class="param-item">
+                        <span class="param-name">slug</span>
+                        <span class="param-type">string</span>
+                        <span class="param-required">required</span>
+                        <p style="margin-top: 5px; color: #999;">URL slug episode</p>
+                    </div>
+                </div>
+                
+                <div class="example">
+                    <div class="example-title">Example Request:</div>
+                    <pre><code>GET /api/v2/episode/boruto-naruto-next-generations-episode-293</code></pre>
+                </div>
+                
+                <div class="response">
+                    <div class="response-title">Response:</div>
+                    <pre><code>{
+  "status": "success",
+  "data": {
+    "title": "Boruto: Naruto Next Generations Episode 293",
+    "anime_title": "Boruto: Naruto Next Generations",
+    "anime_slug": "boruto-naruto-next-generations",
+    "episode_number": "293",
+    "streaming_servers": [
+      {
+        "name": "Acefile",
+        "url": "https://..."
+      },
+      {
+        "name": "Archive",
+        "url": "https://..."
+      }
+    ],
+    "download_links": {
+      "mkv_360p": [...],
+      "mkv_480p": [...],
+      "mkv_720p": [...],
+      "mkv_1080p": [...],
+      "mp4_360p": [...],
+      "mp4_480p": [...],
+      "mp4_720p": [...]
+    },
+    "prev_episode": {
+      "episode_number": "292",
+      "slug": "..."
+    },
+    "next_episode": {
+      "episode_number": "294",
+      "slug": "..."
+    }
+  }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rate Limiting & Best Practices -->
+        <div class="section">
+            <h2>📋 Best Practices & Notes</h2>
+            
+            <div class="warning">
+                <div class="warning-title">⚠️ Rate Limiting</div>
+                <p>Saat ini belum ada rate limiting, namun diharapkan tidak spam request. Best practice:</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Maksimal 60 requests per menit per IP</li>
+                    <li>Gunakan cache untuk data yang jarang berubah</li>
+                    <li>Batch requests jika memungkinkan</li>
+                </ul>
+            </div>
+            
+            <div class="note">
+                <div class="note-title">💡 Caching</div>
+                <p>Server memiliki built-in image caching. Image proxy tersedia di:</p>
+                <pre style="margin-top: 10px;"><code>GET /img/:hash.:ext</code></pre>
+                <p style="margin-top: 10px;">Hash di-generate otomatis oleh server. Gunakan URL image dari response API.</p>
+            </div>
+            
+            <div class="note">
+                <div class="note-title">🔄 CORS</div>
+                <p>API sudah enabled CORS untuk semua origin (*). Bisa diakses dari:</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Browser (fetch/axios)</li>
+                    <li>Mobile apps</li>
+                    <li>Desktop applications</li>
+                    <li>Other servers</li>
+                </ul>
+            </div>
+            
+            <div class="info">
+                <div class="info-title">📡 Response Format</div>
+                <p>Semua response mengikuti format standar:</p>
+                <pre style="margin-top: 10px;"><code>{
+  "status": "success" | "error",
+  "data": {...} | null,
+  "message": "Error message if status is error"
+}</code></pre>
+            </div>
+            
+            <div class="info">
+                <div class="info-title">🌐 HTTPS Support</div>
+                <p>Untuk production, disarankan:</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>Deploy dengan HTTPS (Let's Encrypt)</li>
+                    <li>Gunakan reverse proxy (Nginx/Caddy)</li>
+                    <li>Set proper CORS origin restrictions</li>
+                    <li>Add rate limiting middleware</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Code Examples -->
+        <div class="section">
+            <h2>💻 Code Examples</h2>
+            
+            <h3>JavaScript (Fetch API)</h3>
+            <pre><code>// Get Homepage V2
+fetch('http://localhost:5000/api/v2/homepage')
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'success') {
+      console.log('Anime:', data.data);
+    }
+  })
+  .catch(err => console.error('Error:', err));
+
+// Search with filters
+async function searchAnime() {
+  const params = new URLSearchParams({
+    genre: 'action',
+    type: 'TV',
+    order: 'popular',
+    page: 1
+  });
+  
+  const response = await fetch(`http://localhost:5000/api/v2/all-anime?${params}`);
+  const data = await response.json();
+  return data.data;
+}</code></pre>
+
+            <h3>Python (Requests)</h3>
+            <pre><code>import requests
+
+# Get Homepage
+response = requests.get('http://localhost:5000/api/v2/homepage')
+data = response.json()
+
+if data['status'] == 'success':
+    for anime in data['data']:
+        print(f"{anime['title']} - {anime['episode']}")
+
+# Search with filters
+params = {
+    'genre': 'action',
+    'type': 'TV',
+    'order': 'popular',
+    'page': 1
+}
+
+response = requests.get('http://localhost:5000/api/v2/all-anime', params=params)
+anime_list = response.json()['data']['animeData']</code></pre>
+
+            <h3>cURL</h3>
+            <pre><code># Simple GET
+curl "http://localhost:5000/api/v2/homepage"
+
+# With query parameters
+curl "http://localhost:5000/api/v2/all-anime?genre=action&type=TV&page=1"
+
+# Save to file
+curl "http://localhost:5000/api/v2/anime-terbaru?page=1" -o anime.json
+
+# With headers
+curl -H "Accept: application/json" "http://localhost:5000/api/v2/homepage"</code></pre>
+
+            <h3>Node.js (Axios)</h3>
+            <pre><code>const axios = require('axios');
+
+// Get anime detail
+async function getAnimeDetail(slug) {
+  try {
+    const response = await axios.get(`http://localhost:5000/api/v2/anime/${slug}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error:', error.message);
+    return null;
+  }
+}
+
+// Get with multiple genres
+async function getAnimeByGenres(genres) {
+  const params = new URLSearchParams();
+  genres.forEach(genre => params.append('genre', genre));
+  
+  const response = await axios.get('http://localhost:5000/api/v2/all-anime', { params });
+  return response.data.data.animeData;
+}
+
+// Usage
+getAnimeByGenres(['action', 'fantasy']).then(anime => console.log(anime));</code></pre>
+        </div>
+
+        <!-- Error Handling -->
+        <div class="section">
+            <h2>⚠️ Error Handling</h2>
+            
+            <h3>HTTP Status Codes</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status Code</th>
+                        <th>Meaning</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>200</code></td>
+                        <td>Success</td>
+                        <td>Request berhasil, data tersedia</td>
+                    </tr>
+                    <tr>
+                        <td><code>400</code></td>
+                        <td>Bad Request</td>
+                        <td>Parameter tidak valid, check query params</td>
+                    </tr>
+                    <tr>
+                        <td><code>404</code></td>
+                        <td>Not Found</td>
+                        <td>Anime/Episode tidak ditemukan</td>
+                    </tr>
+                    <tr>
+                        <td><code>500</code></td>
+                        <td>Internal Server Error</td>
+                        <td>Error scraping, retry setelah beberapa saat</td>
+                    </tr>
+                    <tr>
+                        <td><code>503</code></td>
+                        <td>Service Unavailable</td>
+                        <td>Source website down, tunggu beberapa menit</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3>Error Response Format</h3>
+            <pre><code>{
+  "status": "error",
+  "message": "Anime not found",
+  "data": null
+}</code></pre>
+            
+            <h3>Common Errors</h3>
+            <div class="param-item">
+                <strong>Anime/Episode Not Found</strong>
+                <p style="margin-top: 5px;">Check slug, pastikan format benar dan anime masih tersedia</p>
+            </div>
+            <div class="param-item">
+                <strong>Timeout Error</strong>
+                <p style="margin-top: 5px;">Source website lambat, retry dengan backoff</p>
+            </div>
+            <div class="param-item">
+                <strong>Scraping Failed</strong>
+                <p style="margin-top: 5px;">HTML structure berubah atau website maintenance</p>
+            </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="section">
+            <h2>🔗 Quick Links</h2>
+            <a href="/" class="btn">Homepage</a>
+            <a href="/all-anime" class="btn">Daftar Anime</a>
+            <a href="/anime-terbaru" class="btn">Anime Terbaru</a>
+            <a href="/test-grid.html" class="btn btn-secondary">Test Grid</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 AnimMe API. Built with Node.js, Express, and Cheerio.</p>
+        <p style="margin-top: 10px; color: #999;">Data scraped from Otakudesu and Samehadaku. For educational purposes only.</p>
+    </footer>
+
+    <script>
+        console.log('%c🎬 AnimMe API Documentation', 'color: #e50914; font-size: 24px; font-weight: bold;');
+        console.log('%cBase URL: http://localhost:5000', 'color: #4fc3f7; font-size: 14px;');
+        console.log('%cAPI V1: /api/*', 'color: #e50914; font-size: 14px;');
+        console.log('%cAPI V2: /api/v2/*', 'color: #0080ff; font-size: 14px;');
+    </script>
+</body>
+</html>

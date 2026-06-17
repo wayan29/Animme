@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Negara - AnimMe V3</title>
+    <style>
+        :root {
+            --bg-main: linear-gradient(180deg, #181818 0%, #141414 100%);
+            --bg-card: rgba(24, 24, 24, 0.85);
+            --bg-panel: rgba(24, 24, 24, 0.6);
+            --text-primary: #e5e5e5;
+            --text-muted: #b3b3b3;
+            --accent: #e50914;
+            --accent-soft: rgba(229, 9, 20, 0.2);
+            --accent-strong: rgba(229, 9, 20, 0.35);
+            --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-accent: 0 8px 24px rgba(229, 9, 20, 0.35);
+            --border-soft: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 12% 20%, rgba(229, 9, 20, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 88% 12%, rgba(229, 9, 20, 0.12) 0%, transparent 50%),
+                var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: var(--bg-card);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            text-shadow: 0 0 18px rgba(229, 9, 20, 0.35);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        #headerStats {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .back-btn:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent-strong);
+            color: var(--accent);
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-accent);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .pulse {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.2);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* Country Grid - Netflix Style with 6 items per row on desktop */
+        .country-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .country-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 22px 16px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .country-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-accent);
+            border-color: var(--accent-strong);
+            background: var(--accent-soft);
+        }
+
+        .country-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .country-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .country-icon {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "Twemoji Mozilla", "Android Emoji", "EmojiSymbols", "EmojiOne Mozilla", "Segoe UI", "Noto Emoji", sans-serif;
+        }
+
+        .country-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Grid adjustments for different screen sizes */
+        @media (max-width: 1200px) {
+            .country-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .country-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .country-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .country-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .country-icon {
+                font-size: 2.8rem;
+                font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "Twemoji Mozilla", "Android Emoji", "EmojiSymbols", "EmojiOne Mozilla", "Segoe UI", "Noto Emoji", sans-serif;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .country-card {
+                padding: 18px 12px;
+            }
+
+            .country-icon {
+                font-size: 2.5rem;
+                font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", "Twemoji Mozilla", "Android Emoji", "EmojiSymbols", "EmojiOne Mozilla", "Segoe UI", "Noto Emoji", sans-serif;
+            }
+        }
+
+        .country-flag-img {
+            width: 64px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo" onclick="window.location.href='/v3/home'">🎌 AnimMe V3</div>
+            <div class="nav-links">
+                <a href="/v3/home">Beranda</a>
+                <a href="/v3/ongoing">Sedang Tayang</a>
+                <a href="/v3/finished">Selesai Tayang</a>
+                <a href="/v3/movie">Film</a>
+                <a href="/v3/search">Cari</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="/v3/properties" class="back-btn">← Kembali ke Properti</a>
+
+        <div class="header">
+            <h1>🏴 Daftar Negara Anime</h1>
+            <p>Jelajahi anime berdasarkan negara</p>
+            <p id="headerStats"></p>
+        </div>
+
+        <div id="loadingIndicator" class="loading" style="display: block;">
+            <div class="pulse"></div>
+            <p>⏳ Memuat daftar country...</p>
+        </div>
+
+        <div id="countryGrid" class="country-grid" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function loadCountries() {
+            try {
+                const response = await fetch('/api/v3/kuramanime/countries');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    displayCountries(data.data);
+                } else {
+                    throw new Error(data.message || 'Failed to load countries');
+                }
+
+                document.getElementById('loadingIndicator').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading countries:', error);
+                document.getElementById('loadingIndicator').innerHTML =
+                    '<div class="pulse"></div><p>❌ Gagal memuat country. Silakan refresh halaman.</p>';
+            }
+        }
+
+        function displayCountries(data) {
+            const grid = document.getElementById('countryGrid');
+            const countries = data.countries || [];
+
+            // Sort countries alphabetically
+            const sortedCountries = countries.sort((a, b) => a.name.localeCompare(b.name));
+
+            if (sortedCountries.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; color:var(--text-muted); grid-column: 1 / -1;">Tidak ada negara tersedia</p>';
+                grid.style.display = 'grid';
+                return;
+            }
+
+            // Define flag codes for different countries
+            const countryCodes = {
+                'jp': 'jp', 'japan': 'jp', 'jepang': 'jp',
+                'cn': 'cn', 'china': 'cn', 'chainsa': 'cn',
+                'kr': 'kr', 'korea': 'kr', 'korea selatan': 'kr',
+                'us': 'us', 'amerika': 'us', 'united states': 'us',
+                'ph': 'ph', 'filipina': 'ph', 'philippines': 'ph',
+                'id': 'id', 'indonesia': 'id',
+                'my': 'my', 'malaysia': 'my',
+                'sg': 'sg', 'singapore': 'sg',
+                'th': 'th', 'thailand': 'th',
+                'vn': 'vn', 'vietnam': 'vn',
+                'in': 'in', 'india': 'in',
+                'uk': 'gb', 'united kingdom': 'gb',
+                'fr': 'fr', 'france': 'fr',
+                'de': 'de', 'germany': 'de',
+                'it': 'it', 'italy': 'it',
+                'es': 'es', 'spain': 'es',
+                'ca': 'ca', 'canada': 'ca',
+                'au': 'au', 'australia': 'au',
+                'br': 'br', 'brazil': 'br',
+                'mx': 'mx', 'mexico': 'mx',
+                'ar': 'ar', 'argentina': 'ar',
+                'ru': 'ru', 'russia': 'ru',
+                'ua': 'ua', 'ukraine': 'ua',
+                'eg': 'eg', 'egypt': 'eg',
+                'za': 'za', 'south africa': 'za',
+                'ng': 'ng', 'nigeria': 'ng',
+                'ke': 'ke', 'kenya': 'ke',
+                'tr': 'tr', 'turkey': 'tr',
+                'gr': 'gr', 'greece': 'gr',
+                'pl': 'pl', 'poland': 'pl',
+                'nl': 'nl', 'netherlands': 'nl',
+                'be': 'be', 'belgium': 'be',
+                'se': 'se', 'sweden': 'se',
+                'no': 'no', 'norway': 'no',
+                'dk': 'dk', 'denmark': 'dk',
+                'fi': 'fi', 'finland': 'fi',
+                'ch': 'ch', 'switzerland': 'ch',
+                'at': 'at', 'austria': 'at',
+                'cz': 'cz', 'czech': 'cz',
+                'hu': 'hu', 'hungary': 'hu',
+                'ro': 'ro', 'romania': 'ro',
+                'bg': 'bg', 'bulgaria': 'bg',
+                'pt': 'pt', 'portugal': 'pt',
+                'ie': 'ie', 'ireland': 'ie',
+                'nz': 'nz', 'new zealand': 'nz',
+                'il': 'il', 'israel': 'il',
+                'sa': 'sa', 'saudi arabia': 'sa',
+                'ae': 'ae', 'uae': 'ae', 'united arab emirates': 'ae',
+                'ir': 'ir', 'iran': 'ir',
+                'iq': 'iq', 'iraq': 'iq',
+                'pk': 'pk', 'pakistan': 'pk',
+                'bd': 'bd', 'bangladesh': 'bd',
+                'lk': 'lk', 'sri lanka': 'lk',
+                'mm': 'mm', 'myanmar': 'mm',
+                'kh': 'kh', 'cambodia': 'kh',
+                'la': 'la', 'laos': 'la'
+            };
+
+            grid.innerHTML = sortedCountries.map(country => {
+                // Normalize country name for flag lookup
+                const countryLower = country.name.toLowerCase();
+                const countrySlug = country.slug.toLowerCase();
+
+                // Try multiple approaches to find matching flag code
+                let flagCode = null;
+                for (const [key, value] of Object.entries(countryCodes)) {
+                    if (countryLower === key || countrySlug === key ||
+                        countryLower.includes(key) || key.includes(countryLower)) {
+                        flagCode = value;
+                        break;
+                    }
+                }
+
+                let flagHtml;
+                if (flagCode) {
+                    flagHtml = `<img src="https://flagcdn.com/w80/${flagCode}.png" 
+                                     srcset="https://flagcdn.com/w160/${flagCode}.png 2x" 
+                                     width="64" 
+                                     height="48" 
+                                     alt="${country.name}" 
+                                     class="country-flag-img"
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.parentNode.innerHTML='🌏'">`;
+                } else {
+                    flagHtml = '🌏';
+                }
+
+                return `
+                    <a href="/v3/country?country=${country.slug}" class="country-card">
+                        <div class="country-icon">${flagHtml}</div>
+                        <div class="country-name">${country.name}</div>
+                    </a>
+                `;
+            }).join('');
+
+            grid.style.display = 'grid';
+
+            document.getElementById('headerStats').textContent =
+                `📊 Total: ${sortedCountries.length} negara tersedia`;
+        }
+
+        // Load countries on page load
+        loadCountries();
+    </script>
+</body>
+
+</html>

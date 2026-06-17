@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Properti Anime - Kuramanime V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #141414;
+            color: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: #0f0f0f;
+            border-radius: 15px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.35);
+            border: 1px solid #262626;
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #e50914;
+            cursor: pointer;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: inline-block;
+            color: #b3b3b3;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 0;
+            transition: color 0.3s;
+        }
+
+        .nav-link.active {
+            color: #e50914;
+            border-bottom: 2px solid #e50914;
+        }
+
+        .nav-link:hover {
+            color: #e50914;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            background: #1f1f1f;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.45);
+            border: 1px solid #262626;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e50914;
+        }
+
+        .header p {
+            color: #b3b3b3;
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px;
+            font-size: 1.5rem;
+            color: #e50914;
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .property-card {
+            background: #1c1c1c;
+            border-radius: 20px;
+            padding: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            border: 1px solid #262626;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            cursor: pointer;
+        }
+
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 35px rgba(0, 0, 0, 0.65);
+            border-color: #e50914;
+        }
+
+        .property-header {
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.3) 0%, rgba(26, 26, 26, 0.9) 100%);
+            text-align: center;
+        }
+
+        .property-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .property-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .property-count {
+            font-size: 1.1rem;
+            color: #d1d1d1;
+        }
+
+        .property-body {
+            padding: 25px;
+        }
+
+        .property-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .preview-tag {
+            background: #2c2c2c;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            color: #d1d1d1;
+        }
+
+        .property-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .property-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 22px rgba(229, 9, 20, 0.4);
+        }
+
+        .error {
+            text-align: center;
+            padding: 60px;
+            background: rgba(229, 9, 20, 0.08);
+            border-radius: 15px;
+            margin-top: 30px;
+            border: 1px solid rgba(229, 9, 20, 0.35);
+        }
+
+        .error h2 {
+            color: #ff4040;
+            margin-bottom: 15px;
+        }
+
+        .property-selector {
+            background: #1a1a1a;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid #262626;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+        }
+
+        .property-selector form {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .property-selector p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #f5f5f5;
+            margin: 0;
+        }
+
+        .property-selector select {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 20px;
+            background: #0f0f0f;
+            border: 1px solid #333333;
+            border-radius: 10px;
+            color: #f5f5f5;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .property-selector select:hover {
+            border-color: #e50914;
+            box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
+        }
+
+        .property-selector select:focus {
+            outline: none;
+            border-color: #e50914;
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+        }
+
+        .property-selector select option {
+            background: #141414;
+            color: #f5f5f5;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-content">
+            <div class="logo" onclick="window.location.href='/v3/home'">Kuramanime V3</div>
+            <div class="nav-links">
+                <a href="/v3/home" class="nav-link">Beranda</a>
+                <a href="/v3/properties" class="nav-link active">Properti</a>
+                <a href="/v3/search" class="nav-link">Cari</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>📚 Daftar Properti Anime</h1>
+            <p>Temukan anime berdasarkan Genre, Musim, Studio, atau Tipe yang kamu inginkan</p>
+        </div>
+
+        <div class="property-selector">
+            <form id="chooseGenreEtcForm" onsubmit="event.preventDefault();">
+                <p>Properti:</p>
+                <select id="chooseGenreEtc" name="genre_etc">
+                    <option value="" disabled selected>- pilih -</option>
+                    <option value="/v3/genres" title="Semua Genre">Daftar Genre</option>
+                    <option value="/v3/seasons" title="Musim">Daftar Musim</option>
+                    <option value="/v3/studios" title="Studio">Daftar Studio</option>
+                    <option value="/v3/types" title="Tipe">Daftar Tipe</option>
+                    <option value="/v3/qualities" title="Kualitas">Daftar Kualitas</option>
+                    <option value="/v3/sources" title="Adaptasi">Daftar Adaptasi</option>
+                    <option value="/v3/countries" title="Negara">Daftar Negara</option>
+                </select>
+            </form>
+        </div>
+
+        <div id="content">
+            <div class="loading">Memuat data properti...</div>
+        </div>
+    </div>
+
+    <script>
+        async function loadProperties() {
+            try {
+                const response = await fetch('/api/v3/kuramanime/properties');
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    displayProperties(result.data);
+                } else {
+                    showError('Gagal memuat data properti');
+                }
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                showError('Terjadi kesalahan saat memuat data');
+            }
+        }
+
+        function displayProperties(data) {
+            const content = document.getElementById('content');
+            
+            const propertyData = [
+                {
+                    icon: '🎭',
+                    title: 'Genre',
+                    count: data.genres.total,
+                    preview: data.genres.genres.slice(0, 6).map(g => g.name),
+                    url: '/v3/genres',
+                    gradient: 'linear-gradient(135deg, #e50914 0%, #b20710 100%)'
+                },
+                {
+                    icon: '📅',
+                    title: 'Musim',
+                    count: data.seasons.total,
+                    preview: data.seasons.seasons.slice(0, 6).map(s => s.name),
+                    url: '/v3/seasons',
+                    gradient: 'linear-gradient(135deg, #b20710 0%, #7a0910 100%)'
+                },
+                {
+                    icon: '🏢',
+                    title: 'Studio',
+                    count: data.studios.total,
+                    preview: data.studios.studios.slice(0, 6).map(s => s.name),
+                    url: '/v3/studios',
+                    gradient: 'linear-gradient(135deg, #e50914 0%, #66100f 100%)'
+                },
+                {
+                    icon: '📺',
+                    title: 'Tipe',
+                    count: data.types.total,
+                    preview: data.types.types.slice(0, 6).map(t => t.name),
+                    url: '/v3/types',
+                    gradient: 'linear-gradient(135deg, #ff3b3b 0%, #b20710 100%)'
+                },
+                {
+                    icon: '🎬',
+                    title: 'Kualitas',
+                    count: data.qualities ? data.qualities.total : 0,
+                    preview: data.qualities ? data.qualities.qualities.slice(0, 6).map(q => q.name) : [],
+                    url: '/v3/qualities',
+                    gradient: 'linear-gradient(135deg, #7a0910 0%, #3a0b0b 100%)'
+                },
+                {
+                    icon: '📖',
+                    title: 'Adaptasi',
+                    count: data.sources ? data.sources.total : 0,
+                    preview: data.sources ? data.sources.sources.slice(0, 6).map(s => s.name) : [],
+                    url: '/v3/sources',
+                    gradient: 'linear-gradient(135deg, #e50914 0%, #400708 100%)'
+                },
+                {
+                    icon: '🌏',
+                    title: 'Negara',
+                    count: data.countries ? data.countries.total : 0,
+                    preview: data.countries ? data.countries.countries.slice(0, 6).map(c => c.name) : [],
+                    url: '/v3/countries',
+                    gradient: 'linear-gradient(135deg, #ff3b3b 0%, #3a0b0b 100%)'
+                }
+            ];
+
+            content.innerHTML = `
+                <div class="properties-grid">
+                    ${propertyData.map(prop => `
+                        <div class="property-card" onclick="window.location.href='${prop.url}'">
+                            <div class="property-header">
+                                <div class="property-icon">${prop.icon}</div>
+                                <div class="property-title">${prop.title}</div>
+                                <div class="property-count">${prop.count} ${prop.title}</div>
+                            </div>
+                            <div class="property-body">
+                                <div class="property-preview">
+                                    ${prop.preview.map(item => `
+                                        <span class="preview-tag">${item}</span>
+                                    `).join('')}
+                                </div>
+                                <button class="property-btn" style="background: ${prop.gradient}">
+                                    Lihat Semua ${prop.title}
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            const content = document.getElementById('content');
+            content.innerHTML = `
+                <div class="error">
+                    <h2>❌ ${message}</h2>
+                    <p>Silakan coba lagi nanti atau kembali ke <a href="/v3/home" style="color: #e50914;">beranda</a>.</p>
+                </div>
+            `;
+        }
+
+        // Load properties on page load
+        loadProperties();
+
+        // Handle dropdown change
+        document.getElementById('chooseGenreEtc').addEventListener('change', function() {
+            const selectedUrl = this.value;
+            if (selectedUrl) {
+                window.location.href = selectedUrl;
+            }
+        });
+    </script>
+</body>
+</html>

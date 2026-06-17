@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Anime - AnimMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .detail-container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 0 4%;
+        }
+        
+        .detail-header {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .detail-poster {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            /* Improve image rendering quality */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            /* Prevent stretching */
+            object-fit: cover;
+            max-width: 220px;
+        }
+        
+        .detail-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .detail-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            background-color: #222;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .meta-label {
+            color: #999;
+            margin-right: 5px;
+        }
+        
+        .detail-synopsis {
+            line-height: 1.8;
+            margin-bottom: 30px;
+            color: #ddd;
+        }
+        
+        .genre-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        
+        .genre-tag {
+            background-color: #e50914;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .genre-tag:hover {
+            background-color: #ff0a16;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(229, 9, 20, 0.4);
+        }
+        
+        .episode-section {
+            margin-top: 40px;
+        }
+        
+        .episode-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .episode-btn {
+            background-color: #222;
+            color: #fff;
+            border: 2px solid rgba(255,255,255,0.08);
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+        }
+        
+        .episode-btn:hover {
+            background-color: #e50914;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(229, 9, 20, 0.35);
+        }
+        
+        .episode-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 12px rgba(229, 9, 20, 0.25);
+        }
+        
+        /* Tab navigation styling */
+        .tabs-container {
+            margin-top: 40px;
+        }
+        
+        .tabs-header {
+            display: flex;
+            border-bottom: 2px solid #333;
+            margin-bottom: 25px;
+        }
+        
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #999;
+            cursor: pointer;
+            font-size: 0.95rem;
+            padding: 12px 20px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .tab-btn.active {
+            color: #e50914;
+            border-bottom-color: #e50914;
+        }
+        
+        .tab-content {
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Batch download styling */
+        .batch-info {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .batch-quality-section {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .batch-quality-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #333;
+        }
+        
+        .quality-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e50914;
+        }
+        
+        .quality-size {
+            color: #999;
+            font-size: 0.95rem;
+        }
+        
+        .batch-download-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .batch-link-btn {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .batch-link-btn:hover {
+            background-color: #e50914;
+            border-color: #e50914;
+            transform: translateY(-2px);
+        }
+        
+        /* Recommendation Section */
+        .recommendation-section {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 2px solid #333;
+        }
+        
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .recommendation-card {
+            cursor: pointer;
+            transition: transform 0.3s;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #1a1a1a;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(229, 9, 20, 0.3);
+        }
+
+        .recommendation-poster {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            /* Improve image rendering quality */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+        
+        .recommendation-info {
+            padding: 12px;
+        }
+        
+        .recommendation-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #fff;
+        }
+        
+        .recommendation-meta {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Tablet view - medium size poster */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .detail-header {
+                grid-template-columns: 200px 1fr;
+            }
+
+            .detail-poster {
+                max-width: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .detail-header {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-poster {
+                max-width: 100%;
+                width: 100%;
+                /* Mobile: use auto rendering for better quality */
+                image-rendering: auto;
+            }
+
+            .detail-info h1 {
+                font-size: 1.8rem;
+            }
+
+            .tabs-header {
+                overflow-x: auto;
+            }
+
+            .tab-btn {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .recommendation-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .recommendation-poster {
+                height: 200px;
+            }
+        }
+    </style>
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .batch-link-btn {
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.ime;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .batch-link-btn:hover {
+            background-color: #e50914;
+            border-color: #e50914;
+            transform: translateY(-2px);
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover {
+            background: #555;
+            transform: translateY(-2px);
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v2/home'">AnimMe</h1>
+            <div class="server-selector">
+                <select id="serverSelect" class="server-select">
+                    <option value="v1">V1 - Otakudesu</option>
+                    <option value="v2" selected>V2 - Samehadaku</option>
+                </select>
+            </div>
+            <div class="nav-menu">
+                <a href="/v2/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link v1-only">Anime Ongoing</a>
+                <a href="/completed" class="nav-link v1-only">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link">Daftar Anime</a>
+                <a href="/genres" class="nav-link v1-only">Genre</a>
+                <a href="/schedule" class="nav-link v1-only">Jadwal Rilis</a>
+                <a href="/anime-terbaru" class="nav-link v2-only">Anime Terbaru</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="detail-container">
+        <a href="/v2/home" class="back-btn">← Kembali</a>
+        
+        <div id="detailContent">
+            <div class="loading">Memuat detail anime...</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+    </footer>
+
+    <script>
+        // Initialize server selection for V2 page
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentServer = 'v2';
+            localStorage.setItem('selectedServer', currentServer);
+            document.body.classList.add('server-v2');
+            
+            const serverSelect = document.getElementById('serverSelect');
+            if (serverSelect) {
+                serverSelect.value = 'v2';
+                serverSelect.addEventListener('change', (e) => {
+                    const targetServer = e.target.value;
+                    localStorage.setItem('selectedServer', targetServer);
+                    if (targetServer === 'v2') {
+                        window.location.href = '/v2/home';
+                    } else if (targetServer === 'v3') {
+                        window.location.href = '/v3/home';
+                    } else {
+                        window.location.href = '/v1/home';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="/v2/detail.js"></script>
+</body>
+</html>

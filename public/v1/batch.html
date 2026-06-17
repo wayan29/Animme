@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch Download - AnimMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .batch-container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 0 4%;
+        }
+        
+        .anime-header {
+            display: flex;
+            gap: 30px;
+            background-color: #222;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .anime-poster {
+            flex-shrink: 0;
+        }
+        
+        .anime-poster img {
+            width: 200px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+        }
+        
+        .anime-details {
+            flex: 1;
+        }
+        
+        .anime-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #e50914;
+        }
+        
+        .anime-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #999;
+        }
+        
+        .info-value {
+            color: #fff;
+        }
+        
+        .genre-tags {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        
+        .genre-tag {
+            padding: 5px 12px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .genre-tag:hover {
+            background-color: #e50914;
+        }
+        
+        .synopsis {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #444;
+            color: #ccc;
+            line-height: 1.6;
+        }
+        
+        .download-section {
+            background-color: #222;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #e50914;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-list {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .download-item {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 6px;
+        }
+        
+        .download-quality {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #e50914;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .download-size {
+            font-size: 0.9rem;
+            color: #999;
+        }
+        
+        .download-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .download-btn {
+            padding: 10px 20px;
+            background-color: #555;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .download-btn:hover {
+            background-color: #e50914;
+            border-color: #e50914;
+            transform: translateY(-2px);
+        }
+        
+        .total-episodes {
+            background-color: #333;
+            padding: 15px 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .total-episodes strong {
+            color: #e50914;
+            font-size: 1.3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .anime-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .anime-poster img {
+                width: 150px;
+            }
+            
+            .anime-title {
+                font-size: 1.5rem;
+            }
+            
+            .anime-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v1/home'">AnimMe</h1>
+            <div class="nav-menu">
+                <a href="/v1/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link">Anime Ongoing</a>
+                <a href="/completed" class="nav-link">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link">Semua Anime</a>
+                <a href="/genres" class="nav-link">Genre</a>
+                <a href="/schedule" class="nav-link">Jadwal Rilis</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="batch-container">
+        <a href="javascript:history.back()" class="back-btn">← Kembali</a>
+        
+        <div id="batchContent">
+            <div class="loading">Memuat data batch...</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+
+    </footer>
+
+    <script src="/v1/batch.js"></script>
+</body>
+</html>

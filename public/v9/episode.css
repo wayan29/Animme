@@ -1,0 +1,515 @@
+/* V9 Episode Page Styles - Based on V1 Player Design */
+
+/* Episode Container */
+.episode-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 0 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card-surface {
+    background: #161616;
+    border: 1px solid #202020;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    padding: 20px 24px;
+}
+
+.page-header-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.page-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.title-stack h1 {
+    font-size: 1.9rem;
+    margin: 2px 0 6px;
+    color: #fff;
+    font-weight: 700;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.8rem;
+    color: #d44d54;
+    margin: 0;
+}
+
+.muted {
+    color: #a6a6a6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #e6e6e6;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pill.accent {
+    background: rgba(229, 9, 20, 0.15);
+    border-color: rgba(229, 9, 20, 0.5);
+    color: #ff6a73;
+}
+
+.pill-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.episode-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.episode-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(320px, 1fr);
+    gap: 18px;
+    align-items: start;
+}
+
+/* Video Section */
+.video-section {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 360px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.9), 0 0 0 1px rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-container iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none !important;
+    display: block;
+    background-color: #000;
+}
+
+.video-fallback {
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+.video-fallback p {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.card-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+/* Episode Info Section */
+.episode-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.episode-navigation {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 6px 0 10px;
+}
+
+.btn-secondary {
+    flex: 1;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #333 0%, #2a2a2a 100%);
+    color: #fff;
+    border: 2px solid #444;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: #e50914;
+    border-color: #e50914;
+    transform: translateY(-2px);
+}
+
+.btn-secondary:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+/* Download Section */
+.download-section {
+    background-color: #121212;
+    padding: 16px;
+    border-radius: 10px;
+    border: 1px solid #222;
+    margin: 0;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.download-section h3 {
+    color: #e50914;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.download-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.download-links .loading {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+}
+
+.download-item {
+    border: 1px solid #252525;
+    background: linear-gradient(135deg, #1b1b1b 0%, #111 100%);
+    padding: 12px 14px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.download-quality {
+    font-weight: 700;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.download-item .download-links {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: #e50914;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    border: 1px solid #e50914;
+    transition: all 0.25s ease;
+    font-size: 0.95rem;
+}
+
+.download-btn:hover {
+    background: #f40616;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 25px rgba(229, 9, 20, 0.35);
+}
+
+/* Episodes List Section */
+.episodes-list {
+    margin: 0;
+}
+
+.episodes-list h2 {
+    font-size: 1.4rem;
+    margin-bottom: 16px;
+    color: #fff;
+    font-weight: 600;
+    border-bottom: 2px solid #e50914;
+    padding-bottom: 10px;
+}
+
+.episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.episode-item {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #444;
+    position: relative;
+    overflow: hidden;
+}
+
+.episode-item:hover {
+    background-color: #444;
+    transform: translateY(-2px);
+    border-color: #e50914;
+}
+
+.episode-item.active {
+    background-color: #e50914;
+    border-color: #e50914;
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.3);
+    transform: scale(1.05);
+}
+
+.episode-item h4 {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.episode-item p {
+    font-size: 0.85rem;
+    color: #ccc;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.episodes-grid .loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #999;
+}
+
+/* Buttons */
+.btn-primary {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #e50914;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: #f40616;
+    transform: translateY(-2px);
+}
+
+/* Loading States */
+.loading-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: #999;
+}
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: 1.1rem;
+}
+
+.loading::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255,255,255,0.25);
+    border-top-color: #e50914;
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Error States */
+.error-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: #e50914;
+}
+
+.error-message {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.error-message h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.error-message p {
+    margin-bottom: 20px;
+    color: #ccc;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    background-color: #222;
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+.breadcrumb a {
+    color: #e50914;
+    text-decoration: none;
+}
+
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb span {
+    color: #999;
+}
+
+/* Scrollbar Styling */
+.episodes-grid::-webkit-scrollbar {
+    width: 6px;
+}
+
+.episodes-grid::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 3px;
+}
+
+.episodes-grid::-webkit-scrollbar-thumb {
+    background: #e50914;
+    border-radius: 3px;
+}
+
+.episodes-grid::-webkit-scrollbar-thumb:hover {
+    background: #f40616;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .episode-content {
+        padding: 20px 0 50px;
+    }
+
+    .page-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .title-stack h1 {
+        font-size: 1.5rem;
+    }
+    
+    .video-container {
+        min-height: 220px;
+    }
+
+    .episode-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .episode-navigation {
+        flex-direction: column;
+    }
+    
+    .btn-secondary {
+        font-size: 0.9rem;
+    }
+    
+    .episodes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        max-height: 300px;
+    }
+    
+    .episode-item {
+        padding: 12px;
+    }
+    
+    .episode-item h4 {
+        font-size: 0.9rem;
+    }
+    
+    .episode-item p {
+        font-size: 0.8rem;
+    }
+    
+    .episodes-list {
+        padding: 20px 15px;
+    }
+    
+    .episode-info {
+        padding: 20px 15px;
+    }
+    
+    .download-section {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .episodes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .video-container {
+        min-height: 180px;
+    }
+}

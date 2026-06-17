@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V7 - Detail Anime</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v7 {
+            --primary-color: #e74c3c;
+            --secondary-color: #c0392b;
+            --accent-color: #f39c12;
+        }
+
+        .server-v7 .sidebar {
+            background: linear-gradient(180deg, #1a0a0f 0%, #2d1520 100%);
+        }
+
+        .server-v7 .nav-link.active,
+        .server-v7 .nav-link:hover {
+            background: rgba(231, 76, 60, 0.15);
+            border-left-color: var(--primary-color);
+        }
+
+        .server-v7 .topbar {
+            background: linear-gradient(135deg, #1a0a0f 0%, #2d1520 100%);
+            border-bottom: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .detail-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .detail-poster {
+            flex-shrink: 0;
+        }
+
+        .detail-poster img {
+            width: 300px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .anime-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 20px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .info-label {
+            color: rgba(255, 232, 232, 0.7);
+            font-weight: 600;
+        }
+
+        .info-value {
+            color: #ffe8e8;
+        }
+
+        .synopsis {
+            background: rgba(231, 76, 60, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .synopsis h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .synopsis p {
+            color: rgba(255, 232, 232, 0.85);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .genres-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .genre-tag {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #ffe8e8;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .genre-tag:hover {
+            background: rgba(231, 76, 60, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .latest-episode-card {
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(231, 76, 60, 0.2));
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-color);
+            margin-bottom: 30px;
+        }
+
+        .latest-episode-card h3 {
+            color: var(--accent-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
+        .latest-episode-link {
+            display: inline-block;
+            background: var(--accent-color);
+            color: #1a0a0f;
+            padding: 10px 24px;
+            border-radius: 999px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .latest-episode-link:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+        }
+
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .episode-item {
+            background: rgba(26, 10, 15, 0.9);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .episode-item:hover {
+            border-color: rgba(231, 76, 60, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(45, 21, 32, 0.6);
+        }
+
+        .episode-number {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .episode-date {
+            font-size: 0.85rem;
+            color: rgba(255, 232, 232, 0.6);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem 0;
+            color: rgba(255, 232, 232, 0.6);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(231, 76, 60, 0.25);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(192, 57, 43, 0.95);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .detail-container {
+                flex-direction: column;
+            }
+
+            .detail-poster img {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .anime-title {
+                font-size: 1.5rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            .episodes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="server-v7 home-with-sidebar">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v7/home'">AnimMe V7</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7" selected>V7 - Nekopoi</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v7/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v7/list" class="nav-link">📚 Hentai List</a>
+                <a href="#" class="nav-link active">📖 Detail Anime</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v7/home'">AnimMe V7 - Detail Anime</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari di Nekopoi..." class="search-input">
+                    <button id="searchBtn" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div id="errorContainer" style="display: none;"></div>
+
+                <div id="detailContent">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Memuat detail anime...</p>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V7 - Powered by Nekopoi</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v7/detail.js"></script>
+</body>
+</html>

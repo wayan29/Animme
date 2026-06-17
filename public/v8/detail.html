@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Anime - Kusonime V8</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v8-detail {
+            --primary-color: #f59e0b;
+            --secondary-color: #d97706;
+            --surface-color: rgba(30, 24, 18, 0.92);
+            --surface-border: rgba(245, 158, 11, 0.18);
+            --text-muted: rgba(255, 237, 213, 0.72);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(245, 158, 11, 0.16), transparent 28%),
+                linear-gradient(180deg, #120d08 0%, #18110a 35%, #0c0906 100%);
+        }
+
+        .server-v8-detail .navbar {
+            padding: 16px 0;
+            background: rgba(10, 7, 4, 0.94);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.12);
+        }
+
+        .server-v8-detail .nav-container {
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .server-v8-detail .nav-logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-decoration: none;
+            color: #fff7ed;
+            min-width: 180px;
+        }
+
+        .server-v8-detail .nav-logo span:first-child {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .server-v8-detail .version-tag {
+            display: inline-flex;
+            width: fit-content;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.16);
+            color: #fbbf24;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .server-v8-detail .nav-search {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: min(100%, 320px);
+        }
+
+        .server-v8-detail .nav-search input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid rgba(245, 158, 11, 0.18);
+            background: rgba(21, 15, 10, 0.96);
+            color: #fff7ed;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+        }
+
+        .server-v8-detail .nav-search button,
+        .server-v8-detail .nav-links a,
+        .server-v8-detail .back-button {
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .server-v8-detail .nav-search button,
+        .server-v8-detail .back-button {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #1c1208;
+            cursor: pointer;
+        }
+
+        .server-v8-detail .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .server-v8-detail .nav-links a {
+            text-decoration: none;
+            color: #fff7ed;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .server-v8-detail .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 4% 60px;
+        }
+
+        .server-v8-detail .detail-shell,
+        .server-v8-detail .download-section,
+        .server-v8-detail footer {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 22px;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+        }
+
+        .server-v8-detail .back-button {
+            margin-bottom: 20px;
+        }
+
+        .server-v8-detail .detail-shell {
+            padding: 28px;
+        }
+
+        .server-v8-detail .detail-header {
+            display: grid;
+            grid-template-columns: minmax(220px, 300px) minmax(0, 1fr);
+            gap: 28px;
+            align-items: start;
+        }
+
+        .server-v8-detail .detail-poster {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            border-radius: 18px;
+            display: block;
+            background: #120d08;
+            border: 1px solid rgba(245, 158, 11, 0.12);
+        }
+
+        .server-v8-detail .detail-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            line-height: 1.08;
+            color: #fff7ed;
+            margin-bottom: 10px;
+        }
+
+        .server-v8-detail .detail-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            font-size: 1rem;
+        }
+
+        .server-v8-detail .genre-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 18px 0 20px;
+        }
+
+        .server-v8-detail .genre-tag {
+            display: inline-flex;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.1);
+            color: #fde68a;
+            font-size: 0.8rem;
+        }
+
+        .server-v8-detail .detail-meta {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .server-v8-detail .meta-item {
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #fff7ed;
+        }
+
+        .server-v8-detail .meta-label {
+            display: block;
+            font-size: 0.76rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .server-v8-detail .detail-synopsis {
+            margin-top: 24px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(245, 158, 11, 0.12);
+        }
+
+        .server-v8-detail .detail-synopsis h3,
+        .server-v8-detail .download-section h2 {
+            color: #fff7ed;
+            margin-bottom: 12px;
+        }
+
+        .server-v8-detail .detail-synopsis p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 14px;
+        }
+
+        .server-v8-detail .download-section {
+            margin-top: 24px;
+            padding: 24px 28px;
+        }
+
+        .server-v8-detail .download-quality {
+            margin: 18px 0 0;
+            padding: 18px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 16px;
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .server-v8-detail .download-quality h3 {
+            color: #fbbf24;
+            margin-bottom: 12px;
+        }
+
+        .server-v8-detail .download-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .server-v8-detail .download-btn {
+            padding: 9px 14px;
+            background: rgba(245, 158, 11, 0.14);
+            color: #fff7ed;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .server-v8-detail .download-btn:hover,
+        .server-v8-detail .nav-links a:hover,
+        .server-v8-detail .nav-search button:hover,
+        .server-v8-detail .back-button:hover {
+            transform: translateY(-1px);
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .server-v8-detail .loading,
+        .server-v8-detail .error,
+        .server-v8-detail .empty-state {
+            text-align: center;
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .server-v8-detail .loading {
+            background: rgba(255,255,255,0.04);
+            color: var(--text-muted);
+        }
+
+        .server-v8-detail .error {
+            background: rgba(185, 28, 28, 0.18);
+            color: #fecaca;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .server-v8-detail .empty-state {
+            background: rgba(255,255,255,0.03);
+            color: var(--text-muted);
+        }
+
+        .server-v8-detail footer {
+            margin: 0 4% 40px;
+            padding: 24px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 900px) {
+            .server-v8-detail .detail-header {
+                grid-template-columns: 1fr;
+            }
+
+            .server-v8-detail .detail-poster {
+                max-width: 320px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .server-v8-detail .container {
+                padding-top: 150px;
+            }
+
+            .server-v8-detail .nav-search,
+            .server-v8-detail .nav-links {
+                width: 100%;
+            }
+
+            .server-v8-detail .nav-links a {
+                flex: 1;
+                text-align: center;
+            }
+
+            .server-v8-detail .detail-shell,
+            .server-v8-detail .download-section,
+            .server-v8-detail footer {
+                padding: 20px;
+                border-radius: 18px;
+            }
+
+            .server-v8-detail .detail-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="server-v8-detail">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <span>AnimMe</span>
+                <span class="version-tag">V8 - Kusonime</span>
+            </a>
+
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Cari anime..." onkeypress="if(event.key==='Enter') searchAnime()">
+                <button onclick="searchAnime()">🔍</button>
+            </div>
+
+            <div class="nav-links">
+                <a href="/v8/home">Home</a>
+                <a href="/v8/anime-list">Anime List</a>
+                <a href="/v8/genres">Genres</a>
+                <a href="/v8/years">Tahun Rilis</a>
+                <a href="/">Ver. Lain</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <button onclick="history.back()" class="back-button">← Kembali</button>
+
+        <div id="detailContent" class="detail-shell loading">
+            <div class="loading">Memuat detail anime...</div>
+        </div>
+    </div>
+
+    <footer style="text-align: center;">
+        <p><strong>Kusonime - Batch Download</strong></p>
+        <p>Download anime batch dengan subtitle Indonesia</p>
+        <p style="margin-top: 10px; opacity: 0.7;">Powered by AnimMe API</p>
+    </footer>
+
+    <script src="/v8/detail.js"></script>
+</body>
+</html>

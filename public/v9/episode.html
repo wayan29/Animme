@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V9 - Episode</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/shared/mobile.css">
+    <link rel="stylesheet" href="/v9/episode.css">
+</head>
+<body class="server-v9 episode-page home-with-sidebar">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v9/home'">AnimMe V9</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7">V7 - Nekopoi</option>
+                        <option value="v8">V8 - Kusonime</option>
+                        <option value="v9" selected>V9 - Auratail</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v9/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v9/completed" class="nav-link">✅ Selesai Tayang</a>
+                <a href="/v9/ongoing" class="nav-link">📺 Ongoing</a>
+                <a href="/v9/popular" class="nav-link">🔥 Populer</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v9/home'">AnimMe V9</div>
+            </header>
+
+            <main class="main-content">
+                <div class="episode-content">
+                    <div class="page-header-card card-surface">
+                        <div class="breadcrumb">
+                            <a href="/v9/home">Beranda</a> › 
+                            <a href="#" id="breadcrumbAnime">Anime Detail</a> › 
+                            <span id="breadcrumbEpisode">Episode</span>
+                        </div>
+                        <div class="page-title-row">
+                            <div class="title-stack">
+                                <p class="eyebrow">Auratail Server</p>
+                                <h1 id="episodeTitle">Loading Episode...</h1>
+                                <p class="muted">Tonton langsung atau pilih link download yang tersedia.</p>
+                            </div>
+                            <div class="pill-group">
+                                <span class="pill accent">V9</span>
+                                <span class="pill" id="episodeBadge">Episode</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="loadingState" class="loading-state card-surface">
+                        <div class="loading">Memuat episode...</div>
+                    </div>
+
+                    <!-- Episode Content -->
+                    <div id="episodeContent" class="episode-sections" style="display: none;">
+                        <div class="episode-layout">
+                            <!-- Video Player -->
+                            <div class="video-section card-surface">
+                                <div class="card-heading">
+                                    <span class="pill accent">Pemutar</span>
+                                    <p class="muted">Jika player bermasalah, gunakan tombol download di samping.</p>
+                                </div>
+                                <div class="video-container">
+                                    <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+                                    <div id="videoFallback" class="video-fallback" style="display: none;">
+                                        <p>Video player tidak tersedia</p>
+                                        <a id="directLink" href="#" target="_blank" class="btn-primary">Tonton di Browser</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Episode Info -->
+                            <aside class="episode-info card-surface">
+                                <div class="episode-navigation">
+                                    <button id="prevEpisode" class="btn-secondary">‹ Episode Sebelumnya</button>
+                                    <button id="nextEpisode" class="btn-secondary">Episode Selanjutnya ›</button>
+                                </div>
+                                
+                                <div class="download-section">
+                                    <h3>Download Links</h3>
+                                    <div id="downloadLinks" class="download-links">
+                                        <div class="loading">Memuat download links...</div>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+
+                        <!-- Episode List -->
+                        <div class="episodes-list card-surface">
+                            <h2>Daftar Episode</h2>
+                            <div class="episodes-grid" id="episodeList">
+                                <div class="loading">Memuat daftar episode...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Error State -->
+                    <div id="errorState" class="error-state card-surface" style="display: none;">
+                        <div class="error-message">
+                            <h2>Gagal memuat episode</h2>
+                            <p id="errorMessage">Terjadi kesalahan saat memuat data episode</p>
+                            <button onclick="location.reload()" class="btn-primary">Coba Lagi</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V9 - Powered by Auratail.vip</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v9/episode.js"></script>
+</body>
+</html>

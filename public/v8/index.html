@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kusonime - AnimMe V8</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v8 {
+            --primary-color: #f59e0b;
+            --secondary-color: #d97706;
+            --surface-color: rgba(30, 24, 18, 0.92);
+            --surface-border: rgba(245, 158, 11, 0.18);
+            --text-muted: rgba(255, 237, 213, 0.72);
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top, rgba(245, 158, 11, 0.16), transparent 28%),
+                linear-gradient(180deg, #120d08 0%, #18110a 35%, #0c0906 100%);
+        }
+
+        .server-v8 .navbar {
+            padding: 16px 0;
+            background: rgba(10, 7, 4, 0.94);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.12);
+        }
+
+        .server-v8 .nav-container {
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .server-v8 .nav-logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-decoration: none;
+            color: #fff7ed;
+            min-width: 180px;
+        }
+
+        .server-v8 .nav-logo span:first-child {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .server-v8 .version-tag {
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.16);
+            color: #fbbf24;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .server-v8 .nav-search {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: min(100%, 320px);
+        }
+
+        .server-v8 .nav-search input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid rgba(245, 158, 11, 0.18);
+            background: rgba(21, 15, 10, 0.96);
+            color: #fff7ed;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+        }
+
+        .server-v8 .nav-search input:focus {
+            outline: none;
+            border-color: rgba(245, 158, 11, 0.6);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.14);
+        }
+
+        .server-v8 .nav-search button,
+        .server-v8 .nav-links a {
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .server-v8 .nav-search button {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #1c1208;
+            cursor: pointer;
+        }
+
+        .server-v8 .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .server-v8 .nav-links a {
+            text-decoration: none;
+            color: #fff7ed;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .server-v8 .nav-links a.active,
+        .server-v8 .nav-links a:hover,
+        .server-v8 .nav-search button:hover {
+            transform: translateY(-1px);
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+        }
+
+        .server-v8 .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 4% 60px;
+        }
+
+        .server-v8 .hero-banner {
+            display: grid;
+            grid-template-columns: minmax(0, 1.3fr) minmax(260px, 0.7fr);
+            gap: 22px;
+            margin-bottom: 32px;
+        }
+
+        .server-v8 .hero-panel,
+        .server-v8 .stats-panel,
+        .server-v8 .anime-section,
+        .server-v8 footer {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 22px;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+        }
+
+        .server-v8 .hero-panel {
+            padding: 28px;
+        }
+
+        .server-v8 .hero-panel h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.05;
+            margin-bottom: 14px;
+            color: #fff7ed;
+        }
+
+        .server-v8 .hero-panel p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            max-width: 720px;
+        }
+
+        .server-v8 .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .server-v8 .hero-actions a,
+        .server-v8 .hero-actions button {
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+        }
+
+        .server-v8 .hero-actions .primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #1c1208;
+        }
+
+        .server-v8 .hero-actions .secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff7ed;
+        }
+
+        .server-v8 .stats-panel {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .server-v8 .stats-panel h2 {
+            font-size: 1.15rem;
+            color: #fbbf24;
+        }
+
+        .server-v8 .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .server-v8 .stat-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        .server-v8 .stat-value {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #fff7ed;
+        }
+
+        .server-v8 .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .server-v8 .anime-section {
+            padding: 28px;
+        }
+
+        .server-v8 .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .server-v8 .section-title {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-size: 1.45rem;
+            color: #fff7ed;
+        }
+
+        .server-v8 .section-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.16);
+            color: #fbbf24;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .server-v8 .anime-grid {
+            gap: 18px;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        }
+
+        .server-v8 .anime-card {
+            background: linear-gradient(180deg, rgba(36, 26, 18, 0.96), rgba(19, 14, 10, 0.96));
+            border: 1px solid rgba(245, 158, 11, 0.08);
+            overflow: hidden;
+            isolation: isolate;
+        }
+
+        .server-v8 .anime-card:hover,
+        .server-v8 .anime-card:focus-visible {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(245, 158, 11, 0.16);
+        }
+
+        .server-v8 .anime-card:focus-visible {
+            outline: 2px solid rgba(245, 158, 11, 0.8);
+            outline-offset: 3px;
+        }
+
+        .server-v8 .anime-thumb {
+            position: relative;
+            aspect-ratio: 3 / 4;
+            background: #120d08;
+            overflow: hidden;
+        }
+
+        .server-v8 .anime-thumb::after {
+            content: 'Lihat detail';
+            position: absolute;
+            inset: auto 10px 10px;
+            display: grid;
+            place-items: center;
+            min-height: 38px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: rgba(10, 7, 4, 0.82);
+            color: #fbbf24;
+            font-size: 0.82rem;
+            font-weight: 800;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .server-v8 .anime-card:hover .anime-thumb::after,
+        .server-v8 .anime-card:focus-visible .anime-thumb::after {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .server-v8 .anime-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.25s ease, filter 0.25s ease;
+        }
+
+        .server-v8 .anime-card:hover .anime-thumb img,
+        .server-v8 .anime-card:focus-visible .anime-thumb img {
+            transform: scale(1.04);
+            filter: brightness(0.82);
+        }
+
+        .server-v8 .anime-info {
+            gap: 10px;
+            background: transparent;
+        }
+
+        .server-v8 .anime-title {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.7em;
+            line-height: 1.35;
+        }
+
+        .server-v8 .anime-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .server-v8 .meta-pill {
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 0.73rem;
+            font-weight: 600;
+        }
+
+        .server-v8 .anime-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .server-v8 .genre-tag {
+            display: inline-flex;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.1);
+            color: #fde68a;
+            font-size: 0.72rem;
+        }
+
+        .server-v8 .meta-pill,
+        .server-v8 .genre-tag {
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .server-v8 .skeleton-card {
+            pointer-events: none;
+        }
+
+        .server-v8 .skeleton-thumb,
+        .server-v8 .skeleton-line {
+            position: relative;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .server-v8 .skeleton-thumb {
+            aspect-ratio: 3 / 4;
+        }
+
+        .server-v8 .skeleton-line {
+            height: 12px;
+            border-radius: 999px;
+        }
+
+        .server-v8 .skeleton-line.title {
+            height: 16px;
+            width: 92%;
+        }
+
+        .server-v8 .skeleton-line.short {
+            width: 58%;
+        }
+
+        .server-v8 .skeleton-line.medium {
+            width: 76%;
+        }
+
+        .server-v8 .skeleton-thumb::after,
+        .server-v8 .skeleton-line::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.14), transparent);
+            animation: v8Skeleton 1.25s infinite;
+        }
+
+        @keyframes v8Skeleton {
+            100% { transform: translateX(100%); }
+        }
+
+        .server-v8 .loading,
+        .server-v8 .error {
+            grid-column: 1 / -1;
+            padding: 24px;
+            text-align: center;
+            border-radius: 16px;
+        }
+
+        .server-v8 .loading {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted);
+        }
+
+        .server-v8 .error {
+            background: rgba(185, 28, 28, 0.18);
+            color: #fecaca;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .server-v8 footer {
+            margin: 0 4% 40px;
+            padding: 24px;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 1024px) {
+            .server-v8 .hero-banner {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .server-v8 .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .server-v8 .navbar {
+                padding: 10px 0;
+            }
+
+            .server-v8 .nav-container {
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .server-v8 .nav-logo {
+                min-width: 0;
+                flex: 1 1 auto;
+            }
+
+            .server-v8 .nav-logo span:first-child {
+                font-size: 1.35rem;
+            }
+
+            .server-v8 .version-tag {
+                font-size: 0.68rem;
+                padding: 3px 8px;
+            }
+
+            .server-v8 .nav-search {
+                order: 2;
+                width: 100%;
+                min-width: 0;
+                gap: 8px;
+            }
+
+            .server-v8 .nav-search input {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .server-v8 .nav-search button {
+                padding: 10px 13px;
+                flex: 0 0 auto;
+            }
+
+            .server-v8 .nav-links {
+                order: 3;
+                width: 100%;
+                overflow-x: auto;
+                overflow-y: hidden;
+                flex-wrap: nowrap;
+                gap: 8px;
+                padding-bottom: 4px;
+                scrollbar-width: thin;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .server-v8 .nav-links a {
+                flex: 0 0 auto;
+                white-space: nowrap;
+                padding: 8px 11px;
+                font-size: 0.84rem;
+                text-align: center;
+            }
+
+            .server-v8 .container {
+                padding-top: 145px;
+                padding-left: 3.5%;
+                padding-right: 3.5%;
+            }
+
+            .server-v8 .hero-banner {
+                gap: 14px;
+                margin-bottom: 18px;
+            }
+
+            .server-v8 .section-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .server-v8 .anime-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .server-v8 .anime-section,
+            .server-v8 .hero-panel,
+            .server-v8 .stats-panel,
+            .server-v8 footer {
+                padding: 16px;
+                border-radius: 18px;
+            }
+
+            .server-v8 .anime-info {
+                padding: 11px;
+                gap: 8px;
+            }
+
+            .server-v8 .anime-title {
+                font-size: 0.9rem;
+            }
+
+            .server-v8 .anime-meta,
+            .server-v8 .anime-genres {
+                gap: 5px;
+            }
+
+            .server-v8 .meta-pill,
+            .server-v8 .genre-tag {
+                font-size: 0.66rem;
+                padding: 4px 7px;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .server-v8 .anime-grid {
+                gap: 10px;
+            }
+
+            .server-v8 .anime-info {
+                padding: 9px;
+            }
+
+            .server-v8 .meta-pill:nth-child(n + 2),
+            .server-v8 .anime-genres .genre-tag:nth-child(n + 3) {
+                display: none;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .server-v8 .anime-card,
+            .server-v8 .anime-thumb img,
+            .server-v8 .anime-thumb::after,
+            .server-v8 .skeleton-thumb::after,
+            .server-v8 .skeleton-line::after {
+                animation: none;
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body class="server-v8 page-v8-home">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <span>AnimMe</span>
+                <span class="version-tag">V8 - Kusonime</span>
+            </a>
+
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Cari anime...">
+                <button id="searchButton" type="button">🔍</button>
+            </div>
+
+            <div class="nav-links">
+                <a href="/v8/index.html" class="active">Home</a>
+                <a href="/v8/anime-list">Anime List</a>
+                <a href="/v8/genres">Genres</a>
+                <a href="/v8/years">Tahun Rilis</a>
+                <a href="/">Ver. Lain</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="hero-banner">
+            <div class="hero-panel">
+                <h1>Batch download Kusonime yang lebih rapi dan enak dilihat</h1>
+                <p>
+                    Halaman V8 sekarang difokuskan untuk menampilkan rilisan batch terbaru dengan layout yang lebih bersih,
+                    poster yang proporsional, dan informasi penting yang lebih mudah dipindai.
+                </p>
+                <div class="hero-actions">
+                    <button class="primary" id="scrollToLatestButton" type="button">Lihat rilisan terbaru</button>
+                    <a class="secondary" href="/">Buka server lain</a>
+                </div>
+            </div>
+
+            <div class="stats-panel">
+                <h2>Ringkas Cepat</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="releaseCount">0</div>
+                        <div class="stat-label">Rilisan tampil</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">V8</div>
+                        <div class="stat-label">Server Kusonime</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">Batch</div>
+                        <div class="stat-label">Fokus konten</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">API</div>
+                        <div class="stat-label">Data real-time</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="anime-section">
+            <div class="section-heading">
+                <h2 class="section-title">📥 Anime Terbaru - Batch Download</h2>
+                <span class="section-badge" id="latestCountBadge">0 item</span>
+            </div>
+            <div id="latestAnime" class="anime-grid loading">
+                <div class="loading">Memuat anime...</div>
+            </div>
+            <div class="pagination-container" id="paginationContainer" style="display: none; margin-top: 24px;">
+                <div class="pagination-info" id="paginationInfo"></div>
+                <div class="pagination-buttons" id="paginationButtons"></div>
+            </div>
+        </section>
+    </div>
+
+    <footer style="text-align: center;">
+        <p><strong>Kusonime - Batch Download</strong></p>
+        <p>Download anime batch dengan subtitle Indonesia</p>
+        <p style="margin-top: 10px; opacity: 0.7;">Powered by AnimMe API</p>
+    </footer>
+
+    <script src="/v8/app.js"></script>
+</body>
+</html>

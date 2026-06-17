@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V10 - Katalog Anime</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <link rel="stylesheet" href="/v10/catalog.css">
+</head>
+<body class="server-v10 home-with-sidebar v10-catalog-page" data-page-kind="all-anime">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v10/'">AnimMe V10</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7">V7 - Nekopoi</option>
+                        <option value="v8">V8 - Kusonime</option>
+                        <option value="v9">V9 - Auratail</option>
+                        <option value="v10" selected>V10 - Vidku</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v10/" class="nav-link">🏠 Beranda</a>
+                <a href="/v10/anime-list" class="nav-link">📺 Episode Terbaru</a>
+                <a href="/v10/schedule" class="nav-link">📅 Jadwal Tayang</a>
+                <a href="/v10/airing" class="nav-link">🟢 Sedang Tayang</a>
+                <a href="/v10/az-list" class="nav-link">🔤 A-Z Anime List</a>
+                <a href="/v10/advanced-search" class="nav-link">🎯 Advanced Search</a>
+                <a href="/v10/tv-show" class="nav-link">📡 TV Show</a>
+                <a href="/v10/movie" class="nav-link">🎬 Movie</a>
+                <a href="/v10/all-anime" class="nav-link">📚 Semua Anime</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v10/'">AnimMe V10 - Katalog</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari anime..." class="search-input">
+                    <button type="button" class="search-btn" id="searchBtn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <section class="v10-page-hero">
+                    <div class="hero-copy">
+                        <span class="hero-kicker" id="pageKicker">Katalog Vidku</span>
+                        <h2 id="pageTitle">Semua Anime</h2>
+                        <p id="pageDescription">Jelajahi katalog Vidku dengan filter status, type, urutan, kata kunci, dan genre.</p>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat">
+                            <span class="label">Hasil</span>
+                            <strong id="resultCount">0</strong>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="label">Halaman</span>
+                            <strong id="pageCount">1 / 1</strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="v10-shortcut-strip preset-strip" id="presetStrip">
+                    <a href="/v10/all-anime" class="shortcut-chip">Semua Anime</a>
+                    <a href="/v10/airing" class="shortcut-chip">Sedang Tayang</a>
+                    <a href="/v10/az-list" class="shortcut-chip">A-Z Anime List</a>
+                    <a href="/v10/advanced-search" class="shortcut-chip">Advanced Search</a>
+                    <a href="/v10/tv-show" class="shortcut-chip">TV Show</a>
+                    <a href="/v10/movie" class="shortcut-chip">Movie</a>
+                </section>
+
+                <button class="mobile-filter-toggle" id="mobileFilterToggle" type="button" aria-expanded="false">
+                    <span class="label">Filter &amp; Urutkan</span>
+                    <span class="chevron"></span>
+                </button>
+
+                <section class="anime-filters mobile-collapsible" id="animeFilters">
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label for="filterTitle">Cari Judul</label>
+                            <input type="text" id="filterTitle" placeholder="Ketik judul anime...">
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterStatus">Status</label>
+                            <select id="filterStatus">
+                                <option value="">Semua</option>
+                                <option value="3">Sedang Tayang</option>
+                                <option value="completed">Completed</option>
+                                <option value="upcoming">Upcoming</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterType">Type</label>
+                            <select id="filterType">
+                                <option value="">Semua</option>
+                                <option value="tv">TV</option>
+                                <option value="movie">Movie</option>
+                                <option value="ova">OVA</option>
+                                <option value="ona">ONA</option>
+                                <option value="special">Special</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterOrder" id="filterOrderLabel">Urutkan</label>
+                            <select id="filterOrder">
+                                <option value="updated">Terbaru Diperbarui</option>
+                                <option value="az">A-Z</option>
+                                <option value="za">Z-A</option>
+                                <option value="latest">Terbaru Ditambahkan</option>
+                                <option value="oldest">Terlama</option>
+                            </select>
+                        </div>
+                        <div class="filter-group advanced-only" id="orderDirectionGroup" hidden>
+                            <label for="filterDirection">Arah Urutan</label>
+                            <select id="filterDirection">
+                                <option value="desc">Menurun</option>
+                                <option value="asc">Menaik</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-row advanced-only advanced-filter-grid" id="advancedFilterRow" hidden>
+                        <div class="filter-group">
+                            <label for="filterProducer">Producer</label>
+                            <select id="filterProducer">
+                                <option value="">Semua Producer</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterStudio">Studio</label>
+                            <select id="filterStudio">
+                                <option value="">Semua Studio</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="filterSeason">Season</label>
+                            <select id="filterSeason">
+                                <option value="">Semua Season</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-row genre-filter-row">
+                        <div class="filter-group genre-filter-group">
+                            <label id="genreLabel">Genre</label>
+                            <button class="btn btn-toggle" type="button" id="genreToggleBtn">Pilih Genre ▼</button>
+                        </div>
+                        <div class="filter-group filter-actions">
+                            <button class="btn btn-primary" type="button" id="applyFiltersBtn">Terapkan</button>
+                            <button class="btn btn-secondary" type="button" id="resetFiltersBtn">Reset</button>
+                        </div>
+                    </div>
+
+                    <div class="genre-panel" id="genrePanel" style="display:none;">
+                        <div class="genre-grid" id="genreGrid"></div>
+                    </div>
+                    <div class="advanced-filter-note advanced-only" id="advancedFilterNote" hidden>
+                        Filter di halaman ini mengikuti opsi dari Advanced Search Vidku: genre, producer, studio, type, status, season, serta urutan popular/favorite/date/title.
+                    </div>
+                </section>
+
+                <section class="catalog-panel">
+                    <div class="section-heading">
+                        <h3 class="section-title" id="sectionTitle">📚 Hasil Katalog Anime</h3>
+                        <span class="section-badge" id="sectionBadge">0 item</span>
+                    </div>
+                    <div class="anime-grid v10-catalog-grid" id="resultsContainer">
+                        <div class="loading">Memuat katalog anime...</div>
+                    </div>
+                </section>
+
+                <div class="pagination-container" id="paginationContainer" style="display:none;">
+                    <div class="pagination-controls">
+                        <button id="prevPageBtn" class="pagination-btn" type="button">← Sebelumnya</button>
+                        <div class="pagination-info" id="paginationInfo">Halaman 1 dari 1</div>
+                        <button id="nextPageBtn" class="pagination-btn" type="button">Selanjutnya →</button>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V10 - Powered by Vidku.me</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v10/catalog.js"></script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Rilis - AnimMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .schedule-container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .schedule-day-section {
+            background-color: #1a1a1a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .schedule-day-header {
+            background-color: #e50914;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .schedule-day-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0;
+            color: #fff;
+        }
+        
+        .schedule-day-count {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: #fff;
+        }
+        
+        .schedule-anime-list {
+            padding: 0;
+        }
+        
+        .schedule-anime-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .schedule-anime-item:last-child {
+            border-bottom: none;
+        }
+        
+        .schedule-anime-item:hover {
+            background-color: #222;
+        }
+        
+        .schedule-anime-title {
+            font-size: 0.95rem;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+        
+        .schedule-anime-arrow {
+            color: #e50914;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        
+        .no-anime {
+            padding: 20px;
+            text-align: center;
+            color: #999;
+        }
+        
+        .schedule-header {
+            max-width: 1400px;
+            margin: 100px auto 20px;
+            padding: 0 20px;
+            text-align: center;
+        }
+        
+        .schedule-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .schedule-header p {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .schedule-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .schedule-header h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v1/home'">AnimMe</h1>
+            <div class="nav-menu">
+                <a href="/v1/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link">Anime Ongoing</a>
+                <a href="/completed" class="nav-link">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link">Semua Anime</a>
+                <a href="/genres" class="nav-link">Genre</a>
+                <a href="/schedule" class="nav-link active">Jadwal Rilis</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="schedule-header">
+            <h2>Jadwal Rilis Anime</h2>
+            <p>Lihat jadwal rilis anime berdasarkan hari</p>
+        </section>
+
+        <div class="schedule-container" id="scheduleContainer">
+            <div class="loading">Memuat jadwal...</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+
+    </footer>
+
+    <script src="/v1/list-ui.js"></script>
+    <script src="/v1/schedule.js"></script>
+</body>
+</html>

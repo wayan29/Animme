@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Source List - Kuramanime V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-main: #141414;
+            --bg-panel: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-muted: #9ea0a8;
+            --accent: #e50914;
+            --accent-soft: rgba(229, 9, 20, 0.16);
+            --accent-strong: rgba(229, 9, 20, 0.45);
+            --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.45);
+            --shadow-accent: 0 12px 32px rgba(229, 9, 20, 0.35);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 12% 20%, rgba(229, 9, 20, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 88% 12%, rgba(229, 9, 20, 0.12) 0%, transparent 50%),
+                var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            text-shadow: 0 0 18px rgba(229, 9, 20, 0.35);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            text-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        #headerStats {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+            padding: 12px 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .back-btn:hover {
+            background: var(--accent-soft);
+            border-color: var(--accent-strong);
+            color: var(--accent);
+            transform: translateX(-5px);
+            box-shadow: var(--shadow-accent);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        /* Source Grid - Netflix Style with 6 items per row on desktop */
+        .source-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .source-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 24px 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .source-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(229, 9, 20, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .source-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-accent);
+            border-color: var(--accent-strong);
+            background: var(--accent-soft);
+        }
+
+        .source-card:hover::before {
+            opacity: 1;
+        }
+
+        .source-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 2px 8px rgba(229, 9, 20, 0.3));
+        }
+
+        .source-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.3;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Grid adjustments for different screen sizes */
+        @media (max-width: 1200px) {
+            .source-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .source-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .source-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+
+            .source-card {
+                padding: 20px 12px;
+            }
+
+            .source-icon {
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+
+            .source-name {
+                font-size: 0.85rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .source-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .navbar-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        /* Animation for loading */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo" onclick="window.location.href='/v3/home'">🎌 AnimMe V3</div>
+            <div class="nav-links">
+                <a href="/v3/home">Beranda</a>
+                <a href="/v3/ongoing">Sedang Tayang</a>
+                <a href="/v3/finished">Selesai Tayang</a>
+                <a href="/v3/movie">Film</a>
+                <a href="/v3/search">Cari</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="/v3/properties" class="back-btn">← Kembali ke Properti</a>
+
+        <div class="header">
+            <h1>📚 Daftar Sumber Adaptasi</h1>
+            <p>Jelajahi anime berdasarkan sumber adaptasi</p>
+            <p id="headerStats"></p>
+        </div>
+
+        <div id="loadingIndicator" class="loading" style="display: block;">
+            ⏳ Memuat daftar sumber...
+        </div>
+
+        <div id="sourceGrid" class="source-grid" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function loadSources() {
+            try {
+                document.getElementById('loadingIndicator').style.display = 'block';
+                document.getElementById('sourceGrid').style.display = 'none';
+
+                const response = await fetch('/api/v3/kuramanime/sources');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    displaySources(data.data);
+                } else {
+                    throw new Error(data.message || 'Failed to load sources');
+                }
+            } catch (error) {
+                console.error('Error loading sources:', error);
+                document.getElementById('loadingIndicator').innerHTML = 
+                    '❌ Gagal memuat sumber. Silakan refresh halaman.';
+                document.getElementById('loadingIndicator').style.display = 'block';
+            }
+        }
+
+        function displaySources(data) {
+            const grid = document.getElementById('sourceGrid');
+            const sources = data.sources || [];
+
+            if (sources.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:40px;">Tidak ada sumber adaptasi tersedia</div>';
+                grid.style.display = 'grid';
+                document.getElementById('loadingIndicator').style.display = 'none';
+                return;
+            }
+
+            // Define icons for different source types
+            const sourceIcons = {
+                'Manga': '📖',
+                'Light Novel': '📙',
+                'Game': '🎮',
+                'Web Novel': '🌐',
+                'Visual Novel': '🖼️',
+                'Original': '✨',
+                'Novel': '📚',
+                'Anime': '🎬',
+                'Movie': '🎞️',
+                'Comic': '📰'
+            };
+
+            grid.innerHTML = sources.map(source => {
+                const icon = sourceIcons[source.name] || '📚';
+                return `
+                    <a href="/v3/source?source=${source.slug}" class="source-card">
+                        <div class="source-icon">${icon}</div>
+                        <div class="source-name">${source.name}</div>
+                    </a>
+                `;
+            }).join('');
+
+            grid.style.display = 'grid';
+            document.getElementById('loadingIndicator').style.display = 'none';
+            
+            document.getElementById('headerStats').textContent = 
+                `📊 Total: ${sources.length} sumber adaptasi tersedia`;
+        }
+
+        // Load sources on page load
+        document.addEventListener('DOMContentLoaded', loadSources);
+    </script>
+</body>
+</html>

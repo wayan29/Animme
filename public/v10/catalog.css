@@ -1,0 +1,288 @@
+body.v10-catalog-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(circle at top, rgba(229, 9, 20, 0.18), transparent 26%),
+        linear-gradient(180deg, #101010 0%, #141414 38%, #0d0d0d 100%);
+}
+
+.v10-catalog-page .main-content {
+    padding-bottom: 56px;
+}
+
+.v10-page-hero,
+.catalog-panel {
+    background: linear-gradient(180deg, rgba(23, 23, 23, 0.96), rgba(15, 15, 15, 0.94));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 24px;
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.3);
+}
+
+.v10-page-hero {
+    padding: 30px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 24px;
+    margin-bottom: 22px;
+    align-items: center;
+}
+
+.v10-page-hero.search-hero {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.hero-kicker {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(229, 9, 20, 0.12);
+    border: 1px solid rgba(229, 9, 20, 0.22);
+    color: #ff8891;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.hero-copy h2 {
+    font-size: clamp(2rem, 4vw, 2.9rem);
+    line-height: 1.1;
+    margin-bottom: 14px;
+}
+
+.hero-copy p {
+    max-width: 720px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.7;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.hero-stat {
+    min-width: 120px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(229, 9, 20, 0.13), rgba(255, 255, 255, 0.04));
+    border: 1px solid rgba(229, 9, 20, 0.18);
+}
+
+.hero-stat .label {
+    display: block;
+    font-size: 0.76rem;
+    color: rgba(255, 255, 255, 0.62);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+}
+
+.hero-stat strong {
+    font-size: 1.3rem;
+}
+
+.hero-search-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.hero-search-form input {
+    flex: 1;
+    min-width: 240px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 0.96rem;
+}
+
+.hero-search-form input:focus {
+    outline: none;
+    border-color: rgba(229, 9, 20, 0.6);
+    box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.14);
+}
+
+.v10-shortcut-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.shortcut-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.86);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.shortcut-chip:hover,
+.shortcut-chip.active {
+    transform: translateY(-2px);
+    background: rgba(229, 9, 20, 0.16);
+    border-color: rgba(229, 9, 20, 0.36);
+    color: #fff;
+}
+
+.catalog-panel {
+    padding: 24px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.section-heading .section-title {
+    margin: 0;
+}
+
+.v10-catalog-grid {
+    margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
+    .v10-catalog-grid.anime-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .v10-catalog-grid.anime-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+.v10-catalog-grid .anime-card {
+    min-height: 100%;
+}
+
+.v10-catalog-grid .meta-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.v10-catalog-grid .anime-episode,
+.v10-catalog-grid .anime-type,
+.v10-catalog-grid .anime-status,
+.v10-catalog-grid .anime-quality {
+    display: inline-flex;
+    width: fit-content;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.v10-catalog-grid .anime-episode {
+    background: rgba(229, 9, 20, 0.16);
+    color: #ff8d95;
+}
+
+.v10-catalog-grid .anime-type {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.v10-catalog-grid .anime-quality {
+    background: rgba(0, 0, 0, 0.5);
+    color: #f8f8f8;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.v10-catalog-grid .anime-status {
+    background: rgba(91, 212, 143, 0.12);
+    color: #8ae8ae;
+}
+
+.result-subtitle {
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.58);
+}
+
+.filter-actions {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.filter-actions .btn {
+    min-width: 140px;
+}
+
+.advanced-filter-grid {
+    margin-top: 14px;
+}
+
+.advanced-filter-note {
+    margin-top: 14px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(229, 9, 20, 0.08);
+    border: 1px solid rgba(229, 9, 20, 0.18);
+    color: rgba(255, 255, 255, 0.72);
+    line-height: 1.6;
+    font-size: 0.9rem;
+}
+
+.empty-state {
+    width: 100%;
+    padding: 28px;
+    border-radius: 16px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.62);
+}
+
+@media (max-width: 1024px) {
+    .v10-page-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-stats {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    .v10-page-hero,
+    .catalog-panel {
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    .section-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .filter-actions {
+        flex-direction: column;
+    }
+
+    .filter-actions .btn {
+        width: 100%;
+    }
+}

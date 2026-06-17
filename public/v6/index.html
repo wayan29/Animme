@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V6 - AnimeIndo</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v6 {
+            --primary-color: #3498db;
+            --secondary-color: #2477b2;
+            --accent-color: #f1c40f;
+        }
+
+        .server-v6 .sidebar {
+            background: linear-gradient(180deg, #0f172a 0%, #13253f 100%);
+        }
+
+        .server-v6 .nav-link.active,
+        .server-v6 .nav-link:hover {
+            background: rgba(52, 152, 219, 0.12);
+            border-left-color: var(--primary-color);
+        }
+
+        .server-v6 .topbar {
+            background: linear-gradient(135deg, #0f172a 0%, #13253f 100%);
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .server-v6 .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .server-v6 .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .server-v6 .section-badge {
+            background: var(--accent-color);
+            color: #0f172a;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .update-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .update-card {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(52, 152, 219, 0.1);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .update-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(52, 152, 219, 0.4);
+            box-shadow: 0 14px 30px rgba(10, 25, 55, 0.4);
+        }
+
+        .update-poster {
+            width: 100%;
+            height: 240px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .update-episode {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(241, 196, 15, 0.9);
+            color: #0f172a;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .update-info {
+            padding: 14px 16px 16px;
+        }
+
+        .update-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #e8f1ff;
+            min-height: 2.7em;
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+
+        .update-meta {
+            font-size: 0.78rem;
+            color: rgba(226, 239, 255, 0.65);
+        }
+
+        .popular-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .popular-item {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(52, 152, 219, 0.08);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .popular-item:hover {
+            transform: translateY(-4px);
+            border-color: rgba(52, 152, 219, 0.4);
+        }
+
+        .popular-thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .popular-info {
+            flex: 1;
+        }
+
+        .popular-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #e8f1ff;
+            margin-bottom: 4px;
+        }
+
+        .popular-desc {
+            font-size: 0.75rem;
+            color: rgba(226, 239, 255, 0.6);
+            line-height: 1.35;
+        }
+
+        .popular-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem 0;
+            color: rgba(226, 239, 255, 0.6);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(52, 152, 219, 0.25);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.95);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            background: var(--secondary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s ease;
+        }
+
+        .pagination button:hover {
+            background: var(--primary-color);
+        }
+
+        .pagination button:disabled {
+            background: rgba(52, 152, 219, 0.2);
+            color: rgba(255, 255, 255, 0.5);
+            cursor: not-allowed;
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .update-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .home-layout .main-content {
+                padding: 0 20px 70px;
+            }
+
+            .server-v6 .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .update-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+            }
+
+            .update-poster {
+                height: 190px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .update-grid {
+                grid-template-columns: repeat(2, minmax(140px, 1fr));
+                gap: 10px;
+            }
+
+            .update-poster {
+                height: 165px;
+            }
+
+            .popular-item {
+                align-items: flex-start;
+            }
+
+            .popular-thumb {
+                width: 56px;
+                height: 56px;
+            }
+        }
+    </style>
+</head>
+<body class="server-v6 home-with-sidebar">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v6/home'">AnimMe V6</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6" selected>V6 - AnimeIndo</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v6/home" class="nav-link active">🏠 Beranda</a>
+                <a href="#update-terbaru" class="nav-link">🆕 Update Terbaru</a>
+                <a href="#popular" class="nav-link">🔥 Popular</a>
+                <a href="/v6/anime-list" class="nav-link">📜 Anime List</a>
+                <a href="/v6/genres" class="nav-link">🏷️ Genre</a>
+                <a href="/v6/movies" class="nav-link">🎬 Movie</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v6/home'">AnimMe V6 - AnimeIndo</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari anime di AnimeIndo..." class="search-input">
+                    <button id="searchBtn" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div id="errorContainer" style="display: none;"></div>
+
+                <section id="update-terbaru">
+                    <div class="section-header">
+                        <h2 class="section-title">🆕 Update Terbaru</h2>
+                        <span class="section-badge" id="updateCount">0</span>
+                    </div>
+                    <div class="update-grid" id="updateList">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Memuat update terbaru dari AnimeIndo...</p>
+                        </div>
+                    </div>
+                    <div class="pagination" id="paginationControls" style="display:none;">
+                        <button id="prevPageBtn">← Sebelumnya</button>
+                        <button id="nextPageBtn">Selanjutnya →</button>
+                    </div>
+                </section>
+
+                <section id="popular">
+                    <div class="section-header">
+                        <h2 class="section-title">🔥 Popular</h2>
+                        <span class="section-badge" id="popularCount">0</span>
+                    </div>
+                    <div class="popular-list" id="popularList">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Memuat daftar anime populer...</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V6 - Powered by AnimeIndo</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v6/app.js"></script>
+</body>
+</html>

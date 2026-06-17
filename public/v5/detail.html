@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Anime - AnimMe V5</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v5 {
+            --primary-color: #9db56e;
+            --secondary-color: #8ca55d;
+            --accent-color: #ffd700;
+        }
+
+        .server-v5 .sidebar {
+            background: linear-gradient(180deg, #1a1a1a 0%, #2a2a1a 100%);
+        }
+
+        .server-v5 .nav-link.active,
+        .server-v5 .nav-link:hover {
+            background: rgba(157, 181, 110, 0.1);
+            border-left-color: var(--primary-color);
+        }
+
+        .server-v5 .topbar {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a1a 100%);
+            border-bottom: 1px solid rgba(157, 181, 110, 0.2);
+        }
+
+        .detail-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .detail-header {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a1a 100%);
+            padding: 2rem;
+            border-radius: 12px;
+        }
+
+        .detail-poster {
+            flex-shrink: 0;
+            width: 250px;
+            height: 350px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-alt-title {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .meta-value {
+            color: #ccc;
+        }
+
+        .detail-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .genre-tag {
+            background: rgba(157, 181, 110, 0.2);
+            color: var(--primary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(157, 181, 110, 0.3);
+        }
+
+        .detail-synopsis {
+            background: rgba(0,0,0,0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .synopsis-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .episodes-section {
+            margin-top: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .section-badge {
+            background: var(--accent-color);
+            color: #000;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .episodes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .episode-card {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2a2a1a 100%);
+            border: 1px solid rgba(157, 181, 110, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .episode-card:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, #2a2a1a 0%, #1a1a1a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(157, 181, 110, 0.3);
+        }
+
+        .episode-number {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .episode-date {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #333;
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #ff4444;
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .detail-header {
+                flex-direction: column;
+                padding: 1.5rem;
+            }
+
+            .detail-poster {
+                width: 100%;
+                height: 400px;
+            }
+
+            .detail-title {
+                font-size: 1.5rem;
+            }
+
+            .detail-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .episodes-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="server-v5 home-with-sidebar">
+    <div class="home-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v5/home'">AnimMe V5</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5" selected>V5 - Anoboy</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v5/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v5/latest" class="nav-link">🆕 Latest Release</a>
+                <a href="/v5/azlist" class="nav-link">📚 Anime List A-Z</a>
+                <a href="/v5/search" class="nav-link">🔍 Cari Anime</a>
+            </nav>
+        </aside>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v5/home'">AnimMe V5 - Anoboy</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari anime..." class="search-input">
+                    <button onclick="searchAnime()" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Error Message -->
+                <div id="errorContainer" style="display: none;"></div>
+
+                <!-- Detail Container -->
+                <div class="detail-container" id="detailContainer">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Memuat detail anime...</p>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <p>AnimMe V5 - Powered by Anoboy</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v5/detail.js?v=20251101-fix"></script>
+</body>
+</html>

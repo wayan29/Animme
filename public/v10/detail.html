@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V10 - Detail Anime</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <link rel="icon" href="/placeholder.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/v10/detail.css">
+</head>
+<body class="server-v10 detail-page home-with-sidebar">
+    <div class="detail-layout home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v10/'">AnimMe V10</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7">V7 - Nekopoi</option>
+                        <option value="v8">V8 - Kusonime</option>
+                        <option value="v9">V9 - Auratail</option>
+                        <option value="v10" selected>V10 - Vidku</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v10/" class="nav-link">🏠 Beranda</a>
+                <a href="/v10/anime-list" class="nav-link">📺 Episode Terbaru</a>
+                <a href="/v10/schedule" class="nav-link">📅 Jadwal Tayang</a>
+                <a href="/v10/all-anime" class="nav-link">📚 Semua Anime</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title">AnimMe V10 - Detail Anime</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari anime..." class="search-input">
+                    <button onclick="searchAnime()" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div id="errorContainer" style="display:none;"></div>
+
+                <!-- Anime Detail Content -->
+                <div id="animeDetail">
+                    <div class="loading">Memuat detail anime...</div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V10 - Powered by Vidku.me</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v10/detail.js"></script>
+</body>
+</html>

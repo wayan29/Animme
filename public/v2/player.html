@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player V2 - AnimMe</title>
+    <link rel="icon" href="data:," type="image/x-icon">
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .player-container {
+            max-width: 1400px;
+            margin: 100px auto 0;
+            padding: 0 4%;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #e50914;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            min-height: 360px;
+            background-color: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .player-loading,
+        .player-error {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            color: #bdbdbd;
+            text-align: center;
+        }
+
+        .player-error {
+            color: #ff6b6b;
+        }
+
+        .loader-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,0.25);
+            border-top-color: #e50914;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .player-alert {
+            display: none;
+            margin-bottom: 25px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            background: rgba(229, 9, 20, 0.1);
+            color: #f5f5f5;
+            font-size: 0.95rem;
+        }
+
+        .player-alert.visible {
+            display: block;
+        }
+
+        .server-section {
+            background-color: #1c1c1c;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
+
+        .server-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .server-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: #242424;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .server-btn:hover {
+            background: #2f2f2f;
+            transform: translateY(-2px);
+        }
+
+        .server-btn.active {
+            background: #e50914;
+            border-color: #e50914;
+            color: #fff;
+        }
+
+        .server-btn.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .episode-info {
+            background-color: #1c1c1c;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .episode-header {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .episode-poster {
+            width: 220px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .episode-poster img {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .episode-details {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .episode-details h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .episode-details h2 {
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: #ccc;
+            margin-bottom: 16px;
+        }
+
+        .episode-meta-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .meta-card {
+            background: #242424;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .meta-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #9b9b9b;
+            letter-spacing: 0.05em;
+        }
+
+        .meta-value {
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        .episode-synopsis {
+            margin-top: 20px;
+            color: #d5d5d5;
+            line-height: 1.7;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .download-section {
+            background: #1c1c1c;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .download-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .download-item {
+            background: #242424;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .download-quality {
+            font-weight: 600;
+            color: #e50914;
+            margin-bottom: 10px;
+        }
+
+        .download-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .download-btn {
+            padding: 10px 18px;
+            background: #333;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            border: 1px solid #444;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #e50914;
+            border-color: #e50914;
+        }
+
+        .nav-section {
+            background: #1c1c1c;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 50px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.prev {
+            background: #333;
+            color: #fff;
+        }
+
+        .nav-btn.next {
+            background: #e50914;
+            color: #fff;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+        }
+
+        @media(max-width: 768px) {
+            .episode-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .episode-poster {
+                width: 70%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="location.href='/v2/home'">AnimMe</h1>
+            <div class="server-selector">
+                <select id="serverSelect" class="server-select">
+                    <option value="v1">V1 - Otakudesu</option>
+                    <option value="v2" selected>V2 - Samehadaku</option>
+                </select>
+            </div>
+            <div class="nav-menu">
+                <a href="/v2/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link v1-only">Anime Ongoing</a>
+                <a href="/completed" class="nav-link v1-only">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link">Daftar Anime</a>
+                <a href="/genres" class="nav-link v1-only">Genre</a>
+                <a href="/schedule" class="nav-link v1-only">Jadwal Rilis</a>
+                <a href="/anime-terbaru" class="nav-link v2-only">Anime Terbaru</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="player-container">
+        <a href="/v2/home" id="backToAnime" class="back-link">⬅ Kembali</a>
+        <div id="playerAlert" class="player-alert"></div>
+        <div id="videoWrapper" class="video-wrapper">
+            <div class="player-loading">
+                <span class="loader-dot"></span>
+                <p>Menyiapkan pemutar...</p>
+            </div>
+        </div>
+        <div id="streamingServers"></div>
+
+        <div id="playerContent">
+            <div id="episodeInfo"></div>
+            <div id="downloadContainer"></div>
+            <div id="episodeNavigation"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2025 AnimMe. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Initialize server selection for V2 page
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentServer = 'v2';
+            localStorage.setItem('selectedServer', currentServer);
+            document.body.classList.add('server-v2');
+            
+            const serverSelect = document.getElementById('serverSelect');
+            if (serverSelect) {
+                serverSelect.value = 'v2';
+                serverSelect.addEventListener('change', (e) => {
+                    const targetServer = e.target.value;
+                    localStorage.setItem('selectedServer', targetServer);
+                    if (targetServer === 'v2') {
+                        window.location.href = '/v2/home';
+                    } else if (targetServer === 'v3') {
+                        window.location.href = '/v3/home';
+                    } else {
+                        window.location.href = '/v1/home';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="/v2/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Terbaru - AnimMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v2/home'">AnimMe</h1>
+            <div class="server-selector">
+                <select id="serverSelect" class="server-select">
+                    <option value="v1">V1 - Otakudesu</option>
+                    <option value="v2">V2 - Samehadaku</option>
+                </select>
+            </div>
+            <div class="nav-menu">
+                <a href="/v2/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link v1-only">Anime Ongoing</a>
+                <a href="/completed" class="nav-link v1-only">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link v1-only">Semua Anime</a>
+                <a href="/genres" class="nav-link v1-only">Genre</a>
+                <a href="/schedule" class="nav-link v1-only">Jadwal Rilis</a>
+                <a href="/anime-terbaru" class="nav-link active v2-only">Anime Terbaru</a>
+            </div>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Cari anime..." class="search-input">
+                <button onclick="searchAnime()" class="search-btn">Cari</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="completed-header">
+            <h2>Anime Terbaru</h2>
+            <p>Episode anime terbaru dari Samehadaku</p>
+            <div class="items-per-page-control">
+                <label for="itemsPerPage">Items per page:</label>
+                <select id="itemsPerPage" class="items-select">
+                    <option value="1">16 items (1 page)</option>
+                    <option value="2">32 items (2 pages)</option>
+                    <option value="3">48 items (3 pages)</option>
+                    <option value="5">80 items (5 pages)</option>
+                </select>
+            </div>
+        </section>
+
+        <div class="completed-container" id="animeListContainer">
+            <div class="loading">Memuat daftar anime...</div>
+        </div>
+
+        <div class="pagination-container" id="paginationContainer" style="display: none;">
+        </div>
+    </main>
+
+    <footer class="footer">
+
+    </footer>
+
+    <script src="/v1/anime-list.js"></script>
+</body>
+</html>

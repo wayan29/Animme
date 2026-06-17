@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V7 - Hentai List</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v7 {
+            --primary-color: #e74c3c;
+            --secondary-color: #c0392b;
+            --accent-color: #f39c12;
+        }
+
+        .server-v7 .sidebar {
+            background: linear-gradient(180deg, #1a0a0f 0%, #2d1520 100%);
+        }
+
+        .server-v7 .nav-link.active,
+        .server-v7 .nav-link:hover {
+            background: rgba(231, 76, 60, 0.15);
+            border-left-color: var(--primary-color);
+        }
+
+        .server-v7 .topbar {
+            background: linear-gradient(135deg, #1a0a0f 0%, #2d1520 100%);
+            border-bottom: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .list-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .list-stats {
+            font-size: 0.9rem;
+            color: rgba(255, 232, 232, 0.7);
+        }
+
+        .letter-navigation {
+            background: rgba(26, 10, 15, 0.95);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .letter-btn {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #ffe8e8;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .letter-btn:hover {
+            background: rgba(231, 76, 60, 0.35);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .letter-btn.active {
+            background: var(--primary-color);
+            color: #1a0a0f;
+            border-color: var(--primary-color);
+        }
+
+        .letter-btn.all-btn {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #1a0a0f;
+        }
+
+        .letter-btn.all-btn:hover {
+            background: #e67e22;
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .anime-item {
+            background: rgba(26, 10, 15, 0.9);
+            border: 1px solid rgba(231, 76, 60, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .anime-item:hover {
+            border-color: rgba(231, 76, 60, 0.6);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(45, 21, 32, 0.6);
+        }
+
+        .anime-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .anime-letter {
+            font-size: 0.85rem;
+            color: rgba(255, 232, 232, 0.6);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem 0;
+            color: rgba(255, 232, 232, 0.6);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(231, 76, 60, 0.25);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(192, 57, 43, 0.95);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .letter-section {
+            margin-bottom: 40px;
+        }
+
+        .letter-section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(231, 76, 60, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .list-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .list-title {
+                font-size: 1.4rem;
+            }
+
+            .letter-navigation {
+                padding: 15px;
+                gap: 6px;
+            }
+
+            .letter-btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body class="server-v7 home-with-sidebar">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v7/home'">AnimMe V7</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6">V6 - AnimeIndo</option>
+                        <option value="v7" selected>V7 - Nekopoi</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v7/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v7/list" class="nav-link active">📚 Hentai List</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v7/home'">AnimMe V7 - Hentai List</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari di Nekopoi..." class="search-input">
+                    <button id="searchBtn" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div id="errorContainer" style="display: none;"></div>
+
+                <div class="list-header">
+                    <h1 class="list-title">📚 Hentai List A-Z</h1>
+                    <div class="list-stats" id="listStats">Memuat...</div>
+                </div>
+
+                <div class="letter-navigation" id="letterNavigation">
+                    <button class="letter-btn all-btn" data-letter="">Semua</button>
+                </div>
+
+                <div id="listContent">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Memuat daftar anime...</p>
+                    </div>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V7 - Powered by Nekopoi</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v7/list.js"></script>
+</body>
+</html>

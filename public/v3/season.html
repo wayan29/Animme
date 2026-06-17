@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Musim Anime - Kuramanime V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-main: #141414;
+            --bg-panel: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-muted: #9ea0a8;
+            --accent: #e50914;
+            --accent-soft: rgba(229, 9, 20, 0.16);
+            --accent-strong: rgba(229, 9, 20, 0.45);
+            --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.45);
+            --shadow-accent: 0 12px 32px rgba(229, 9, 20, 0.35);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 12% 20%, rgba(229, 9, 20, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 88% 12%, rgba(229, 9, 20, 0.12) 0%, transparent 50%),
+                var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            text-shadow: 0 0 18px rgba(229, 9, 20, 0.35);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            text-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        #headerStats {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        .sort-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .sort-button {
+            background: var(--bg-card);
+            border: 1px solid var(--border-soft);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .sort-button:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-accent);
+            border-color: var(--accent-strong);
+            background: var(--accent-soft);
+        }
+
+        .sort-button.active {
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            box-shadow: var(--shadow-accent);
+        }
+
+        .sort-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .sort-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .sort-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .anime-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            position: relative;
+        }
+
+        .anime-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-accent);
+            border-color: var(--accent-strong);
+        }
+
+        .anime-poster {
+            width: 100%;
+            height: 260px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .anime-info {
+            padding: 15px;
+        }
+
+        .anime-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            line-height: 1.4;
+            min-height: 2.8em;
+        }
+
+        .anime-episode {
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .anime-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .anime-tag {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-strong);
+            border-radius: 6px;
+            color: var(--accent);
+        }
+
+        .season-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: var(--accent);
+            color: var(--text-primary);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: var(--shadow-accent);
+        }
+
+        .episode-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 40px 0;
+        }
+
+        .pagination button {
+            padding: 12px 24px;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-strong);
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            padding: 12px 20px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            border-radius: 15px;
+            color: var(--accent);
+        }
+
+        /* Desktop: Maksimal 6 kolom */
+        @media (min-width: 1200px) {
+            .anime-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sort-menu {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 10px;
+            }
+
+            .sort-button {
+                padding: 15px;
+            }
+
+            .sort-icon {
+                font-size: 2rem;
+            }
+
+            .sort-name {
+                font-size: 1rem;
+            }
+
+            .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 12px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo" onclick="window.location.href='/v3/home'">🎌 AnimMe V3</div>
+            <div class="nav-links">
+                <a href="/v3/home">Beranda</a>
+                <a href="/v3/ongoing">Sedang Tayang</a>
+                <a href="/v3/finished">Selesai Tayang</a>
+                <a href="/v3/movie">Film</a>
+                <a href="/v3/search">Cari</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="seasonTitle">🍂 Musim Anime</h1>
+            <p id="seasonDesc">Koleksi anime berdasarkan musim</p>
+            <p id="headerStats"></p>
+        </div>
+
+        <div class="sort-menu">
+            <div class="sort-button active" onclick="loadSeason(currentSeason, currentSeasonName, 1, 'updated')" data-order="updated">
+                <div class="sort-icon">🔄</div>
+                <div class="sort-name">Terupdate</div>
+                <div class="sort-desc">Baru diperbarui</div>
+            </div>
+            <div class="sort-button" onclick="loadSeason(currentSeason, currentSeasonName, 1, 'title')" data-order="title">
+                <div class="sort-icon">🔤</div>
+                <div class="sort-name">Judul A-Z</div>
+                <div class="sort-desc">Urutan alfabetis</div>
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="loading" style="display: block;">
+            ⏳ Memuat anime...
+        </div>
+
+        <div id="errorMessage" class="error" style="display: none;"></div>
+
+        <div id="animeGrid" class="anime-grid" style="display: none;"></div>
+
+        <div id="pagination" class="pagination" style="display: none;"></div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let currentOrder = 'updated';
+        let currentSeason = '';
+        let currentSeasonName = '';
+        let paginationData = null;
+
+        // Get URL parameters
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            // Check if season is in path (e.g., /v3/season/fall-2024)
+            const pathParts = window.location.pathname.split('/');
+            const seasonIndex = pathParts.indexOf('season');
+            let seasonSlug = '';
+
+            if (seasonIndex !== -1 && pathParts.length > seasonIndex + 1) {
+                seasonSlug = pathParts[seasonIndex + 1];
+            } else {
+                seasonSlug = params.get('season') || '';
+            }
+
+            return {
+                season: seasonSlug,
+                name: params.get('name') || formatSeasonName(seasonSlug),
+                page: parseInt(params.get('page')) || 1,
+                order_by: params.get('order_by') || 'updated'
+            };
+        }
+
+        function formatSeasonName(slug) {
+            if (!slug) return 'Musim';
+            // Convert fall-2024 to Fall 2024
+            const parts = slug.split('-');
+            const season = parts[0] ? parts[0].charAt(0).toUpperCase() + parts[0].slice(1) : '';
+            const year = parts[1] || '';
+            return `${season} ${year}`.trim();
+        }
+
+        function updateActiveButton(orderBy) {
+            document.querySelectorAll('.sort-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeBtn = document.querySelector(`.sort-button[data-order="${orderBy || 'updated'}"]`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+        }
+
+        async function loadSeason(season, seasonName, page = 1, orderBy = 'updated') {
+            try {
+                currentPage = page;
+                currentOrder = orderBy;
+                currentSeason = season;
+                currentSeasonName = seasonName;
+
+                updateActiveButton(orderBy);
+
+                // Update header
+                const seasonIcon = season.includes('fall') ? '🍂' :
+                                  season.includes('winter') ? '❄️' :
+                                  season.includes('spring') ? '🌸' :
+                                  season.includes('summer') ? '☀️' : '🍂';
+
+                document.getElementById('seasonTitle').textContent = `${seasonIcon} ${seasonName}`;
+                document.getElementById('seasonDesc').textContent = `Koleksi anime musim ${seasonName}`;
+
+                // Show loading
+                document.getElementById('loadingIndicator').style.display = 'block';
+                document.getElementById('errorMessage').style.display = 'none';
+                document.getElementById('animeGrid').style.display = 'none';
+                document.getElementById('pagination').style.display = 'none';
+
+                const response = await fetch(`/api/v3/kuramanime/season/${season}?page=${page}&order_by=${orderBy}`);
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    paginationData = data.data.pagination;
+
+                    renderAnimeGrid(data.data.anime_list);
+                    renderPagination();
+                    updateHeaderStats(data.data.total_anime);
+
+                    // Hide loading
+                    document.getElementById('loadingIndicator').style.display = 'none';
+                    document.getElementById('animeGrid').style.display = 'grid';
+                    document.getElementById('pagination').style.display = 'flex';
+                } else {
+                    throw new Error(data.message || 'Failed to load data');
+                }
+            } catch (error) {
+                console.error('Error loading season:', error);
+                document.getElementById('loadingIndicator').style.display = 'none';
+                document.getElementById('errorMessage').textContent = 'Failed to load anime: ' + error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+            }
+        }
+
+        function renderAnimeGrid(animeList) {
+            const grid = document.getElementById('animeGrid');
+            grid.innerHTML = '';
+
+            animeList.forEach(anime => {
+                const card = document.createElement('div');
+                card.className = 'anime-card';
+                card.onclick = () => window.location.href = `/v3/detail?animeId=${anime.anime_id}&slug=${anime.slug}`;
+
+                // Build tags
+                let tagsHTML = '';
+                if (anime.type) {
+                    tagsHTML += `<span class="anime-tag">${anime.type}</span>`;
+                }
+                if (anime.status) {
+                    tagsHTML += `<span class="anime-tag">${anime.status}</span>`;
+                }
+
+                card.innerHTML = `
+                    <img src="${anime.poster}" alt="${anime.title}" class="anime-poster" onerror="this.src='https://via.placeholder.com/180x260?text=No+Image'">
+                    <div class="season-badge">${currentSeasonName}</div>
+                    ${anime.episode ? `<div class="episode-badge">${anime.episode}</div>` : ''}
+                    <div class="anime-info">
+                        <div class="anime-title">${anime.title}</div>
+                        <div class="anime-tags">
+                            ${tagsHTML}
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = '← Sebelumnya';
+            prevBtn.disabled = !paginationData.has_previous;
+            prevBtn.onclick = () => loadSeason(currentSeason, currentSeasonName, currentPage - 1, currentOrder);
+
+            const pageInfo = document.createElement('span');
+            pageInfo.innerHTML = `Halaman ${paginationData.current_page} dari ${paginationData.total_pages}`;
+
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Selanjutnya →';
+            nextBtn.disabled = !paginationData.has_next;
+            nextBtn.onclick = () => loadSeason(currentSeason, currentSeasonName, currentPage + 1, currentOrder);
+
+            pagination.appendChild(prevBtn);
+            pagination.appendChild(pageInfo);
+            pagination.appendChild(nextBtn);
+        }
+
+        function updateHeaderStats(totalAnime) {
+            const stats = document.getElementById('headerStats');
+            stats.textContent = `Total ${totalAnime || 0} anime`;
+        }
+
+        // Load initial data from URL
+        const params = getUrlParams();
+        if (params.season) {
+            loadSeason(params.season, params.name, params.page, params.order_by);
+        } else {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('errorMessage').textContent = 'Season tidak ditemukan';
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

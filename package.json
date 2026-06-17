@@ -1,0 +1,40 @@
+{
+  "name": "animme",
+  "version": "1.0.0",
+  "description": "Website streaming anime menggunakan Otakudesu API",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:restart": "pm2 restart animme",
+    "pm2:stop": "pm2 stop animme",
+    "pm2:logs": "pm2 logs animme"
+  },
+  "keywords": [
+    "anime",
+    "streaming",
+    "otakudesu"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@oplayer/core": "^1.2.37",
+    "@oplayer/ui": "^1.3.4-beta.10",
+    "axios": "^1.12.2",
+    "cheerio": "^1.1.2",
+    "cloudscraper": "^4.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.5.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "node-fetch": "^3.3.2",
+    "puppeteer": "^24.26.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "devDependencies": {
+    "pm2": "^7.0.1"
+  }
+}

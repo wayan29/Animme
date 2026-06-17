@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V6 - Pencarian Anime</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v6 {
+            --primary-color: #3498db;
+            --secondary-color: #2477b2;
+            --accent-color: #f1c40f;
+        }
+
+        .server-v6 .sidebar {
+            background: linear-gradient(180deg, #0f172a 0%, #13253f 100%);
+        }
+
+        .server-v6 .nav-link.active,
+        .server-v6 .nav-link:hover {
+            background: rgba(52, 152, 219, 0.12);
+            border-left-color: var(--primary-color);
+        }
+
+        .server-v6 .topbar {
+            background: linear-gradient(135deg, #0f172a 0%, #13253f 100%);
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .section-header {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0 0 12px;
+        }
+
+        .section-subtitle {
+            color: rgba(226, 239, 255, 0.7);
+            margin: 0;
+        }
+
+        .result-card {
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 16px;
+            border: 1px solid rgba(52, 152, 219, 0.12);
+            padding: 18px;
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 16px;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .result-card:hover {
+            border-color: rgba(52, 152, 219, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .result-poster {
+            width: 110px;
+            height: 150px;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .result-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        .result-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .result-label {
+            background: rgba(52, 152, 219, 0.18);
+            color: #d8ecff;
+            border-radius: 999px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .result-description {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: rgba(226, 239, 255, 0.78);
+        }
+
+        .result-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem 0;
+            color: rgba(226, 239, 255, 0.6);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(52, 152, 219, 0.25);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: rgba(231, 76, 60, 0.95);
+            color: #fff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        @media (max-width: 640px) {
+            .result-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .result-poster {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body class="server-v6 home-with-sidebar">
+    <div class="home-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v6/home'">AnimMe V6</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4">V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                        <option value="v6" selected>V6 - AnimeIndo</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v6/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v6/anime-list" class="nav-link">📜 Anime List</a>
+                <a href="/v6/genres" class="nav-link">🏷️ Genre</a>
+                <a href="/v6/movies" class="nav-link">🎬 Movie</a>
+                <a href="#" class="nav-link active">🔍 Pencarian</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" id="topbarTitle">AnimMe V6 - Pencarian</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari anime di AnimeIndo..." class="search-input">
+                    <button id="searchBtn" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div id="errorContainer" style="display: none;"></div>
+
+                <section class="section-header">
+                    <h2 class="section-title" id="searchTitle">Hasil Pencarian</h2>
+                    <p class="section-subtitle" id="searchSubtitle">Masukkan kata kunci untuk mencari anime dari AnimeIndo.</p>
+                </section>
+
+                <section id="searchResultsContainer">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Memuat hasil pencarian...</p>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V6 - Powered by AnimeIndo</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v6/search.js"></script>
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Settings - AnimMe Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #10B981;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #10B981;
+        }
+
+        /* Custom scrollbar for main content */
+        main::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        main::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        main::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+
+        main::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800 h-screen overflow-hidden flex">
+
+    <!-- Sidebar -->
+    <div class="w-64 bg-white border-r border-gray-200 hidden md:flex flex-col">
+        <div class="p-6 border-b border-gray-100">
+            <h1 class="text-2xl font-bold text-emerald-500 flex items-center gap-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                AnimMe
+            </h1>
+            <p class="text-xs text-gray-400 mt-1 font-medium tracking-wide uppercase">Admin Panel</p>
+        </div>
+        <nav class="p-4 flex-1 overflow-y-auto">
+            <ul class="space-y-1">
+                <li>
+                    <a href="#"
+                        class="flex items-center gap-3 p-3 rounded-lg bg-emerald-50 text-emerald-600 font-medium transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Player Settings
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="p-4 border-t border-gray-100">
+            <button
+                class="flex items-center gap-3 p-3 w-full rounded-lg text-gray-500 hover:bg-gray-50 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                    </path>
+                </svg>
+                <span class="font-medium">Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+        <!-- Mobile Header -->
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center md:hidden z-10">
+            <h1 class="text-xl font-bold text-emerald-600">AnimMe Admin</h1>
+            <button class="text-gray-600 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7">
+                    </path>
+                </svg>
+            </button>
+        </header>
+
+        <main class="flex-1 overflow-y-auto bg-gray-50 p-6 md:p-10">
+            <div class="max-w-6xl mx-auto space-y-8">
+
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900">Player Settings</h2>
+                        <p class="text-gray-500 mt-1">Configure the default behavior and appearance of the video player.
+                        </p>
+                    </div>
+                    <button
+                        class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg shadow-sm hover:shadow transition duration-200 font-medium flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                        Save Changes
+                    </button>
+                </div>
+
+                <!-- General & Colors Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- General Settings -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="text-lg font-semibold mb-6 text-gray-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129">
+                                </path>
+                            </svg>
+                            General Appearance
+                        </h3>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Player UI language</label>
+                                <p class="text-xs text-gray-500 mb-2">Select the UI language that will be displayed in
+                                    the video player.</p>
+                                <select
+                                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 p-2.5 border bg-gray-50">
+                                    <option value="en">English (en)</option>
+                                    <option value="id">Indonesian (id)</option>
+                                    <option value="es">Spanish (es)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Font family</label>
+                                <p class="text-xs text-gray-500 mb-2">Select the Font Family that will be used in the
+                                    video player.</p>
+                                <select
+                                    class="w-full border-gray-300 rounded-lg shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 p-2.5 border bg-gray-50">
+                                    <option value="Rubik">Rubik</option>
+                                    <option value="Roboto">Roboto</option>
+                                    <option value="Inter">Inter</option>
+                                    <option value="Arial">Arial</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Colors -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="text-lg font-semibold mb-6 text-gray-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01">
+                                </path>
+                            </svg>
+                            Colors & Styling
+                        </h3>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Primary player
+                                    colors</label>
+                                <p class="text-xs text-gray-500 mb-2">Primary color will be displayed for the controls.
+                                </p>
+                                <div class="flex items-center space-x-2">
+                                    <div
+                                        class="relative w-10 h-10 rounded-lg overflow-hidden border border-gray-200 shadow-sm">
+                                        <input type="color" value="#ff7755"
+                                            class="absolute -top-2 -left-2 w-16 h-16 cursor-pointer p-0 border-0">
+                                    </div>
+                                    <input type="text" value="#ff7755"
+                                        class="flex-1 border-gray-300 rounded-lg shadow-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 p-2.5 border bg-gray-50 uppercase font-mono text-sm">
+                                </div>
+                            </div>
+
+                            <div class="pt-4 border-t border-gray-100">
+                                <label class="block text-sm font-medium text-gray-700 mb-3">Captions appearance</label>
+                                <div class="grid grid-cols-3 gap-4">
+                                    <div>
+                                        <span class="text-xs text-gray-500 block mb-1">Text</span>
+                                        <div class="flex items-center space-x-2">
+                                            <div
+                                                class="relative w-8 h-8 rounded overflow-hidden border border-gray-200">
+                                                <input type="color" value="#ffffff"
+                                                    class="absolute -top-2 -left-2 w-12 h-12 cursor-pointer">
+                                            </div>
+                                            <input type="text" value="#fff"
+                                                class="w-full border-gray-300 rounded shadow-sm p-1.5 border text-xs uppercase">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs text-gray-500 block mb-1">Background</span>
+                                        <div class="flex items-center space-x-2">
+                                            <div
+                                                class="relative w-8 h-8 rounded overflow-hidden border border-gray-200">
+                                                <input type="color" value="#000000"
+                                                    class="absolute -top-2 -left-2 w-12 h-12 cursor-pointer">
+                                            </div>
+                                            <input type="text" value="#000"
+                                                class="w-full border-gray-300 rounded shadow-sm p-1.5 border text-xs uppercase">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <span class="text-xs text-gray-500 block mb-1">Size (px)</span>
+                                        <input type="number" value="20"
+                                            class="w-full border-gray-300 rounded shadow-sm p-1.5 border text-sm">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Player Controls Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div
+                            class="relative inline-block w-10 align-middle select-none transition duration-200 ease-in">
+                            <input type="checkbox" name="toggle" id="controls-toggle" checked
+                                class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer top-0.5 left-0.5" />
+                            <label for="controls-toggle"
+                                class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800">Player Controls</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6 ml-14">Select the UI controls that will be displayed on the
+                        player.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                        <!-- Card: 10s Backward -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">10s Backward</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M11 16l-4-4 4-4m6 8l-4-4 4-4"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: 10s Forward -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">10s Forward</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M13 16l4-4-4-4m-6 8l4-4-4-4"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: AirPlay -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">AirPlay</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Big Play Button -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Big Play Button</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Captions -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Captions</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Chromecast (Inactive) -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div
+                                class="absolute left-0 top-0 bottom-0 w-1 bg-transparent group-hover:bg-gray-200 transition-colors rounded-l-lg">
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-gray-400 bg-gray-100 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Chromecast</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Current Time -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Current Time</span>
+                            </div>
+                            <div class="text-gray-400 font-mono text-xs">
+                                ~
+                            </div>
+                        </div>
+
+                        <!-- Card: Duration -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Duration</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Full Screen -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Full Screen</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Mute -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Mute</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                                        clip-rule="evenodd"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Picture-in-Picture -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Picture-in-Picture</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                    </path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Play / Pause -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Play / Pause</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Progress -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Progress</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M3 15h18v-2H3v2zm0 4h18v-2H3v2zm0-8h18V9H3v2zm0-6v2h18V5H3z"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Settings -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Settings</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Card: Volume -->
+                        <div
+                            class="relative flex items-center justify-between p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">Volume</span>
+                            </div>
+                            <div class="text-gray-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                        d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Playback Speed -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Playback speed</h3>
+                    <p class="text-sm text-gray-500 mb-6">Set custom playback speed options within the player UI
+                        controls</p>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        <!-- Speed Cards -->
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x0.25</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x0.50</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x0.75</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x1.00</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x1.25</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x1.50</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x1.75</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x2.00</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x3.00</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="relative flex items-center p-3.5 bg-white border border-gray-200 rounded-lg shadow-sm cursor-pointer hover:shadow-md transition-all group">
+                            <div class="absolute left-0 top-0 bottom-0 w-1 bg-emerald-400 rounded-l-lg"></div>
+                            <div class="flex items-center gap-3">
+                                <div class="flex-shrink-0 text-emerald-400 bg-emerald-50 rounded-full p-0.5">
+                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="font-medium text-gray-700 text-sm">x4.00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold mb-6 text-gray-800">Advanced Settings</h3>
+
+                    <div class="space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Show watchtime heatmap</label>
+                                <p class="text-xs text-gray-500 max-w-lg">If enabled, the watchtime heatmap will be
+                                    publically displayed in the video player above the progress bar after enough data is
+                                    collected.</p>
+                            </div>
+                            <div
+                                class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" name="toggle" id="heatmap-toggle"
+                                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                <label for="heatmap-toggle"
+                                    class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Resumable player position</label>
+                                <p class="text-xs text-gray-500 max-w-lg">If enabled, the video player will remember the
+                                    current position of the video when the viewer leaves the experience.</p>
+                            </div>
+                            <div
+                                class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                <input type="checkbox" name="toggle" id="resume-toggle"
+                                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" />
+                                <label for="resume-toggle"
+                                    class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Default Video Quality</label>
+                            <p class="text-xs text-gray-500 mb-3">Choose default quality for video playback. Auto adapts to your internet speed.</p>
+                            <select id="default-quality-select"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50">
+                                <option value="auto">Auto (Adaptive) - Recommended</option>
+                                <option value="360">360p - Low (Save Data)</option>
+                                <option value="480">480p - Medium</option>
+                                <option value="720">720p - HD</option>
+                                <option value="1080">1080p - Full HD</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom CSS -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Custom HTML head</h3>
+                    <p class="text-sm text-gray-600 mb-4">Get a completely customized look of the video player adding
+                        your own CSS rules.</p>
+                    <textarea
+                        class="w-full h-32 p-3 border border-gray-300 rounded-lg font-mono text-sm focus:border-emerald-500 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 bg-gray-50"
+                        placeholder="<style>
+/* Your custom CSS here */
+</style>"></textarea>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Player Settings Manager
+        const SETTINGS_KEY = 'animme_player_settings';
+
+        // Default settings
+        const defaultSettings = {
+            language: 'id',
+            fontFamily: 'Rubik',
+            primaryColor: '#ff7755',
+            captionTextColor: '#ffffff',
+            captionBgColor: '#000000',
+            captionSize: 20,
+            controls: {
+                enabled: true,
+                backward10: true,
+                forward10: true,
+                airplay: true,
+                bigPlayButton: true,
+                captions: true,
+                chromecast: false,
+                currentTime: true,
+                duration: true,
+                fullscreen: true,
+                mute: true,
+                pip: true,
+                play: true,
+                progress: true,
+                settings: true,
+                volume: true
+            },
+            playbackSpeeds: [0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 3.00, 4.00],
+            defaultQuality: 'auto',
+            heatmap: false,
+            resumable: false,
+            customCSS: ''
+        };
+
+        // Load settings from localStorage
+        function loadSettings() {
+            const saved = localStorage.getItem(SETTINGS_KEY);
+            return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
+        }
+
+        // Save settings to localStorage
+        function saveSettings(settings) {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        }
+
+        // Get current settings from form
+        function getCurrentSettings() {
+            const settings = {
+                language: document.querySelector('select[placeholder="Language"]')?.value || document.querySelectorAll('select')[0]?.value || 'id',
+                fontFamily: document.querySelectorAll('select')[1]?.value || 'Rubik',
+                primaryColor: document.querySelectorAll('input[type="color"]')[0]?.value || '#ff7755',
+                captionTextColor: document.querySelectorAll('input[type="color"]')[1]?.value || '#ffffff',
+                captionBgColor: document.querySelectorAll('input[type="color"]')[2]?.value || '#000000',
+                captionSize: parseInt(document.querySelector('input[type="number"]')?.value || 20),
+                controls: {
+                    enabled: document.getElementById('controls-toggle')?.checked || true,
+                    backward10: true,
+                    forward10: true,
+                    airplay: true,
+                    bigPlayButton: true,
+                    captions: true,
+                    chromecast: false,
+                    currentTime: true,
+                    duration: true,
+                    fullscreen: true,
+                    mute: true,
+                    pip: true,
+                    play: true,
+                    progress: true,
+                    settings: true,
+                    volume: true
+                },
+                playbackSpeeds: [0.25, 0.50, 0.75, 1.00, 1.25, 1.50, 1.75, 2.00, 3.00, 4.00],
+                defaultQuality: document.getElementById('default-quality-select')?.value || 'auto',
+                heatmap: document.getElementById('heatmap-toggle')?.checked || false,
+                resumable: document.getElementById('resume-toggle')?.checked || false,
+                customCSS: document.querySelector('textarea')?.value || ''
+            };
+            return settings;
+        }
+
+        // Apply settings to form
+        function applySettingsToForm(settings) {
+            // Language
+            const langSelect = document.querySelectorAll('select')[0];
+            if (langSelect) langSelect.value = settings.language;
+
+            // Font family
+            const fontSelect = document.querySelectorAll('select')[1];
+            if (fontSelect) fontSelect.value = settings.fontFamily;
+
+            // Colors
+            const colorInputs = document.querySelectorAll('input[type="color"]');
+            const colorTextInputs = document.querySelectorAll('input[type="text"][value^="#"]');
+
+            if (colorInputs[0]) colorInputs[0].value = settings.primaryColor;
+            if (colorTextInputs[0]) colorTextInputs[0].value = settings.primaryColor;
+
+            if (colorInputs[1]) colorInputs[1].value = settings.captionTextColor;
+            if (colorTextInputs[1]) colorTextInputs[1].value = settings.captionTextColor;
+
+            if (colorInputs[2]) colorInputs[2].value = settings.captionBgColor;
+            if (colorTextInputs[2]) colorTextInputs[2].value = settings.captionBgColor;
+
+            // Caption size
+            const sizeInput = document.querySelector('input[type="number"]');
+            if (sizeInput) sizeInput.value = settings.captionSize;
+
+            // Toggles
+            const controlsToggle = document.getElementById('controls-toggle');
+            if (controlsToggle) controlsToggle.checked = settings.controls.enabled;
+
+            // Default Quality
+            const qualitySelect = document.getElementById('default-quality-select');
+            if (qualitySelect) qualitySelect.value = settings.defaultQuality || 'auto';
+
+            const heatmapToggle = document.getElementById('heatmap-toggle');
+            if (heatmapToggle) heatmapToggle.checked = settings.heatmap;
+
+            const resumeToggle = document.getElementById('resume-toggle');
+            if (resumeToggle) resumeToggle.checked = settings.resumable;
+
+            // Custom CSS
+            const cssTextarea = document.querySelector('textarea');
+            if (cssTextarea) cssTextarea.value = settings.customCSS;
+
+            // Sync color pickers with text inputs
+            syncColorInputs();
+        }
+
+        // Sync color picker with text input
+        function syncColorInputs() {
+            const colorInputs = document.querySelectorAll('input[type="color"]');
+            const colorTextInputs = document.querySelectorAll('input[type="text"][value^="#"]');
+
+            colorInputs.forEach((colorInput, index) => {
+                colorInput.addEventListener('input', (e) => {
+                    if (colorTextInputs[index]) {
+                        colorTextInputs[index].value = e.target.value;
+                    }
+                });
+            });
+
+            colorTextInputs.forEach((textInput, index) => {
+                textInput.addEventListener('input', (e) => {
+                    if (colorInputs[index] && /^#[0-9A-F]{6}$/i.test(e.target.value)) {
+                        colorInputs[index].value = e.target.value;
+                    }
+                });
+            });
+        }
+
+        // Show save notification
+        function showSaveNotification() {
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 bg-emerald-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center gap-2';
+            notification.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="font-medium">Settings saved successfully!</span>
+            `;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s';
+                setTimeout(() => notification.remove(), 300);
+            }, 2000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load and apply saved settings
+            const settings = loadSettings();
+            applySettingsToForm(settings);
+
+            // Save button handler
+            const saveButton = document.querySelector('button.bg-emerald-500');
+            if (saveButton) {
+                saveButton.addEventListener('click', () => {
+                    const settings = getCurrentSettings();
+                    saveSettings(settings);
+                    showSaveNotification();
+                    console.log('Settings saved:', settings);
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

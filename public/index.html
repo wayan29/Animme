@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe - Multi-Source Anime API</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .version-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .version-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .version-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .version-card.new {
+            border: 2px solid #fbbf24;
+            background: rgba(251, 191, 36, 0.2);
+        }
+
+        .version-card.maintenance-card {
+            border: 2px solid #6b7280;
+            background: rgba(107, 114, 128, 0.15);
+            opacity: 0.85;
+        }
+
+        .version-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .new-badge {
+            background: #fbbf24;
+            color: #000;
+            margin-left: 10px;
+            padding: 3px 10px;
+            font-size: 0.8em;
+        }
+
+        .version-card h2 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .version-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .features {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features li {
+            padding: 5px 0;
+            opacity: 0.8;
+        }
+
+        .features li:before {
+            content: "✓ ";
+            margin-right: 8px;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.2);
+            margin-top: 50px;
+        }
+
+        footer p {
+            margin: 5px 0;
+            opacity: 0.8;
+        }
+
+        .docs-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .docs-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .version-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎬 AnimMe API</h1>
+            <p class="subtitle">Multi-Source Anime Streaming API Collection</p>
+            <a href="/docs" class="docs-link">📚 API Documentation</a>
+        </header>
+
+        <div class="version-grid">
+            <!-- V1 - Otakudesu -->
+            <a href="/v1/index.html" class="version-card">
+                <span class="version-badge">V1</span>
+                <h2>Otakudesu</h2>
+                <p>Source anime lengkap dengan subtitle Indonesia berkualitas.</p>
+                <div class="features">
+                    <ul>
+                        <li>Anime ongoing & completed</li>
+                        <li>Batch download</li>
+                        <li>Jadwal rilis</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V2 - Samehadaku -->
+            <a href="/v2/index.html" class="version-card">
+                <span class="version-badge">V2</span>
+                <h2>Samehadaku</h2>
+                <p>Database anime dengan berbagai genre dan kualitas.</p>
+                <div class="features">
+                    <ul>
+                        <li>Search & filter</li>
+                        <li>Anime list lengkap</li>
+                        <li>Multiple streaming servers</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V3 - Kuramanime -->
+            <a href="/v3/index.html" class="version-card">
+                <span class="version-badge">V3</span>
+                <h2>Kuramanime</h2>
+                <p>Platform anime dengan fitur filter dan kategori lengkap.</p>
+                <div class="features">
+                    <ul>
+                        <li>Filter by genre, season, studio</li>
+                        <li>Anime properties</li>
+                        <li>Batch episodes</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V4 - Anichin -->
+            <a href="/v4/index.html" class="version-card">
+                <span class="version-badge">V4</span>
+                <h2>Anichin.cafe</h2>
+                <p>Anime donghua (China) dengan subtitle Indonesia.</p>
+                <div class="features">
+                    <ul>
+                        <li>Donghua populer</li>
+                        <li>Latest releases</li>
+                        <li>Completed series</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V5 - Anoboy -->
+            <a href="/v5/index.html" class="version-card">
+                <span class="version-badge">V5</span>
+                <h2>Anoboy</h2>
+                <p>Salah satu pioneer anime streaming Indonesia.</p>
+                <div class="features">
+                    <ul>
+                        <li>Koleksi anime klasik</li>
+                        <li>A-Z list</li>
+                        <li>Ongoing updates</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V6 - AnimeIndo -->
+            <a href="/v6/index.html" class="version-card">
+                <span class="version-badge">V6</span>
+                <h2>AnimeIndo</h2>
+                <p>Database anime Indonesia dengan genre beragam.</p>
+                <div class="features">
+                    <ul>
+                        <li>Genre filtering</li>
+                        <li>Latest episodes</li>
+                        <li>Popular anime</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V7 - Nekopoi -->
+            <a href="/v7/home" class="version-card maintenance-card">
+                <span class="version-badge">V7</span>
+                <span class="new-badge" style="background:#6b7280;color:#fff;">MAINTENANCE</span>
+                <h2>Nekopoi</h2>
+                <p>Streaming anime dengan fokus pada konten dewasa.</p>
+                <div class="features">
+                    <ul>
+                        <li>Latest updates</li>
+                        <li>Search functionality</li>
+                        <li>Hentai collection</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V8 - Kusonime -->
+            <a href="/v8/home" class="version-card">
+                <span class="version-badge">V8</span>
+                <h2>Kusonime</h2>
+                <p>Download anime batch dengan subtitle Indonesia berkualitas.</p>
+                <div class="features">
+                    <ul>
+                        <li>Batch download links</li>
+                        <li>Multiple quality options</li>
+                        <li>Direct download</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V9 - Auratail -->
+            <a href="/v9/home" class="version-card">
+                <span class="version-badge">V9</span>
+                <h2>Auratail</h2>
+                <p>Platform anime dengan filter genre, tipe, dan batch download.</p>
+                <div class="features">
+                    <ul>
+                        <li>Genre & type filters</li>
+                        <li>Batch episodes</li>
+                        <li>Search & anime list</li>
+                    </ul>
+                </div>
+            </a>
+
+            <!-- V10 - Vidku -->
+            <a href="/v10/home" class="version-card new">
+                <span class="version-badge">V10</span>
+                <span class="new-badge">NEW!</span>
+                <h2>Vidku</h2>
+                <p>Streaming anime dengan jadwal rilis dan advanced search.</p>
+                <div class="features">
+                    <ul>
+                        <li>Release schedule</li>
+                        <li>Advanced search</li>
+                        <li>All anime catalog</li>
+                    </ul>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <footer>
+        <p><strong>AnimMe Multi-Source API</strong></p>
+        <p>10 Different Anime Sources • RESTful API • Real-time Scraping</p>
+        <p>⚠️ Disclaimer: Konten berasal dari berbagai sumber publik. Hanya untuk tujuan edukasi dan pembelajaran.</p>
+        <p style="margin-top: 15px; opacity: 0.6;">Server running on port 5000</p>
+    </footer>
+</body>
+</html>

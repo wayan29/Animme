@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime List - Kusonime V8</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v8-catalog {
+            --primary-color: #f59e0b;
+            --secondary-color: #d97706;
+            --surface-color: rgba(30, 24, 18, 0.92);
+            --surface-border: rgba(245, 158, 11, 0.18);
+            --text-muted: rgba(255, 237, 213, 0.72);
+            min-height: 100vh;
+            background: radial-gradient(circle at top, rgba(245, 158, 11, 0.16), transparent 28%), linear-gradient(180deg, #120d08 0%, #18110a 35%, #0c0906 100%);
+        }
+
+        .server-v8-catalog .navbar {
+            padding: 16px 0;
+            background: rgba(10, 7, 4, 0.94);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(245, 158, 11, 0.12);
+        }
+
+        .server-v8-catalog .nav-container {
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .server-v8-catalog .nav-logo {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-decoration: none;
+            color: #fff7ed;
+            min-width: 180px;
+        }
+
+        .server-v8-catalog .version-tag {
+            display: inline-flex;
+            width: fit-content;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.16);
+            color: #fbbf24;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .server-v8-catalog .nav-search {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: min(100%, 320px);
+        }
+
+        .server-v8-catalog .nav-search input {
+            flex: 1;
+            min-width: 0;
+            border: 1px solid rgba(245, 158, 11, 0.18);
+            background: rgba(21, 15, 10, 0.96);
+            color: #fff7ed;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+        }
+
+        .server-v8-catalog .nav-search button,
+        .server-v8-catalog .nav-links a {
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .server-v8-catalog .nav-search button {
+            padding: 12px 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #1c1208;
+            cursor: pointer;
+        }
+
+        .server-v8-catalog .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .server-v8-catalog .nav-links a {
+            text-decoration: none;
+            color: #fff7ed;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .server-v8-catalog .nav-links a.active,
+        .server-v8-catalog .nav-links a:hover,
+        .server-v8-catalog .nav-search button:hover {
+            transform: translateY(-1px);
+            background: rgba(245, 158, 11, 0.18);
+            color: #fbbf24;
+        }
+
+        .server-v8-catalog .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 4% 60px;
+        }
+
+        .page-shell,
+        .list-panel,
+        .server-v8-catalog footer {
+            background: var(--surface-color);
+            border: 1px solid var(--surface-border);
+            border-radius: 22px;
+            box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+        }
+
+        .page-shell {
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .page-shell h1 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            color: #fff7ed;
+            margin-bottom: 10px;
+        }
+
+        .page-shell p {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .list-panel {
+            padding: 28px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .category-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 14px;
+            border-radius: 999px;
+            text-decoration: none;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff7ed;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+            font-weight: 700;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .category-pill:hover,
+        .category-pill.active {
+            transform: translateY(-2px);
+            background: rgba(245, 158, 11, 0.16);
+            color: #fbbf24;
+        }
+
+        .section-title {
+            margin: 0;
+            border: none;
+            padding: 0;
+            color: #fff7ed;
+            font-size: 1.45rem;
+        }
+
+        .section-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.16);
+            color: #fbbf24;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .catalog-card {
+            background: linear-gradient(180deg, rgba(36, 26, 18, 0.96), rgba(19, 14, 10, 0.96));
+            border: 1px solid rgba(245, 158, 11, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .catalog-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);
+        }
+
+        .catalog-thumb {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            background: #120d08;
+        }
+
+        .catalog-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .catalog-info {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .catalog-title {
+            color: #fff7ed;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        .catalog-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .meta-pill,
+        .genre-tag {
+            display: inline-flex;
+            padding: 5px 10px;
+            border-radius: 999px;
+            font-size: 0.73rem;
+        }
+
+        .meta-pill {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+        }
+
+        .genre-tag {
+            background: rgba(245, 158, 11, 0.1);
+            color: #fde68a;
+        }
+
+        .simple-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .simple-list-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            padding: 14px 16px;
+            color: #fff7ed;
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .simple-list-item:hover {
+            transform: translateY(-3px);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .loading,
+        .error,
+        .empty-state {
+            text-align: center;
+            padding: 24px;
+            border-radius: 16px;
+        }
+
+        .loading {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-muted);
+        }
+
+        .error {
+            background: rgba(185, 28, 28, 0.18);
+            color: #fecaca;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .empty-state {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+        }
+
+        .server-v8-catalog footer {
+            margin: 0 4% 40px;
+            padding: 24px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="server-v8-catalog">
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/v8/home" class="nav-logo">
+                <span>AnimMe</span>
+                <span class="version-tag">V8 - Kusonime</span>
+            </a>
+
+            <div class="nav-search">
+                <input type="text" id="searchInput" placeholder="Cari anime...">
+                <button id="searchButton" type="button">🔍</button>
+            </div>
+
+            <div class="nav-links">
+                <a href="/v8/home">Home</a>
+                <a href="/v8/anime-list" class="active">Anime List</a>
+                <a href="/v8/genres">Genres</a>
+                <a href="/v8/years">Tahun Rilis</a>
+                <a href="/">Ver. Lain</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <section class="page-shell">
+            <h1 id="pageTitle">Anime List Kusonime</h1>
+            <p id="pageDescription">Jelajahi daftar anime batch, hasil genre, dan tahun rilis dari Kusonime V8.</p>
+        </section>
+
+        <section class="list-panel">
+            <div class="category-nav" id="categoryNav">
+                <a class="category-pill active" data-kind="all" href="/v8/anime-list?kind=all">Semua Anime List</a>
+                <a class="category-pill" data-kind="bd" href="/v8/anime-list?kind=bd">BD</a>
+                <a class="category-pill" data-kind="movie" href="/v8/anime-list?kind=movie">Movie</a>
+                <a class="category-pill" data-kind="live-action" href="/v8/anime-list?kind=live-action">Live Action</a>
+                <a class="category-pill" data-kind="ova" href="/v8/anime-list?kind=ova">OVA</a>
+                <a class="category-pill" data-kind="special" href="/v8/anime-list?kind=special">Special</a>
+                <a class="category-pill" data-kind="ona" href="/v8/anime-list?kind=ona">ONA</a>
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title" id="sectionTitle">Daftar Anime</h2>
+                <span class="section-badge" id="countBadge">0 item</span>
+            </div>
+            <div id="resultsContainer" class="loading">Memuat data...</div>
+            <div class="pagination-container" id="paginationContainer" style="display: none; margin-top: 24px;">
+                <div class="pagination-info" id="paginationInfo"></div>
+                <div class="pagination-buttons" id="paginationButtons"></div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p><strong>Kusonime - Anime List</strong></p>
+        <p>Menu anime list, genre, dan tahun rilis untuk AnimMe V8</p>
+    </footer>
+
+    <script src="/v8/anime-list.js"></script>
+</body>
+</html>

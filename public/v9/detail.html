@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V9 - Anime Detail</title>
+    <link rel="stylesheet" href="/shared/styles.css">
+    <link rel="stylesheet" href="/shared/mobile.css">
+    <link rel="stylesheet" href="/v9/detail.css">
+    <!-- Platform-specific styles -->
+    <link rel="stylesheet" href="/v9/detail-desktop.css" media="(min-width: 769px)">
+    <link rel="stylesheet" href="/v9/detail-mobile.css" media="(max-width: 768px)">
+</head>
+<body class="server-v9 detail-page">
+    <div class="detail-layout">
+        <!-- Compact Header -->
+        <header class="detail-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <h1 class="logo" onclick="window.location.href='/v9/home'">AnimMe V9</h1>
+                </div>
+                <div class="header-right">
+                    <div class="server-select-wrapper">
+                        <select id="serverSelect" class="server-select">
+                            <option value="v1">V1 - Otakudesu</option>
+                            <option value="v2">V2 - Samehadaku</option>
+                            <option value="v3">V3 - Kuramanime</option>
+                            <option value="v4">V4 - Anichin</option>
+                            <option value="v5">V5 - Anoboy</option>
+                            <option value="v6">V6 - AnimeIndo</option>
+                            <option value="v7">V7 - Nekopoi</option>
+                            <option value="v8">V8 - Kusonime</option>
+                            <option value="v9" selected>V9 - Auratail</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="detail-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="sidebar-title">Menu</h2>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v9/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v9/completed" class="nav-link">✅ Selesai Tayang</a>
+                <a href="/v9/ongoing" class="nav-link">📺 Ongoing</a>
+                <a href="/v9/popular" class="nav-link">🔥 Populer</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+            
+            <main class="detail-main">
+                <!-- Breadcrumb -->
+                <div class="breadcrumb">
+                    <a href="/v9/home">Beranda</a> › 
+                    <a href="/v9/anime-detail" id="breadcrumbAnime">Anime Detail</a>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="loading-state">
+                    <div class="loading">Memuat detail anime...</div>
+                </div>
+
+                <!-- Anime Detail Content -->
+                <div id="animeDetail" class="detail-container" style="display: none;">
+                    <div class="anime-header-grid">
+                        <div>
+                            <img id="animePoster" src="/placeholder.svg" alt="Anime Poster" class="detail-poster" onerror="this.src='/placeholder.svg'">
+                        </div>
+                        <div class="detail-info">
+                            <h1 id="animeTitle">Loading...</h1>
+                            <div class="genre-list" id="animeGenres">
+                                <!-- Genres will be populated here -->
+                            </div>
+                            <div class="detail-synopsis">
+                                <strong>Sinopsis:</strong><br>
+                                <span id="animeSynopsis">Loading synopsis...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Info Section -->
+                    <div class="info-section">
+                        <h2>📋 Informasi Anime</h2>
+                        <div class="info-grid" id="animeInfo">
+                            <!-- Info will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Episodes Section -->
+                    <div class="episode-section">
+                        <h2>📺 Daftar Episode</h2>
+                        <div class="episode-list" id="episodesList">
+                            <div class="loading">Memuat episode...</div>
+                        </div>
+                    </div>
+
+                    <!-- Related Anime -->
+                    <div class="recommendations-section" id="relatedSection" style="display: none;">
+                        <h2>🎬 Anime Lainnya / Rekomendasi</h2>
+                        <div class="recommendations-grid" id="relatedGrid">
+                            <!-- Related anime will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" class="error-state" style="display: none;">
+                    <div class="error-message">
+                        <h2>Gagal memuat detail anime</h2>
+                        <p id="errorMessage">Terjadi kesalahan saat memuat data</p>
+                        <button onclick="location.reload()" class="btn-primary">Coba Lagi</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="/v9/detail.js"></script>
+</body>
+</html>

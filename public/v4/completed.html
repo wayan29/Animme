@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimMe V4 - Completed Series</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+    <style>
+        .server-v4 {
+            --primary-color: #ff6b6b;
+            --secondary-color: #ee5a6f;
+            --accent-color: #ffd700;
+        }
+
+        .server-v4 .sidebar {
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        .server-v4 .nav-link.active,
+        .server-v4 .nav-link:hover {
+            background: rgba(255, 107, 107, 0.12);
+            border-left-color: var(--primary-color);
+        }
+
+        .server-v4 .topbar {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-bottom: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .server-v4 .main-content {
+            padding-bottom: 80px;
+        }
+
+        .server-v4 .page-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .server-v4 .page-title h2 {
+            font-size: 1.75rem;
+            margin: 0;
+            color: #fff;
+        }
+
+        .server-v4 .page-title p {
+            color: rgba(255,255,255,0.65);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .server-v4 .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 18px;
+        }
+
+        .server-v4 .anime-card {
+            display: flex;
+            flex-direction: column;
+            border-radius: 14px;
+            overflow: hidden;
+            background: linear-gradient(160deg, rgba(26, 26, 46, 0.85) 0%, rgba(22, 33, 62, 0.9) 100%);
+            border: 1px solid rgba(255, 107, 107, 0.15);
+            box-shadow: 0 10px 24px rgba(10, 14, 35, 0.35);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .server-v4 .anime-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(255, 107, 107, 0.35);
+        }
+
+        .server-v4 .anime-poster {
+            width: 100%;
+            aspect-ratio: 3 / 4.4;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .server-v4 .anime-poster::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 60%);
+        }
+
+        .server-v4 .anime-info {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .server-v4 .anime-title {
+            color: #fff;
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .server-v4 .anime-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.65);
+        }
+
+        .server-v4 .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255, 107, 107, 0.16);
+            color: var(--accent-color);
+        }
+
+        .server-v4 .sub-badge {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .server-v4 .pagination-controls {
+            margin-top: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .server-v4 .page-btn {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: none;
+            font-weight: 600;
+            background: rgba(255, 107, 107, 0.14);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .server-v4 .page-btn:hover:not(:disabled) {
+            background: rgba(255, 107, 107, 0.28);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(255, 107, 107, 0.35);
+        }
+
+        .server-v4 .page-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .server-v4 .page-info {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .server-v4 .loading {
+            text-align: center;
+            padding: 2.5rem 0;
+            color: rgba(255,255,255,0.55);
+            font-size: 0.95rem;
+        }
+
+        .server-v4 .error {
+            margin: 18px 0;
+            padding: 14px;
+            border-radius: 10px;
+            background: rgba(255, 80, 80, 0.18);
+            color: #ffbcbc;
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            .server-v4 .anime-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .server-v4 .main-content {
+                padding: 0 20px 70px;
+            }
+
+            .server-v4 .page-title {
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .server-v4 .page-title h2 {
+                font-size: 1.5rem;
+            }
+
+            .server-v4 .page-title p {
+                font-size: 0.85rem;
+            }
+
+            .server-v4 .anime-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .server-v4 .anime-card {
+                border-radius: 12px;
+            }
+
+            .server-v4 .anime-info {
+                padding: 14px;
+            }
+
+            .server-v4 .anime-title {
+                font-size: 0.92rem;
+            }
+
+            .server-v4 .page-btn {
+                flex: 1 1 auto;
+                min-width: 120px;
+            }
+        }
+
+        @media (max-width: 540px) {
+            .server-v4 .main-content {
+                padding: 0 18px 60px;
+            }
+
+            .server-v4 .anime-grid {
+                grid-template-columns: repeat(2, minmax(140px, 1fr));
+                gap: 10px;
+            }
+
+            .server-v4 .anime-info {
+                padding: 12px;
+                gap: 6px;
+            }
+
+            .server-v4 .anime-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body class="server-v4 home-with-sidebar">
+    <div class="home-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo" onclick="window.location.href='/v4/home'">AnimMe V4</h1>
+                <button class="sidebar-close" id="menuCloseBtn" aria-label="Tutup menu">×</button>
+            </div>
+            <div class="sidebar-server">
+                <span class="server-label">Pilih Server</span>
+                <div class="server-select-wrapper">
+                    <select id="serverSelect" class="server-select">
+                        <option value="v1">V1 - Otakudesu</option>
+                        <option value="v2">V2 - Samehadaku</option>
+                        <option value="v3">V3 - Kuramanime</option>
+                        <option value="v4" selected>V4 - Anichin</option>
+                        <option value="v5">V5 - Anoboy</option>
+                    </select>
+                </div>
+            </div>
+            <nav class="sidebar-menu">
+                <a href="/v4/home" class="nav-link">🏠 Beranda</a>
+                <a href="/v4/completed" class="nav-link active">✅ Selesai Tayang</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle" aria-label="Buka menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="topbar-title" onclick="window.location.href='/v4/home'">AnimMe V4 - Anichin</div>
+                <div class="search-container">
+                    <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                    </button>
+                    <input type="text" id="searchInput" placeholder="Cari anime..." class="search-input">
+                    <button onclick="searchAnime()" class="search-btn">Cari</button>
+                    <button class="search-close-btn" id="searchCloseBtn" aria-label="Close">×</button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div id="errorContainer" style="display: none;"></div>
+
+                <div class="page-title">
+                    <div>
+                        <h2>Daftar Completed</h2>
+                        <p>Semua seri dan film yang sudah selesai tayang dari Anichin.</p>
+                    </div>
+                    <div class="badge" id="totalBadge">0 Judul</div>
+                </div>
+
+                <div id="completedList" class="anime-grid">
+                    <div class="loading">Memuat daftar completed...</div>
+                </div>
+
+                <div class="pagination-controls">
+                    <button id="paginationPrev" class="page-btn" disabled>← Sebelumnya</button>
+                    <span id="pageInfo" class="page-info">Halaman 1</span>
+                    <button id="paginationNext" class="page-btn" disabled>Berikutnya →</button>
+                </div>
+            </main>
+
+            <footer class="footer">
+                <p>AnimMe V4 - Powered by Anichin</p>
+            </footer>
+        </div>
+    </div>
+
+    <script src="/v4/completed.js?v=20251031"></script>
+</body>
+</html>

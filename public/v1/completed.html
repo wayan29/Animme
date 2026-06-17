@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Tamat - AnimMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+</head>
+<body class="server-v1 page-completed">
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v1/home'">AnimMe</h1>
+            <div class="nav-menu">
+                <a href="/v1/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link">Anime Ongoing</a>
+                <a href="/completed" class="nav-link active">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link">Semua Anime</a>
+                <a href="/genres" class="nav-link">Genre</a>
+                <a href="/schedule" class="nav-link">Jadwal Rilis</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="completed-header">
+            <h2>Daftar Anime Tamat</h2>
+            <p>Koleksi lengkap anime yang sudah tamat</p>
+        </section>
+
+        <div class="completed-container" id="completedContainer">
+            <div class="loading">Memuat daftar anime...</div>
+        </div>
+
+        <div class="pagination-container" id="paginationContainer" style="display: none;">
+        </div>
+    </main>
+
+    <footer class="footer">
+
+    </footer>
+
+    <script src="/v1/list-ui.js"></script>
+    <script src="/v1/completed.js"></script>
+</body>
+</html>

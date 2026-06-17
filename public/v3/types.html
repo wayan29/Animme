@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Tipe Anime - Kuramanime V3</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-main: #141414;
+            --bg-panel: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-muted: #9ea0a8;
+            --accent: #e50914;
+            --accent-soft: rgba(229, 9, 20, 0.16);
+            --accent-strong: rgba(229, 9, 20, 0.45);
+            --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.45);
+            --shadow-accent: 0 12px 32px rgba(229, 9, 20, 0.35);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background:
+                radial-gradient(circle at 12% 20%, rgba(229, 9, 20, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 88% 12%, rgba(229, 9, 20, 0.12) 0%, transparent 50%),
+                var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .navbar {
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
+            padding: 15px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+            text-shadow: 0 0 18px rgba(229, 9, 20, 0.35);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            text-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+        }
+
+        #headerStats {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 12px 24px;
+            background: var(--accent-soft);
+            border: 1px solid var(--accent-strong);
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--accent);
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--accent);
+            color: var(--text-primary);
+            transform: translateX(-5px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 1.3rem;
+            color: var(--accent);
+        }
+
+        .type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .type-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .type-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-accent);
+            border-color: var(--accent-strong);
+            background: var(--accent-soft);
+        }
+
+        .type-icon {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+        }
+
+        .type-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .type-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Desktop: Maksimal 5 kolom untuk type cards */
+        @media (min-width: 1200px) {
+            .type-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .type-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .type-card {
+                padding: 20px 15px;
+            }
+
+            .type-icon {
+                font-size: 2.5rem;
+            }
+
+            .type-name {
+                font-size: 1.1rem;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="logo" onclick="window.location.href='/v3/home'">🎌 AnimMe V3</div>
+            <div class="nav-links">
+                <a href="/v3/home">Beranda</a>
+                <a href="/v3/ongoing">Sedang Tayang</a>
+                <a href="/v3/finished">Selesai Tayang</a>
+                <a href="/v3/movie">Film</a>
+                <a href="/v3/search">Cari</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="/v3/properties" class="back-btn">← Kembali ke Properti</a>
+
+        <div class="header">
+            <h1>📺 Daftar Tipe Anime</h1>
+            <p>Jelajahi anime berdasarkan tipe atau format</p>
+            <p id="headerStats"></p>
+        </div>
+
+        <div id="loadingIndicator" class="loading" style="display: block;">
+            ⏳ Memuat daftar tipe...
+        </div>
+
+        <div id="typeGrid" class="type-grid" style="display: none;"></div>
+    </div>
+
+    <script>
+        const typeIcons = {
+            'tv': '📺',
+            'movie': '🎬',
+            'ova': '💿',
+            'ona': '🌐',
+            'special': '⭐',
+            'cm': '📹',
+            'music': '🎵',
+            'pv': '🎥'
+        };
+
+        const typeDescriptions = {
+            'tv': 'Serial TV',
+            'movie': 'Film Layar Lebar',
+            'ova': 'Original Video Animation',
+            'ona': 'Original Net Animation',
+            'special': 'Episode Spesial',
+            'cm': 'Commercial',
+            'music': 'Music Video',
+            'pv': 'Promotional Video'
+        };
+
+        async function loadTypes() {
+            try {
+                const response = await fetch('/api/v3/kuramanime/types');
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    displayTypes(data.data);
+                } else {
+                    throw new Error(data.message || 'Failed to load types');
+                }
+
+                document.getElementById('loadingIndicator').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading types:', error);
+                document.getElementById('loadingIndicator').innerHTML =
+                    '❌ Gagal memuat tipe. Silakan refresh halaman.';
+            }
+        }
+
+        function displayTypes(data) {
+            const grid = document.getElementById('typeGrid');
+            const types = data.types || [];
+
+            if (types.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Tidak ada tipe tersedia</p>';
+                grid.style.display = 'block';
+                return;
+            }
+
+            grid.innerHTML = types.map(type => {
+                const icon = typeIcons[type.slug.toLowerCase()] || '📼';
+                const description = typeDescriptions[type.slug.toLowerCase()] || '';
+
+                return `
+                    <a href="/v3/type?type=${type.slug}" class="type-card">
+                        <div class="type-icon">${icon}</div>
+                        <div class="type-name">${type.name}</div>
+                        ${description ? `<div class="type-description">${description}</div>` : ''}
+                    </a>
+                `;
+            }).join('');
+
+            grid.style.display = 'grid';
+
+            document.getElementById('headerStats').textContent =
+                `📊 Total: ${types.length} tipe tersedia`;
+        }
+
+        // Load types on page load
+        loadTypes();
+    </script>
+</body>
+</html>

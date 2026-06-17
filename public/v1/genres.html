@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genre Anime - AnimMe</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/mobile.css">
+</head>
+<body>
+    <nav class="navbar scrolled">
+        <div class="nav-container">
+            <h1 class="logo" onclick="window.location.href='/v1/home'">AnimMe</h1>
+            <div class="nav-menu">
+                <a href="/v1/home" class="nav-link">Beranda</a>
+                <a href="/ongoing" class="nav-link">Anime Ongoing</a>
+                <a href="/completed" class="nav-link">Anime Tamat</a>
+                <a href="/all-anime" class="nav-link">Semua Anime</a>
+                <a href="/genres" class="nav-link active">Genre</a>
+                <a href="/schedule" class="nav-link">Jadwal Rilis</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="genre-header">
+            <h2>Pilih Genre Anime</h2>
+            <p>Temukan anime berdasarkan genre favorit Anda</p>
+        </section>
+
+        <div class="genre-container" id="genreContainer">
+            <div class="loading">Memuat daftar genre...</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+
+    </footer>
+
+    <script src="/v1/list-ui.js"></script>
+    <script src="/v1/genres.js"></script>
+</body>
+</html>

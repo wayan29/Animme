@@ -150,7 +150,7 @@ function registerPages(app) {
 
     const v7StaticRoutes = {
         'v7/home': 'index',
-        'v7/detail': 'maintenance',
+        'v7/detail': 'detail',
         'v7/episode': 'episode',
         'v7/search': 'search',
         'v7/list': 'list'

@@ -124,7 +124,7 @@ function renderAnimeDetail() {
         latestDiv.className = 'latest-episode-card';
         latestDiv.innerHTML = `
             <h3>🔥 Episode Terbaru: ${escapeHtml(latestEpisode.episode)}</h3>
-            <a href="/v7/episode?slug=${extractSlug(latestEpisode.url)}" class="latest-episode-link">
+            <a href="/v7/episode?slug=${encodeURIComponent(extractSlug(latestEpisode.url))}" class="latest-episode-link">
                 ▶️ Tonton Sekarang
             </a>
         `;
@@ -237,7 +237,10 @@ function setupServerSelector() {
             v4: '/v4/home',
             v5: '/v5/home',
             v6: '/v6/home',
-            v7: '/v7/home'
+            v7: '/v7/home',
+            v8: '/v8/home',
+            v9: '/v9/home',
+            v10: '/v10/home'
         };
 
         const targetPath = versionMap[selectedVersion];

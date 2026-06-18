@@ -1137,7 +1137,28 @@ app.get('/api/v7/nekopoi/home', async (req, res) => {
 });
 
 app.get('/api/v7/nekopoi/detail/:slug(*)', async (req, res) => {
-    return sendV7Maintenance(res);
+    try {
+        const slug = String(req.params.slug || '').trim();
+        if (!/^[a-z0-9][a-z0-9_-]{0,220}$/i.test(slug)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid detail slug',
+                data: null
+            });
+        }
+
+        console.log(`[V7] Nekopoi API - Detail request: ${slug}`);
+        const data = await nekopoiScraper.scrapeAnimeDetail(slug);
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Detail error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi detail',
+            data: null
+        });
+    }
 });
 
 app.get('/api/v7/nekopoi/episode/:slug(*)', async (req, res) => {

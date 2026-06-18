@@ -520,6 +520,38 @@ function reattachKuramaDriveQualityMenu() {
     console.log('Kuramadrive quality menu reattached');
 }
 
+// Setup direct MP4/proxied MP4 quality menu in YouTube player UI
+function setupDirectVideoQualityMenu(sources) {
+    if (!youtubePlayer || !Array.isArray(sources) || sources.length === 0) {
+        return;
+    }
+
+    const qualityOptions = sources.map((source) => source.quality).filter(Boolean);
+    youtubePlayer.onQualityMenuClick = () => {
+        youtubePlayer.showOptionsMenu('Quality', qualityOptions, (selectedQuality) => {
+            if (!selectedQuality || selectedQuality === currentQuality) return;
+
+            const currentTime = getCurrentVideoTime();
+            currentQuality = selectedQuality;
+            loadVideo(sources, currentTime);
+        });
+    };
+
+    if (youtubePlayer.elements?.qualityValue) {
+        youtubePlayer.elements.qualityValue.textContent = currentQuality || qualityOptions[0] || 'Auto';
+    }
+
+    if (youtubePlayer.elements?.qualityBadge && currentQuality) {
+        youtubePlayer.elements.qualityBadge.style.display = '';
+        youtubePlayer.elements.qualityBadge.textContent = currentQuality.toUpperCase();
+    }
+
+    const qualityControl = document.getElementById('qualityControl');
+    if (qualityControl) {
+        qualityControl.style.display = 'none';
+    }
+}
+
 // Hide quality selector
 function hideQualitySelector() {
     document.getElementById('qualityControl').style.display = 'none';
@@ -1097,6 +1129,7 @@ function loadVideo(sources, startTime = 0) {
 
     // Initialize YouTube Player
     initializeYouTubePlayer(video, container);
+    setupDirectVideoQualityMenu(validSources);
 
     // Apply playback speed options from settings
     if (playerSettings?.playbackSpeeds && playerSettings.playbackSpeeds.length > 0) {

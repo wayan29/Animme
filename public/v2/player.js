@@ -61,6 +61,19 @@ function isRestrictedEmbedUrl(url = '') {
     }
 }
 
+function getExternalOpenUrl(url = '') {
+    try {
+        const parsed = new URL(url, window.location.origin);
+        if ((parsed.hostname === 'filedon.co' || parsed.hostname.endsWith('.filedon.co')) && /^\/embed\//i.test(parsed.pathname)) {
+            parsed.pathname = parsed.pathname.replace(/^\/embed\//i, '/view/');
+            return parsed.toString();
+        }
+        return parsed.toString();
+    } catch (error) {
+        return String(url || '');
+    }
+}
+
 function findPreferredInitialServer(servers = []) {
     const preferredPatterns = [
         /wibufile\s*1080p/i,
@@ -125,7 +138,7 @@ function renderIframePlayer(streamUrl) {
     const fallback = document.createElement('div');
     fallback.className = 'player-fallback-link';
     const link = document.createElement('a');
-    link.href = streamUrl;
+    link.href = getExternalOpenUrl(streamUrl);
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.textContent = 'Buka server asli';
@@ -370,7 +383,9 @@ async function switchToServer(index) {
             renderIframePlayer(data.stream_url);
             currentEpisode.default_stream_url = data.stream_url;
             activeServerIndex = index;
-            updateAlert(`Streaming dari ${option.label || 'server pilihan'}`);
+            updateAlert(isRestrictedEmbedUrl(data.stream_url)
+                ? `Streaming dari ${option.label || 'server pilihan'}. Jika muncul "Embed Access Restricted", gunakan tombol Buka server asli.`
+                : `Streaming dari ${option.label || 'server pilihan'}`);
         } else {
             showPlayerError('Gagal memuat server streaming.');
         }

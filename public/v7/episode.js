@@ -301,12 +301,22 @@ function groupDownloadLinks(downloadLinks) {
             return false;
         }
 
-        // Skip if URL doesn't look like a valid download URL
-        if (!url.includes('drive.google') && !url.includes('mega.nz') &&
-            !url.includes('mediafire') && !url.includes('zippyshare') &&
-            !url.includes('anonfiles') && !url.includes('solidfiles') &&
-            !url.includes('uptobox') && !url.includes('mirrorace') &&
-            !/\.(mp4|mkv|avi|webm)(\?|$)/i.test(url)) {
+        // Accept current Nekopoi external shortlinks/file hosts and direct video files.
+        const normalized = url.toLowerCase();
+        const hostText = host.toLowerCase();
+        const hasKnownDownloadHost = normalized.includes('drive.google') || normalized.includes('mega.nz') ||
+            normalized.includes('mediafire') || normalized.includes('zippyshare') ||
+            normalized.includes('anonfiles') || normalized.includes('solidfiles') ||
+            normalized.includes('uptobox') || normalized.includes('mirrorace') ||
+            normalized.includes('krakenfiles') || normalized.includes('pixeldrain') ||
+            normalized.includes('mp4upload') || normalized.includes('ouo.io') ||
+            normalized.includes('ouo.press') || hostText.includes('kraken') ||
+            hostText.includes('pixeldrain') || hostText.includes('mp4upload') ||
+            hostText.includes('mirror');
+        const hasDownloadQuality = /^(360p|480p|720p|1080p|HD|FHD|SD|Full HD)$/i.test(link.quality || '');
+        const isDirectVideo = /\.(mp4|mkv|avi|webm)(\?|$)/i.test(url);
+
+        if (!hasKnownDownloadHost && !hasDownloadQuality && !isDirectVideo) {
             return false;
         }
 

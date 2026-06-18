@@ -1,240 +1,196 @@
 const { BASE_URL, fetchPage, imageProxy, extractSlugFromUrl, cleanText } = require('./helpers');
 
-// Scrape episode detail (alias for anime detail since nekopoi is episode-based)
+function isSafeSlug(slug = '') {
+    return /^[a-z0-9][a-z0-9_-]{0,220}$/i.test(slug);
+}
+
+function isSafeHttpUrl(url = '') {
+    if (!url || typeof url !== 'string') return false;
+    if (url === '#' || /^javascript:/i.test(url) || /^data:/i.test(url)) return false;
+    try {
+        const parsed = new URL(url, BASE_URL);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
+
+function absoluteUrl(url = '') {
+    if (!url) return '';
+    try {
+        return new URL(url, BASE_URL).href;
+    } catch {
+        return url;
+    }
+}
+
+function parseQuality(text = '') {
+    const match = text.match(/\[(\d{3,4}p|HD|FHD|SD)\]/i) || text.match(/\b(\d{3,4}p|HD|FHD|SD)\b/i);
+    if (!match) return cleanText(text) || 'Download';
+    const value = match[1].toUpperCase();
+    if (/^\d/.test(value)) return value.toLowerCase();
+    return value;
+}
+
+function parseInfoParagraph($, element) {
+    const $elem = $(element);
+    const label = cleanText($elem.find('strong, b').first().text()).replace(/:$/, '').trim();
+    const rawText = cleanText($elem.text());
+
+    if (label && rawText.toLowerCase().startsWith(label.toLowerCase())) {
+        const value = cleanText(rawText.slice(label.length).replace(/^\s*:\s*/, ''));
+        return { label, value };
+    }
+
+    const match = rawText.match(/^([^:]{2,50})\s*:\s*(.+)$/);
+    if (match) {
+        return { label: cleanText(match[1]).replace(/:$/, '').trim(), value: cleanText(match[2]) };
+    }
+
+    return { label: '', value: '' };
+}
+
+function pushUniqueUrl(items, seen, item) {
+    const url = absoluteUrl(item.url || '');
+    if (!isSafeHttpUrl(url) || seen.has(url)) return;
+    seen.add(url);
+    items.push({ ...item, url });
+}
+
+// Scrape episode detail (Nekopoi currently uses episode-post pages, not /hentai detail URLs)
 async function scrapeEpisode(slug) {
     try {
+        if (!isSafeSlug(slug)) {
+            return {
+                status: 'error',
+                message: 'Invalid episode slug'
+            };
+        }
+
         const url = `${BASE_URL}/${slug}/`;
         const $ = await fetchPage(url);
 
-        // Episode title
-        const title = cleanText($('h1.entry-title, h1.title, .single-title h1').first().text());
+        const title = cleanText(
+            $('.nk-post-header h1').first().text()
+            || $('h1.entry-title, h1.title, .single-title h1, h1').first().text()
+            || $('meta[property="og:title"]').attr('content')
+        );
 
-        // Thumbnail
-        const thumbnail = $('.entry-content img, .thumbnail img, article img').first().attr('src') ||
-                          $('.entry-content img, .thumbnail img, article img').first().attr('data-src');
+        const thumbnail = $('.nk-featured-img img, .nk-post-body img.wp-post-image').first().attr('src')
+            || $('.entry-content img, .thumbnail img, article img').first().attr('src')
+            || $('.entry-content img, .thumbnail img, article img').first().attr('data-src')
+            || $('meta[property="og:image"]').attr('content');
 
-        // Description
-        const description = cleanText($('.entry-content p, .synopsis, .description').first().text());
-
-        // Extract video info
         const videoInfo = {};
-        $('.video-info li, .info-item, .detail-info li').each((_, elem) => {
-            const $elem = $(elem);
-            const label = cleanText($elem.find('.label, strong, b').text()).replace(':', '');
-            const value = cleanText($elem.clone().children().remove().end().text());
+        const descriptionParts = [];
+        $('.konten p, .entry-content p, .synopsis p, .description p').each((_, elem) => {
+            const text = cleanText($(elem).text());
+            if (!text) return;
+
+            const { label, value } = parseInfoParagraph($, elem);
             if (label && value) {
-                videoInfo[label.toLowerCase()] = value;
+                videoInfo[label.toLowerCase().trim()] = value;
+            } else {
+                descriptionParts.push(text);
             }
         });
 
-        // Stream URLs
+        let description = cleanText(descriptionParts.join(' '));
+        if (!description) {
+            description = cleanText($('meta[property="og:description"]').attr('content') || $('.konten').first().text());
+        }
+
         const streamUrls = [];
-        $('iframe[src], .video-player iframe, .player iframe').each((_, elem) => {
+        const seenStreams = new Set();
+        $('#nk-player .nk-player-frame iframe[src], .nk-player-frame iframe[src], .nk-player-wrapper iframe[src], .video-player iframe[src], .player iframe[src], iframe[src]').each((_, elem) => {
             const src = $(elem).attr('src');
-            if (src) {
-                streamUrls.push({
-                    provider: detectProvider(src),
-                    url: src,
-                    quality: 'Stream'
-                });
-            }
+            pushUniqueUrl(streamUrls, seenStreams, {
+                provider: detectProvider(src),
+                url: src,
+                quality: cleanText($(elem).closest('.nk-player-frame').attr('id') || '') || 'Stream'
+            });
         });
 
-        // Video sources from video tags
         $('video source, .video-player source').each((_, elem) => {
             const src = $(elem).attr('src');
             const type = $(elem).attr('type');
-            if (src) {
-                streamUrls.push({
-                    provider: 'Direct',
-                    url: src,
-                    type: type || 'video/mp4',
-                    quality: 'HD'
-                });
-            }
+            pushUniqueUrl(streamUrls, seenStreams, {
+                provider: 'Direct',
+                url: src,
+                type: type || 'video/mp4',
+                quality: 'Direct Video'
+            });
         });
 
-        // Download links - Enhanced extraction
         const downloadLinks = [];
-        
-        // Method 1: Direct download links with common patterns
-        $('a[href*="drive.google"], a[href*="zippyshare"], a[href*="mega.nz"], a[href*="mediafire"], a[href*="anonfiles"], a[href*="solidfiles"], a[href*="uptobox"], a[href*="files.im"], a[href*="gounlimited.to"], a[href*="mirrorace.com"]').each((_, elem) => {
-            const $elem = $(elem);
-            const text = cleanText($elem.text());
-            const url = $elem.attr('href');
+        const seenDownloadUrls = new Set();
 
-            if (url && !url.includes('#')) {
-                downloadLinks.push({
-                    quality: text || 'Download',
-                    url,
-                    host: extractHost(url)
+        $('.nk-download-section .nk-download-row, .nk-download-row').each((_, row) => {
+            const $row = $(row);
+            const qualityText = cleanText($row.find('.nk-download-name').first().text()) || cleanText($row.text());
+            const quality = parseQuality(qualityText);
+
+            $row.find('.nk-download-links a[href], a[href]').each((__, link) => {
+                const $link = $(link);
+                const linkUrl = $link.attr('href');
+                if (!isDownloadCandidate(linkUrl)) return;
+
+                pushUniqueUrl(downloadLinks, seenDownloadUrls, {
+                    quality,
+                    url: linkUrl,
+                    host: cleanText($link.text()) || extractHost(linkUrl)
                 });
-            }
+            });
         });
 
-        // Method 2: Download links with class or text patterns
-        $('.download-link a, .download-button a, .btn-download a, a[href*="download"]').each((_, elem) => {
-            const $elem = $(elem);
-            const text = cleanText($elem.text());
-            const url = $elem.attr('href');
+        // Legacy/generic fallback for older pages.
+        if (downloadLinks.length === 0) {
+            $('a[href]').each((_, elem) => {
+                const $elem = $(elem);
+                const linkUrl = $elem.attr('href');
+                const text = cleanText($elem.text());
+                if (!isDownloadCandidate(linkUrl)) return;
+                if (!/(download|unduh|360p|480p|720p|1080p|kraken|pixeldrain|mp4upload|mega|drive|mediafire|mirror)/i.test(`${text} ${linkUrl}`)) return;
 
-            if (url && !url.includes('#') && !url.includes('javascript:')) {
-                downloadLinks.push({
-                    quality: text || 'Download',
-                    url,
-                    host: extractHost(url)
+                pushUniqueUrl(downloadLinks, seenDownloadUrls, {
+                    quality: parseQuality(text),
+                    url: linkUrl,
+                    host: text && !/\d{3,4}p/i.test(text) ? text : extractHost(linkUrl)
                 });
-            }
-        });
-
-        // Method 3: Look for quality-specific download links (360p, 480p, 720p, 1080p)
-        $('a').each((_, elem) => {
-            const $elem = $(elem);
-            const text = cleanText($elem.text());
-            const url = $elem.attr('href');
-
-            if (url && text && (text.includes('360p') || text.includes('480p') || text.includes('720p') || text.includes('1080p') || text.includes('HD') || text.includes('FHD') || text.includes('SD')) && !url.includes('#') && !url.includes('javascript:')) {
-                // Extract quality from text
-                let quality = text;
-                if (text.includes('360p')) quality = '360p';
-                else if (text.includes('480p')) quality = '480p';
-                else if (text.includes('720p')) quality = '720p';
-                else if (text.includes('1080p')) quality = '1080p';
-                else if (text.includes('HD')) quality = 'HD';
-                else if (text.includes('FHD')) quality = 'Full HD';
-                else if (text.includes('SD')) quality = 'SD';
-
-                downloadLinks.push({
-                    quality: quality,
-                    url: url,
-                    host: extractHost(url)
-                });
-            }
-        });
-
-        // Method 4: Table/list based download links
-        $('.download-list tr, .download-table tr, table tr').each((_, elem) => {
-            const $elem = $(elem);
-            const cells = $elem.find('td');
-            const quality = cleanText($elem.find('td:first, .quality, [class*="quality"]').text());
-            const $link = $elem.find('a[href]');
-            const url = $link.attr('href');
-
-            if (url && url !== '#' && !url.includes('javascript:') && (quality || cleanText($link.text()))) {
-                downloadLinks.push({
-                    quality: quality || cleanText($link.text()) || 'Download',
-                    url: url,
-                    host: extractHost(url)
-                });
-            }
-        });
-
-        // Method 5: Extract from lists or divs with download indicators
-        $('li, div').each((_, elem) => {
-            const $elem = $(elem);
-            const text = cleanText($elem.text());
-            const $link = $elem.find('a[href]');
-            const url = $link.attr('href');
-
-            // Look for download-related keywords
-            if (url && (text.includes('Download') || text.includes('Unduh') || text.includes('Google Drive') || text.includes('Mega') || text.includes('Zippy') || text.includes('Mediafire')) && !url.includes('#') && !url.includes('javascript:')) {
-                downloadLinks.push({
-                    quality: text || 'Download',
-                    url: url,
-                    host: extractHost(url)
-                });
-            }
-        });
-
-        // Log original download links for debugging
-        console.log(`[V7 Episode] Found ${downloadLinks.length} download links before filtering`);
-
-        // Remove duplicates and invalid URLs
-        const seenUrls = new Set();
-        const cleanedDownloadLinks = downloadLinks.filter(link => {
-            const url = link.url || '';
-            const host = link.host || '';
-            const quality = link.quality || '';
-
-            // Skip if URL already seen
-            if (seenUrls.has(url)) {
-                return false;
-            }
-
-            // Skip if URL is empty or invalid
-            if (!url || url === '#' || url.includes('javascript:')) {
-                return false;
-            }
-
-            // Skip stream embed URLs (not downloadable)
-            if (url.includes('fembed') || url.includes('femax') ||
-                url.includes('streamtape') || url.includes('doodstream') ||
-                url.includes('iframe') || url.includes('embed')) {
-                return false;
-            }
-
-            // Skip if host indicates it's a stream source
-            if (host === 'Stream Source' || host === 'Direct Source') {
-                return false;
-            }
-
-            // Skip if quality indicates it's a stream
-            if (quality === 'Stream' || quality === 'Stream Quality' ||
-                quality === 'Direct Video') {
-                return false;
-            }
-
-            // Only allow known file hosting services or direct video files
-            const isKnownHost = url.includes('drive.google') || url.includes('mega.nz') ||
-                              url.includes('mediafire') || url.includes('zippyshare') ||
-                              url.includes('anonfiles') || url.includes('solidfiles') ||
-                              url.includes('uptobox') || url.includes('mirrorace') ||
-                              url.includes('files.im') || url.includes('gounlimited');
-
-            const isDirectVideo = /\.(mp4|mkv|avi|webm)(\?|$)/i.test(url);
-
-            if (!isKnownHost && !isDirectVideo) {
-                return false;
-            }
-
-            seenUrls.add(url);
-            return true;
-        });
-
-        console.log(`[V7 Episode] ${cleanedDownloadLinks.length} download links after filtering`);
-        if (cleanedDownloadLinks.length > 0) {
-            console.log('[V7 Episode] Valid download links:', cleanedDownloadLinks.map(l => `${l.quality} - ${l.host}`).join(', '));
+            });
         }
 
-        // Tags/Genres
         const genres = [];
         $('a[rel="tag"], .genre a, .tags a, .category a').each((_, elem) => {
             const $elem = $(elem);
+            const name = cleanText($elem.text());
+            if (!name) return;
             genres.push({
-                name: cleanText($elem.text()),
+                name,
                 slug: extractSlugFromUrl($elem.attr('href'))
             });
         });
 
-        // Related/Previous/Next episodes
-        const navigation = {
-            prev: null,
-            next: null
-        };
+        if (!genres.length && videoInfo.genre) {
+            videoInfo.genre.split(/,|\//).map(cleanText).filter(Boolean).forEach((name) => {
+                genres.push({ name, slug: '' });
+            });
+        }
 
-        const prevLink = $('.nav-previous a, .prev-episode a, a[rel="prev"]').first();
+        const navigation = { prev: null, next: null };
+        const prevLink = $('.nk-episode-nav a.nk-episode-prev, .nav-previous a, .prev-episode a, a[rel="prev"]').first();
         if (prevLink.length) {
             navigation.prev = {
-                title: cleanText(prevLink.text() || prevLink.attr('title')),
+                title: cleanText(prevLink.find('span').text() || prevLink.text() || prevLink.attr('title')),
                 slug: extractSlugFromUrl(prevLink.attr('href')),
                 url: prevLink.attr('href')
             };
         }
 
-        const nextLink = $('.nav-next a, .next-episode a, a[rel="next"]').first();
+        const nextLink = $('.nk-episode-nav a.nk-episode-next, .nav-next a, .next-episode a, a[rel="next"]').first();
         if (nextLink.length) {
             navigation.next = {
-                title: cleanText(nextLink.text() || nextLink.attr('title')),
+                title: cleanText(nextLink.find('span').text() || nextLink.text() || nextLink.attr('title')),
                 slug: extractSlugFromUrl(nextLink.attr('href')),
                 url: nextLink.attr('href')
             };
@@ -249,7 +205,7 @@ async function scrapeEpisode(slug) {
                 description,
                 videoInfo,
                 streamUrls,
-                downloadLinks: cleanedDownloadLinks,
+                downloadLinks,
                 genres,
                 navigation
             }
@@ -262,22 +218,33 @@ async function scrapeEpisode(slug) {
     }
 }
 
+function isDownloadCandidate(url = '') {
+    if (!isSafeHttpUrl(url)) return false;
+    const normalized = absoluteUrl(url).toLowerCase();
+    if (normalized.includes('iframe') || normalized.includes('/embed')) return false;
+    if (/playmogo|streampoi|fembed|femax|streamtape|doodstream/.test(normalized)) return false;
+    return true;
+}
+
 // Helper: Detect video provider
-function detectProvider(url) {
-    if (url.includes('youtube.com') || url.includes('youtu.be')) return 'YouTube';
-    if (url.includes('dailymotion.com')) return 'Dailymotion';
-    if (url.includes('vimeo.com')) return 'Vimeo';
-    if (url.includes('fembed') || url.includes('femax')) return 'Fembed';
-    if (url.includes('streamtape')) return 'Streamtape';
-    if (url.includes('doodstream')) return 'Doodstream';
+function detectProvider(url = '') {
+    const lower = String(url).toLowerCase();
+    if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'YouTube';
+    if (lower.includes('dailymotion.com')) return 'Dailymotion';
+    if (lower.includes('vimeo.com')) return 'Vimeo';
+    if (lower.includes('playmogo')) return 'Playmogo';
+    if (lower.includes('streampoi')) return 'Streampoi';
+    if (lower.includes('fembed') || lower.includes('femax')) return 'Fembed';
+    if (lower.includes('streamtape')) return 'Streamtape';
+    if (lower.includes('doodstream')) return 'Doodstream';
     return 'External';
 }
 
 // Helper: Extract host from URL
 function extractHost(url) {
     try {
-        const urlObj = new URL(url);
-        return urlObj.hostname;
+        const urlObj = new URL(url, BASE_URL);
+        return urlObj.hostname.replace(/^www\./, '');
     } catch {
         return 'unknown';
     }

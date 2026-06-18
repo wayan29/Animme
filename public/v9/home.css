@@ -1,0 +1,399 @@
+/* V9 Home refresh: Auratail + Dailymotion feed identity */
+body.server-v9.v9-home-page {
+    min-height: 100vh;
+    background:
+        radial-gradient(ellipse 110% 70% at 50% -18%, rgba(0, 103, 255, 0.20), transparent 42%),
+        radial-gradient(circle at 88% 12%, rgba(0, 210, 255, 0.12), transparent 32%),
+        radial-gradient(circle at 9% 82%, rgba(124, 58, 237, 0.10), transparent 30%),
+        linear-gradient(180deg, #06111f 0%, #0a1020 42%, #05070d 100%);
+    color: #f8fbff;
+}
+
+body.server-v9.v9-home-page.home-with-sidebar .content-area {
+    min-width: 0;
+    max-width: calc(100vw - 260px);
+    overflow-x: clip;
+}
+
+body.server-v9.v9-home-page.home-with-sidebar .main-content,
+body.server-v9.v9-home-page.home-with-sidebar .topbar,
+body.server-v9.v9-home-page.home-with-sidebar .footer {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.v9-home-page .topbar {
+    backdrop-filter: blur(16px);
+}
+
+.v9-home-page .sidebar .nav-link.active {
+    background: linear-gradient(90deg, rgba(0, 103, 255, 0.20), rgba(0, 210, 255, 0.06));
+    color: #93c5fd;
+}
+
+.v9-home-page .hero-carousel {
+    position: relative;
+    overflow: hidden;
+    min-height: 340px;
+    margin: 24px 28px 0;
+    border-radius: 28px;
+    border: 1px solid rgba(96, 165, 250, 0.20);
+    background:
+        linear-gradient(90deg, rgba(96, 165, 250, 0.045) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(9, 22, 43, 0.96), rgba(6, 12, 25, 0.96));
+    background-size: 44px 44px, auto;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.v9-home-page .hero-carousel::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 5px;
+    background: linear-gradient(180deg, #60a5fa, #00d2ff, #8b5cf6);
+    z-index: 4;
+}
+
+.v9-home-page .hero-carousel::after {
+    content: 'DAILYMOTION';
+    position: absolute;
+    right: clamp(14px, 4vw, 58px);
+    bottom: -8px;
+    max-width: min(68vw, 620px);
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.04);
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.v9-home-page .carousel-container,
+.v9-home-page .carousel-slide {
+    min-width: 0;
+}
+
+.v9-home-page .carousel-slide {
+    border-radius: 28px;
+    background: radial-gradient(circle at 20% 20%, rgba(0, 103, 255, 0.20), transparent 34%);
+}
+
+.v9-home-page .carousel-image {
+    filter: saturate(1.12) contrast(1.03);
+}
+
+.v9-home-page .carousel-slide::before {
+    background: linear-gradient(90deg, rgba(4, 10, 20, 0.94) 0%, rgba(4, 10, 20, 0.62) 42%, rgba(4, 10, 20, 0.10) 100%);
+}
+
+.v9-home-page .carousel-content {
+    position: relative;
+    z-index: 3;
+    max-width: 720px;
+}
+
+.v9-home-page .carousel-content::before {
+    content: 'Auratail · Dailymotion Feed';
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 12px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.18);
+    border: 1px solid rgba(96, 165, 250, 0.34);
+    color: #bfdbfe;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.v9-home-page .carousel-title {
+    max-width: 760px;
+    background: linear-gradient(135deg, #f8fbff 0%, #93c5fd 48%, #67e8f9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    overflow-wrap: anywhere;
+}
+
+.v9-home-page .carousel-description {
+    color: rgba(219, 234, 254, 0.78);
+}
+
+.v9-home-page .carousel-badge,
+.v9-home-page .carousel-type,
+.v9-home-page .carousel-btn-watch {
+    border: 1px solid rgba(96, 165, 250, 0.28);
+    background: rgba(37, 99, 235, 0.18);
+    color: #dbeafe;
+}
+
+.v9-home-page .carousel-btn-watch {
+    box-shadow: 0 12px 28px rgba(37, 99, 235, 0.18);
+}
+
+.v9-home-page .carousel-btn {
+    border: 1px solid rgba(96, 165, 250, 0.28);
+    background: rgba(6, 13, 27, 0.70);
+    color: #dbeafe;
+    backdrop-filter: blur(10px);
+}
+
+.v9-home-page .indicator {
+    background: rgba(148, 163, 184, 0.45);
+}
+
+.v9-home-page .indicator.active {
+    background: linear-gradient(90deg, #60a5fa, #22d3ee);
+}
+
+.v9-home-page .main-content {
+    padding-top: 26px;
+}
+
+.v9-home-page .anime-section {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+    padding: 24px;
+    border-radius: 24px;
+    border: 1px solid rgba(96, 165, 250, 0.16);
+    background:
+        linear-gradient(90deg, rgba(96, 165, 250, 0.030) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(9, 22, 43, 0.95), rgba(6, 12, 25, 0.95));
+    background-size: 44px 44px, auto;
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.v9-home-page .anime-section::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 22px;
+    bottom: 22px;
+    width: 4px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #60a5fa, #22d3ee, #8b5cf6);
+}
+
+.v9-home-page .v9-section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 20px;
+}
+
+.v9-home-page .section-title {
+    margin: 0;
+    color: #f8fbff;
+    font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+}
+
+.v9-home-page .section-title::after {
+    content: '';
+    display: block;
+    width: 70px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #60a5fa, rgba(34, 211, 238, 0));
+}
+
+.v9-home-page .section-badge {
+    min-width: 36px;
+    min-height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(96, 165, 250, 0.30);
+    background: rgba(37, 99, 235, 0.15);
+    color: #bfdbfe;
+    font-weight: 900;
+}
+
+.v9-home-page .anime-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 18px;
+    overflow: visible;
+    min-width: 0;
+}
+
+.v9-home-page .anime-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid rgba(96, 165, 250, 0.13);
+    background: linear-gradient(180deg, rgba(11, 22, 40, 0.98), rgba(5, 10, 20, 0.98));
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.v9-home-page .anime-card::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, #60a5fa, rgba(34, 211, 238, 0.66), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.v9-home-page .anime-card:hover,
+.v9-home-page .anime-card:focus-within {
+    transform: translateY(-5px);
+    border-color: rgba(96, 165, 250, 0.38);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(96, 165, 250, 0.10);
+}
+
+.v9-home-page .anime-card:hover::after,
+.v9-home-page .anime-card:focus-within::after {
+    opacity: 1;
+}
+
+.v9-home-page .anime-poster {
+    position: relative;
+    overflow: hidden;
+    background: #07111f;
+    aspect-ratio: 16 / 9;
+    height: auto;
+}
+
+.v9-home-page .anime-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+}
+
+.v9-home-page .anime-card:hover .anime-poster img {
+    transform: scale(1.05);
+}
+
+.v9-home-page .anime-badge,
+.v9-home-page .anime-type,
+.v9-home-page .anime-type-badge,
+.v9-home-page .anime-episode {
+    border: 1px solid rgba(96, 165, 250, 0.26);
+    background: rgba(15, 23, 42, 0.78);
+    color: #dbeafe;
+    backdrop-filter: blur(8px);
+}
+
+.v9-home-page .anime-badge {
+    background: rgba(37, 99, 235, 0.82);
+    color: #fff;
+}
+
+.v9-home-page .anime-info {
+    min-width: 0;
+    padding: 13px;
+}
+
+.v9-home-page .anime-title {
+    color: #f8fbff;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.v9-home-page .anime-meta {
+    min-width: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.v9-home-page .loading,
+.v9-home-page .error-message {
+    grid-column: 1 / -1;
+    padding: 28px;
+    border-radius: 18px;
+    border: 1px dashed rgba(96, 165, 250, 0.22);
+    background: rgba(37, 99, 235, 0.07);
+    color: rgba(219, 234, 254, 0.76);
+    text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .v9-home-page .anime-card,
+    .v9-home-page .anime-poster img,
+    .v9-home-page .carousel-slide {
+        transition: none;
+    }
+}
+
+@media (max-width: 1024px) {
+    body.server-v9.v9-home-page.home-with-sidebar .content-area {
+        max-width: 100vw;
+    }
+
+    .v9-home-page .hero-carousel {
+        margin: 88px 16px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .v9-home-page .hero-carousel {
+        min-height: 300px;
+        border-radius: 22px;
+    }
+
+    .v9-home-page .hero-carousel::after {
+        right: 12px;
+        bottom: -4px;
+        max-width: 78vw;
+        font-size: 2.4rem;
+        letter-spacing: 0.05em;
+    }
+
+    .v9-home-page .carousel-content {
+        padding: 24px;
+    }
+
+    .v9-home-page .carousel-title {
+        font-size: clamp(1.55rem, 8vw, 2.2rem);
+    }
+
+    .v9-home-page .carousel-description {
+        display: none;
+    }
+
+    .v9-home-page .main-content {
+        padding: 18px 14px 44px;
+    }
+
+    .v9-home-page .anime-section {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .v9-home-page .v9-section-head {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .v9-home-page .anime-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+}
+
+@media (max-width: 380px) {
+    .v9-home-page .anime-row {
+        grid-template-columns: 1fr;
+    }
+}

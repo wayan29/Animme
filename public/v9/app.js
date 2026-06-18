@@ -112,18 +112,21 @@ function renderCarousel(animeList) {
     container.innerHTML = animeList.map((anime, index) => {
         const detailUrl = escapeAttribute(resolveAnimeUrl(anime));
             
+        const poster = escapeAttribute(anime.poster || '/placeholder.svg');
+        const title = escapeHtml(anime.title || 'Auratail Video');
+        const description = anime.description ? `${escapeHtml(String(anime.description).substring(0, 150))}...` : '';
         return `
         <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="window.open('${detailUrl}', '_blank')">
-            <div class="carousel-image" style="background-image: url('${anime.poster || '/placeholder.svg'}');"></div>
+            <div class="carousel-image" style="background-image: url('${poster}');"></div>
             <div class="carousel-content">
-                <h2 class="carousel-title">${anime.title}</h2>
+                <h2 class="carousel-title">${title}</h2>
                 <div class="carousel-meta">
-                    ${anime.episode ? `<span class="carousel-badge">Episode ${anime.episode}</span>` : ''}
-                    ${anime.type ? `<span class="carousel-type">${anime.type}</span>` : ''}
+                    ${anime.episode ? `<span class="carousel-badge">Episode ${escapeHtml(anime.episode)}</span>` : ''}
+                    ${anime.type ? `<span class="carousel-type">${escapeHtml(anime.type)}</span>` : ''}
                 </div>
-                ${anime.description ? `<p class="carousel-description">${anime.description.substring(0, 150)}...</p>` : ''}
+                ${description ? `<p class="carousel-description">${description}</p>` : ''}
                 <div class="carousel-btn-watch" onclick="event.stopPropagation(); window.open('${detailUrl}', '_blank')">
-                    ▶ Lihat Detail
+                    ▶ Tonton di AnimMe
                 </div>
             </div>
         </div>
@@ -203,24 +206,35 @@ function renderAnimeRow(containerId, animeList, countBadgeId) {
         const detailUrl = escapeAttribute(resolveAnimeUrl(anime));
 
         return `
-            <div class="anime-card" onclick="window.open('${detailUrl}', '_blank')">
+            <div class="anime-card" onclick="window.open('${detailUrl}', '_blank')" role="link" tabindex="0">
                 <div class="anime-poster">
-                    <img src="${anime.poster || '/placeholder.svg'}"
-                         alt="${anime.title}"
+                    <img src="${escapeAttribute(anime.poster || '/placeholder.svg')}"
+                         alt="${escapeAttribute(anime.title || 'Auratail Video')}"
+                         loading="lazy"
+                         decoding="async"
                          onerror="this.src='/placeholder.svg'">
-                    ${anime.episode ? `<div class="anime-badge">${anime.episode}</div>` : ''}
-                    ${anime.type ? `<div class="anime-type">${anime.type}</div>` : ''}
+                    ${anime.episode ? `<div class="anime-badge">${escapeHtml(anime.episode)}</div>` : ''}
+                    ${anime.type ? `<div class="anime-type">${escapeHtml(anime.type)}</div>` : '<div class="anime-type">Video</div>'}
                 </div>
                 <div class="anime-info">
-                    <h4 class="anime-title">${anime.title}</h4>
+                    <h4 class="anime-title">${escapeHtml(anime.title || 'Auratail Video')}</h4>
                     <div class="anime-meta">
-                        ${anime.episode ? `<span class="anime-episode">${anime.episode}</span>` : ''}
-                        ${anime.type ? `<span class="anime-type-badge">${anime.type}</span>` : ''}
+                        ${anime.episode ? `<span class="anime-episode">${escapeHtml(anime.episode)}</span>` : '<span class="anime-episode">Dailymotion</span>'}
+                        ${anime.type ? `<span class="anime-type-badge">${escapeHtml(anime.type)}</span>` : '<span class="anime-type-badge">Internal Play</span>'}
                     </div>
                 </div>
             </div>
         `;
     }).join('');
+
+    container.querySelectorAll('.anime-card[role="link"]').forEach((card) => {
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                card.click();
+            }
+        });
+    });
 }
 
 function showError(containerId) {
@@ -254,6 +268,10 @@ function isDailymotionItem(anime) {
 function escapeAttribute(str) {
     if (str === undefined || str === null) return '';
     return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#039;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function escapeHtml(value) {
+    return escapeAttribute(value);
 }
 
 function resolveAnimeUrl(anime) {

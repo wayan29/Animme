@@ -52,11 +52,47 @@
             font-weight: bold;
         }
 
+        .home-section {
+            margin-bottom: 2.5rem;
+        }
+
         .anime-grid {
+            --grid-cols: 4;
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr)) !important;
+            gap: clamp(12px, 1.4vw, 20px);
+            margin-bottom: 0.75rem;
+        }
+
+        .server-v5 .anime-grid {
+            grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        }
+
+        @media (max-width: 768px) {
+            .server-v5 .anime-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+
+        .section-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            margin-top: 0.25rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .section-more:hover {
+            color: var(--accent-color);
+            transform: translateX(4px);
+        }
+
+        .section-more.hidden {
+            display: none;
         }
 
         .anime-card {
@@ -80,12 +116,18 @@
 
         .anime-poster {
             width: 100%;
-            height: 220px;
+            aspect-ratio: 2 / 3;
+            height: auto;
             background: #2a2a2a;
             background-size: cover;
             background-position: center;
             position: relative;
             overflow: hidden;
+        }
+
+        .server-v5 .anime-poster {
+            background-size: cover !important;
+            background-position: center !important;
         }
 
         .anime-poster::after {
@@ -172,71 +214,53 @@
             margin-bottom: 1rem;
         }
 
-        /* Mobile responsive */
+        /* Mobile: 2 kolom */
         @media (max-width: 768px) {
             .server-v5 .main-content {
-                padding: 0 20px 60px;
+                padding: 0 16px 60px;
             }
 
             .server-v5 .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 6px;
-                margin-bottom: 18px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 14px;
             }
 
             .server-v5 .section-title {
-                font-size: 1.25rem;
+                font-size: 1.15rem;
             }
 
             .server-v5 .section-badge {
-                font-size: 0.75rem;
-                padding: 0.2rem 0.75rem;
-            }
-
-            .server-v5 .anime-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 12px;
+                font-size: 0.72rem;
+                padding: 0.2rem 0.65rem;
             }
 
             .server-v5 .anime-card {
-                border-radius: 12px;
-                box-shadow: 0 6px 16px rgba(10, 14, 35, 0.35);
-            }
-
-            .server-v5 .anime-poster {
-                height: 175px;
+                border-radius: 10px;
+                box-shadow: 0 4px 14px rgba(10, 14, 35, 0.3);
             }
 
             .server-v5 .anime-info {
-                padding: 12px;
+                padding: 10px;
             }
 
             .server-v5 .anime-title {
-                font-size: 0.88rem;
+                font-size: 0.82rem;
                 min-height: auto;
+                -webkit-line-clamp: 2;
+                margin-bottom: 6px;
             }
 
             .server-v5 .anime-meta {
-                font-size: 0.75rem;
-            }
-        }
-
-        @media (max-width: 540px) {
-            .server-v5 .anime-grid {
-                grid-template-columns: repeat(2, minmax(140px, 1fr));
-                gap: 10px;
+                font-size: 0.72rem;
+                flex-wrap: wrap;
+                gap: 4px;
             }
 
-            .server-v5 .anime-poster {
-                height: 160px;
-            }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-            .anime-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 16px;
+            .server-v5 .section-more {
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -304,7 +328,7 @@
                 <div id="errorContainer" style="display: none;"></div>
 
                 <!-- Latest Releases Section -->
-                <section id="latestSection">
+                <section id="latestSection" class="home-section">
                     <div class="section-header">
                         <h2 class="section-title">⭐ Rilis Terbaru</h2>
                         <span class="section-badge" id="latestCount">0</span>
@@ -315,10 +339,25 @@
                             <p>Memuat anime terbaru...</p>
                         </div>
                     </div>
+                    <a href="/v5/latest" class="section-more hidden" id="latestMore">Lihat Semua Rilis →</a>
+                </section>
+
+                <!-- Recommendations Section -->
+                <section id="recommendationSection" class="home-section" style="display: none;">
+                    <div class="section-header">
+                        <h2 class="section-title">💡 Rekomendasi</h2>
+                        <span class="section-badge" id="recommendationCount">0</span>
+                    </div>
+                    <div class="anime-grid" id="recommendationAnime">
+                        <div class="loading">
+                            <div class="loading-spinner"></div>
+                            <p>Memuat rekomendasi...</p>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- Ongoing Section -->
-                <section id="ongoingSection" style="display: none;">
+                <section id="ongoingSection" class="home-section" style="display: none;">
                     <div class="section-header">
                         <h2 class="section-title">🔥 Anime Ongoing</h2>
                         <span class="section-badge" id="ongoingCount">0</span>
@@ -339,7 +378,7 @@
         </div>
     </div>
 
-    <script src="/v5/app.js?v=20251101"></script>
+    <script src="/v5/app.js?v=20260615"></script>
     <script src="/shared/server-select.js"></script>
 </body>
 </html>

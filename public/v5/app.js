@@ -1,16 +1,16 @@
 // AnimMe V5 - Anoboy Application
 const API_BASE = '/api/v5/anoboy';
+const GRID_DISPLAY_LIMIT = 20;
 
-// State management
-let appState = {
+const appState = {
     latestReleases: [],
+    recommendations: [],
     ongoingAnime: [],
     pagination: {},
     isLoading: false,
     error: null
 };
 
-// Initialize app on page load
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[V5] Initializing Anoboy application...');
     initializeApp();
@@ -18,37 +18,44 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileSearch();
 });
 
-// Initialize application
 async function initializeApp() {
     try {
         appState.isLoading = true;
 
-        // Load homepage data
         console.log('[V5] Fetching homepage data...');
-        const homepageData = await fetchAPI('/home');
+        const [homepageData, ongoingData] = await Promise.all([
+            fetchAPI('/home'),
+            fetchAPI('/ongoing').catch((error) => {
+                console.warn('[V5] Ongoing fetch failed:', error.message);
+                return null;
+            })
+        ]);
 
         if (homepageData && homepageData.status === 'success' && homepageData.data) {
-            const { latest_releases, ongoing_anime, pagination } = homepageData.data;
+            const { latest_releases, recommendations, pagination } = homepageData.data;
 
             appState.latestReleases = latest_releases || [];
-            appState.ongoingAnime = ongoing_anime || [];
+            appState.recommendations = recommendations || [];
             appState.pagination = pagination || {};
+
+            if (ongoingData && ongoingData.status === 'success') {
+                appState.ongoingAnime = Array.isArray(ongoingData.data) ? ongoingData.data : [];
+            }
 
             console.log('[V5] Data loaded:', {
                 latest: appState.latestReleases.length,
+                recommendations: appState.recommendations.length,
                 ongoing: appState.ongoingAnime.length
             });
 
-            // Render sections
             renderLatestReleases();
+            renderRecommendations();
             renderOngoingAnime();
         } else {
             showError('Gagal memuat data homepage');
         }
 
-        // Setup server selector
         setupServerSelector();
-
     } catch (error) {
         console.error('[V5] Error initializing app:', error);
         showError('Terjadi kesalahan saat memuat data');
@@ -57,165 +64,191 @@ async function initializeApp() {
     }
 }
 
-// Fetch data from API
 async function fetchAPI(endpoint) {
-    try {
-        const response = await fetch(`${API_BASE}${endpoint}`);
+    const response = await fetch(`${API_BASE}${endpoint}`);
 
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(`[V5] API Error (${endpoint}):`, error);
-        throw error;
-    }
-}
-
-// Render latest releases section
-function renderLatestReleases() {
-    const section = document.getElementById('latestSection');
-    const container = document.getElementById('latestReleases');
-    const countBadge = document.getElementById('latestCount');
-
-    if (!appState.latestReleases || appState.latestReleases.length === 0) {
-        container.innerHTML = '<p class="loading">Tidak ada anime terbaru tersedia</p>';
-        return;
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    section.style.display = 'block';
-    countBadge.textContent = appState.latestReleases.length;
-
-    // Clear loading state
-    container.innerHTML = '';
-
-    appState.latestReleases.forEach(anime => {
-        const card = createAnimeCard(anime);
-        container.appendChild(card);
-    });
+    return response.json();
 }
 
-// Render ongoing anime section
-function renderOngoingAnime() {
-    const section = document.getElementById('ongoingSection');
-    const container = document.getElementById('ongoingAnime');
-    const countBadge = document.getElementById('ongoingCount');
+function formatSectionCount(total, displayed) {
+    if (total > displayed) {
+        return `${displayed}/${total}`;
+    }
+    return String(total);
+}
 
-    if (!appState.ongoingAnime || appState.ongoingAnime.length === 0) {
+function renderAnimeGridSection({
+    sectionId,
+    containerId,
+    countId,
+    moreId,
+    items,
+    emptyMessage,
+    moreHref = null,
+    showMoreWhenTruncated = true
+}) {
+    const section = document.getElementById(sectionId);
+    const container = document.getElementById(containerId);
+    const countBadge = document.getElementById(countId);
+    const moreLink = moreId ? document.getElementById(moreId) : null;
+
+    if (!section || !container) return;
+
+    if (!items || items.length === 0) {
         section.style.display = 'none';
         return;
     }
 
     section.style.display = 'block';
-    countBadge.textContent = appState.ongoingAnime.length;
+    const displayedItems = items.slice(0, GRID_DISPLAY_LIMIT);
+    const isTruncated = items.length > GRID_DISPLAY_LIMIT;
 
-    // Clear loading state
-    container.innerHTML = '';
+    if (countBadge) {
+        countBadge.textContent = formatSectionCount(items.length, displayedItems.length);
+    }
 
-    appState.ongoingAnime.forEach(anime => {
-        const card = createAnimeCard(anime);
-        container.appendChild(card);
+    container.replaceChildren();
+    displayedItems.forEach((anime) => {
+        container.appendChild(createAnimeCard(anime));
+    });
+
+    if (moreLink) {
+        const shouldShowMore = showMoreWhenTruncated && (isTruncated || appState.pagination?.has_next_page);
+        moreLink.classList.toggle('hidden', !shouldShowMore || !moreHref);
+        if (moreHref) {
+            moreLink.href = moreHref;
+        }
+    }
+}
+
+function renderLatestReleases() {
+    renderAnimeGridSection({
+        sectionId: 'latestSection',
+        containerId: 'latestReleases',
+        countId: 'latestCount',
+        moreId: 'latestMore',
+        items: appState.latestReleases,
+        emptyMessage: 'Tidak ada anime terbaru tersedia',
+        moreHref: '/v5/latest'
     });
 }
 
-// Create anime card element
+function renderRecommendations() {
+    renderAnimeGridSection({
+        sectionId: 'recommendationSection',
+        containerId: 'recommendationAnime',
+        countId: 'recommendationCount',
+        moreId: null,
+        items: appState.recommendations,
+        emptyMessage: 'Tidak ada rekomendasi tersedia',
+        showMoreWhenTruncated: false
+    });
+}
+
+function renderOngoingAnime() {
+    renderAnimeGridSection({
+        sectionId: 'ongoingSection',
+        containerId: 'ongoingAnime',
+        countId: 'ongoingCount',
+        moreId: null,
+        items: appState.ongoingAnime,
+        emptyMessage: 'Tidak ada anime ongoing tersedia',
+        showMoreWhenTruncated: false
+    });
+}
+
 function createAnimeCard(anime) {
     const link = document.createElement('a');
     link.className = 'anime-card';
 
-    // Determine link destination: if has episode field, it's an episode; otherwise it's anime detail
     if (anime.slug) {
-        if (anime.episode) {
-            // Latest release episode - link to episode page
-            link.href = `/v5/episode?slug=${encodeURIComponent(anime.slug)}`;
-        } else {
-            // Recommendation or anime - link to detail page
-            link.href = `/v5/detail?slug=${encodeURIComponent(anime.slug)}`;
-        }
+        link.href = anime.episode
+            ? `/v5/episode?slug=${encodeURIComponent(anime.slug)}`
+            : `/v5/detail?slug=${encodeURIComponent(anime.slug)}`;
     } else {
         link.href = '#';
     }
 
-    link.style.textDecoration = 'none';
-    link.style.color = 'inherit';
+    const posterEl = document.createElement('div');
+    posterEl.className = 'anime-poster';
+    if (anime.poster) {
+        posterEl.style.backgroundImage = `url('${anime.poster.replace(/'/g, '%27')}')`;
+    }
 
-    const poster = anime.poster || '/images/placeholder.jpg';
-    const episode = anime.episode ? `<span class="anime-episode">${anime.episode}</span>` : '';
-    const type = anime.type ? `<span class="anime-type">${anime.type}</span>` : '';
+    const info = document.createElement('div');
+    info.className = 'anime-info';
 
-    link.innerHTML = `
-        <div class="anime-poster" style="background-image: url('${poster}');"></div>
-        <div class="anime-info">
-            <div class="anime-title">${escapeHtml(anime.title)}</div>
-            <div class="anime-meta">
-                ${episode}
-                ${type}
-            </div>
-        </div>
-    `;
+    const title = document.createElement('div');
+    title.className = 'anime-title';
+    title.textContent = anime.title || 'Tanpa judul';
+
+    const meta = document.createElement('div');
+    meta.className = 'anime-meta';
+
+    if (anime.episode) {
+        const episode = document.createElement('span');
+        episode.className = 'anime-episode';
+        episode.textContent = anime.episode;
+        meta.appendChild(episode);
+    }
+
+    if (anime.type) {
+        const type = document.createElement('span');
+        type.className = 'anime-type';
+        type.textContent = anime.type;
+        meta.appendChild(type);
+    }
+
+    if (anime.score) {
+        const score = document.createElement('span');
+        score.className = 'anime-type';
+        score.textContent = anime.score;
+        meta.appendChild(score);
+    }
+
+    info.appendChild(title);
+    info.appendChild(meta);
+    link.appendChild(posterEl);
+    link.appendChild(info);
 
     return link;
 }
 
-// Show error message
 function showError(message) {
     const errorContainer = document.getElementById('errorContainer');
-    errorContainer.innerHTML = `<div class="error">⚠️ ${message}</div>`;
+    errorContainer.replaceChildren();
+    const error = document.createElement('div');
+    error.className = 'error';
+    error.textContent = `⚠️ ${message}`;
+    errorContainer.appendChild(error);
     errorContainer.style.display = 'block';
     appState.error = message;
 }
 
-// Hide error message
-function hideError() {
-    const errorContainer = document.getElementById('errorContainer');
-    errorContainer.style.display = 'none';
-    appState.error = null;
-}
-
-// Setup server selector dropdown
 function setupServerSelector() {
     const selector = document.getElementById('serverSelect');
+    if (!selector) return;
 
     selector.addEventListener('change', (e) => {
         const version = e.target.value;
-        switch(version) {
-            case 'v1':
-                window.location.href = '/v1/home';
-                break;
-            case 'v2':
-                window.location.href = '/v2/home';
-                break;
-            case 'v3':
-                window.location.href = '/v3/home';
-                break;
-            case 'v4':
-                window.location.href = '/v4/home';
-                break;
-            case 'v5':
-                window.location.href = '/v5/home';
-                break;
-            case 'v6':
-                window.location.href = '/v6/home';
-                break;
+        const routes = {
+            v1: '/v1/home',
+            v2: '/v2/home',
+            v3: '/v3/home',
+            v4: '/v4/home',
+            v5: '/v5/home',
+            v6: '/v6/home'
+        };
+        if (routes[version]) {
+            window.location.href = routes[version];
         }
     });
 }
 
-// Utility function to escape HTML
-function escapeHtml(text) {
-    const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#039;'
-    };
-    return text.replace(/[&<>"']/g, m => map[m]);
-}
-
-// Initialize sidebar toggle
 function initSidebarToggle() {
     const menuToggle = document.getElementById('menuToggle');
     const menuCloseBtn = document.getElementById('menuCloseBtn');
@@ -245,7 +278,6 @@ function initSidebarToggle() {
         backdrop.addEventListener('click', closeSidebar);
     }
 
-    // Close on escape key
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && sidebar.classList.contains('active')) {
             closeSidebar();
@@ -253,7 +285,6 @@ function initSidebarToggle() {
     });
 }
 
-// Initialize mobile search
 function initMobileSearch() {
     const searchIconBtn = document.getElementById('searchIconBtn');
     const searchCloseBtn = document.getElementById('searchCloseBtn');
@@ -274,7 +305,6 @@ function initMobileSearch() {
         });
     }
 
-    // Search on enter key
     if (searchInput) {
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -284,7 +314,6 @@ function initMobileSearch() {
     }
 }
 
-// Search anime functionality
 function searchAnime() {
     const searchInput = document.getElementById('searchInput');
     if (!searchInput) return;
@@ -295,5 +324,4 @@ function searchAnime() {
     }
 }
 
-// Log app initialization
 console.log('[V5] Anoboy V5 app loaded');

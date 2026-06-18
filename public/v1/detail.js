@@ -493,7 +493,7 @@ function displayAnimeDetail(anime) {
 
 function goToEpisode(episodeSlug) {
     if (episodeSlug) {
-        window.location.href = `/player/${episodeSlug}`;
+        window.location.href = `/v1/player/${episodeSlug}`;
     }
 }
 

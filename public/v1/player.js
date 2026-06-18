@@ -281,10 +281,16 @@ async function fetchAPI(endpoint) {
 }
 
 function getEpisodeSlugFromURL() {
-    const pathParts = window.location.pathname.split('/');
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
 
-    if (pathParts.length >= 3 && pathParts[1] === 'player' && pathParts[2]) {
+    // /v1/player/:episode
+    if (pathParts.length >= 3 && pathParts[0] === 'v1' && pathParts[1] === 'player') {
         return pathParts[2];
+    }
+
+    // /player/:episode (legacy)
+    if (pathParts.length >= 2 && pathParts[0] === 'player') {
+        return pathParts[1];
     }
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -485,12 +491,12 @@ function displayEpisodePlayer(episode) {
     navSection.className = 'navigation-section';
     navSection.appendChild(createNavButton(
         '← Episode Sebelumnya',
-        episode.prev_episode ? `/player/${episode.prev_episode}` : '#',
+        episode.prev_episode ? `/v1/player/${episode.prev_episode}` : '#',
         !episode.prev_episode
     ));
     navSection.appendChild(createNavButton(
         'Episode Selanjutnya →',
-        episode.next_episode ? `/player/${episode.next_episode}` : '#',
+        episode.next_episode ? `/v1/player/${episode.next_episode}` : '#',
         !episode.next_episode
     ));
 

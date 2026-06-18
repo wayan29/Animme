@@ -608,7 +608,7 @@ function goToDetail(slug) {
 
 function goToEpisode(slug) {
     if (slug) {
-        const playerPath = currentServer === 'v2' ? '/player-v2' : '/player';
+        const playerPath = currentServer === 'v2' ? '/player-v2' : '/v1/player';
         window.location.href = `${playerPath}/${slug}`;
     }
 }

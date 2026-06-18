@@ -73,6 +73,8 @@ function registerPages(app) {
     registerHtmlRoute(app, '/genre-v2/:slug([a-zA-Z0-9_-]+)', path.join(__dirname, '../../../public/v2/genre.html'));
     registerHtmlRoute(app, '/player-v2/:slug([a-zA-Z0-9_-]+)', path.join(__dirname, '../../../public/v2/player.html'));
     registerHtmlRoute(app, '/player/:episode([^.]+)', path.join(__dirname, '../../../public/v1/player.html'));
+    registerHtmlRoute(app, '/v1/player', path.join(__dirname, '../../../public/v1/player.html'));
+    registerHtmlRoute(app, '/v1/player/:episode([^.]+)', path.join(__dirname, '../../../public/v1/player.html'));
     registerHtmlRoute(app, '/batch/:slug([^.]+)', path.join(__dirname, '../../../public/v1/batch.html'));
     registerHtmlRoute(app, '/genre/:slug([^.]+)', path.join(__dirname, '../../../public/v1/genre.html'));
     registerHtmlRoute(app, '/search/:keyword([^.]+)', path.join(__dirname, '../../../public/v1/search.html'));

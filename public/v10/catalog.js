@@ -269,7 +269,7 @@ function applyPresetFromPath() {
             preset: 'tv',
             filters: { type: 'tv', order: 'updated' },
             title: 'TV Show',
-            description: 'Kumpulan serial TV anime dari katalog Vidku.',
+            description: 'Serial TV anime dari Vidku — filter status, genre, dan urutan tetap aktif; type default TV.',
             kicker: 'TV Series',
             sectionTitle: '📡 TV Show'
         },
@@ -303,6 +303,7 @@ function applyPresetFromPath() {
         sectionTitle: preset.sectionTitle
     });
     fillFilters(preset.filters, false);
+    syncPresetFilterChrome();
 
     if (preset.openFilters) {
         const animeFilters = document.getElementById('animeFilters');
@@ -330,6 +331,15 @@ function syncFiltersFromQuery() {
     }
 
     fillFilters(filters, true);
+    syncPresetFilterChrome();
+}
+
+function syncPresetFilterChrome() {
+    const typeGroup = document.getElementById('filterType')?.closest('.filter-group');
+    if (!typeGroup) return;
+
+    const locked = currentPreset === 'tv' || currentPreset === 'movie';
+    typeGroup.classList.toggle('preset-type-locked', locked);
 }
 
 function fillFilters(filters, preserveExistingGenres) {
@@ -415,7 +425,15 @@ function applyFilters() {
 }
 
 function resetFilters() {
-    window.location.href = IS_ADVANCED_SEARCH ? '/v10/advanced-search' : '/v10/all-anime';
+    if (IS_ADVANCED_SEARCH) {
+        window.location.href = '/v10/advanced-search';
+        return;
+    }
+    if (currentPath === '/v10/tv-show' || currentPath === '/v10/movie' || currentPath === '/v10/airing') {
+        window.location.href = currentPath;
+        return;
+    }
+    window.location.href = '/v10/all-anime';
 }
 
 function loadPageData() {
@@ -718,8 +736,10 @@ function renderAnimeCards(items) {
         return;
     }
 
+    const tvCardClass = isTvPreset() ? ' tv-series-card' : '';
+
     container.innerHTML = items.map((item) => `
-        <article class="anime-card" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
+        <article class="anime-card${tvCardClass}" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
             <div class="anime-poster">
                 <img src="${escapeHtml(item.poster || '/placeholder.jpg')}" alt="${escapeHtml(item.title || 'Anime')}" loading="lazy">
                 <div class="anime-overlay">
@@ -747,6 +767,11 @@ function renderAnimeCards(items) {
 function renderOverlayTypeBadge(item) {
     if (isMoviePreset() && item.quality_badge) {
         return `<div class="anime-quality">${escapeHtml(item.quality_badge)}</div>`;
+    }
+
+    if (isTvPreset()) {
+        const label = item.type || 'TV';
+        return `<div class="anime-type">${escapeHtml(label)}</div>`;
     }
 
     return item.type ? `<div class="anime-type">${escapeHtml(item.type)}</div>` : '';
@@ -783,6 +808,10 @@ function renderResultSubtitle(item) {
 
 function isMoviePreset() {
     return currentPreset === 'movie' || currentPath === '/v10/movie';
+}
+
+function isTvPreset() {
+    return currentPreset === 'tv' || currentPath === '/v10/tv-show';
 }
 
 function showLoading(message) {

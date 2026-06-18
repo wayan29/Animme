@@ -475,3 +475,233 @@ body.v10-catalog-page {
 .v10-catalog-page [hidden] {
     display: none !important;
 }
+
+/* TV Show preset: broadcast / living-room grid (pairs with body.v10-preset-tv from catalog.js) */
+.v10-catalog-page.v10-preset-tv {
+    background:
+        radial-gradient(ellipse 120% 80% at 50% -20%, rgba(56, 189, 248, 0.14), transparent 42%),
+        radial-gradient(circle at 92% 18%, rgba(99, 102, 241, 0.12), transparent 32%),
+        radial-gradient(circle at 8% 72%, rgba(34, 211, 238, 0.06), transparent 28%),
+        linear-gradient(180deg, #0a0f18 0%, #0d1219 40%, #080b10 100%);
+}
+
+.v10-preset-tv .v10-page-hero,
+.v10-preset-tv .catalog-panel,
+.v10-preset-tv .anime-filters,
+.v10-preset-tv .pagination-container {
+    border-color: rgba(56, 189, 248, 0.14);
+    background:
+        linear-gradient(180deg, rgba(16, 24, 38, 0.97), rgba(10, 14, 22, 0.96));
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.v10-preset-tv .v10-page-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 248px;
+}
+
+/* Scan-line accent (subtle, no horizontal page scroll) */
+.v10-preset-tv .v10-page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, #67e8f9 0%, #38bdf8 38%, #6366f1 100%);
+    pointer-events: none;
+}
+
+.v10-preset-tv .v10-page-hero::after {
+    content: 'TV';
+    position: absolute;
+    right: clamp(16px, 4vw, 52px);
+    bottom: -10px;
+    max-width: min(55vw, 320px);
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.04);
+    font-size: clamp(4.5rem, 14vw, 10rem);
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.v10-preset-tv .hero-kicker {
+    background: rgba(56, 189, 248, 0.12);
+    border-color: rgba(56, 189, 248, 0.32);
+    color: #7dd3fc;
+}
+
+.v10-preset-tv .hero-copy h2 {
+    max-width: 760px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #7dd3fc 42%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.03em;
+}
+
+.v10-preset-tv .hero-stat {
+    background: linear-gradient(180deg, rgba(56, 189, 248, 0.12), rgba(255, 255, 255, 0.03));
+    border-color: rgba(56, 189, 248, 0.22);
+}
+
+.v10-preset-tv .hero-stat strong,
+.v10-preset-tv .section-title {
+    color: #f0f9ff;
+}
+
+.v10-preset-tv .section-badge,
+.v10-preset-tv .shortcut-chip.active {
+    background: rgba(56, 189, 248, 0.14);
+    border-color: rgba(56, 189, 248, 0.34);
+    color: #bae6fd;
+}
+
+.v10-preset-tv .section-title::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #38bdf8, rgba(99, 102, 241, 0));
+}
+
+.v10-preset-tv .shortcut-chip:hover,
+.v10-preset-tv .shortcut-chip.active {
+    box-shadow: 0 10px 22px rgba(56, 189, 248, 0.12);
+}
+
+.v10-preset-tv .mobile-filter-toggle {
+    border-color: rgba(56, 189, 248, 0.2);
+    background: rgba(16, 24, 38, 0.85);
+    color: #e0f2fe;
+}
+
+.v10-preset-tv .filter-group input,
+.v10-preset-tv .filter-group select,
+.v10-preset-tv .genre-panel,
+.v10-preset-tv .genre-checkbox {
+    border-color: rgba(56, 189, 248, 0.12);
+    background-color: rgba(8, 12, 20, 0.72);
+}
+
+.v10-preset-tv .filter-group input:focus,
+.v10-preset-tv .filter-group select:focus {
+    border-color: rgba(56, 189, 248, 0.55);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+}
+
+/* Preset-locked Type = TV (class toggled in catalog.js) */
+.v10-preset-tv .filter-group.preset-type-locked label {
+    color: #bae6fd;
+}
+
+.v10-preset-tv .filter-group.preset-type-locked select {
+    border-color: rgba(56, 189, 248, 0.32);
+    color: #bae6fd;
+    font-weight: 600;
+}
+
+.v10-preset-tv .v10-catalog-grid.anime-grid {
+    gap: 18px;
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-card.tv-series-card {
+    background: linear-gradient(180deg, rgba(22, 32, 48, 0.98), rgba(12, 16, 24, 0.98));
+    border: 1px solid rgba(56, 189, 248, 0.1);
+    border-radius: 18px;
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.28);
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-card.tv-series-card:hover {
+    border-color: rgba(56, 189, 248, 0.28);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34), 0 0 0 1px rgba(56, 189, 248, 0.1);
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-poster {
+    background: #060a10;
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-overlay .anime-type,
+.v10-preset-tv .v10-catalog-grid .anime-overlay .anime-rating {
+    backdrop-filter: blur(8px);
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-overlay .anime-type {
+    background: rgba(15, 23, 42, 0.82);
+    border: 1px solid rgba(56, 189, 248, 0.35);
+    color: #e0f2fe;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-title {
+    color: #f0f9ff;
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-status {
+    background: rgba(52, 211, 153, 0.14);
+    color: #6ee7b7;
+    border: 1px solid rgba(52, 211, 153, 0.22);
+}
+
+.v10-preset-tv .v10-catalog-grid .anime-episode {
+    background: rgba(56, 189, 248, 0.18);
+    color: #bae6fd;
+    border: 1px solid rgba(56, 189, 248, 0.28);
+}
+
+.v10-preset-tv .v10-catalog-grid .genre-tag {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.22);
+    color: rgba(224, 231, 255, 0.88);
+}
+
+.v10-preset-tv .pagination-btn:not(:disabled):hover {
+    background: rgba(56, 189, 248, 0.16);
+    border-color: rgba(56, 189, 248, 0.36);
+    color: #bae6fd;
+}
+
+.v10-preset-tv .loading,
+.v10-preset-tv .empty-state {
+    border-color: rgba(56, 189, 248, 0.2);
+    background: rgba(56, 189, 248, 0.06);
+    color: rgba(224, 242, 254, 0.75);
+}
+
+@media (max-width: 768px) {
+    .v10-preset-tv .v10-page-hero {
+        min-height: 0;
+        padding: 20px;
+    }
+
+    .v10-preset-tv .v10-page-hero::after {
+        font-size: 3rem;
+        right: 12px;
+        bottom: -4px;
+        letter-spacing: 0.06em;
+    }
+
+    .v10-preset-tv .hero-stats {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .v10-preset-tv .hero-stat {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .v10-preset-tv .v10-catalog-grid.anime-grid {
+        gap: 12px;
+    }
+
+    .v10-preset-tv .v10-catalog-grid .anime-card.tv-series-card {
+        border-radius: 14px;
+    }
+}

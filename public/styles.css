@@ -508,6 +508,53 @@ body {
     background: #141414;
 }
 
+/* V1 home: fixed sidebar should not make the document width viewport + sidebar. */
+@media (min-width: 1025px) {
+    .server-v1.home-with-sidebar .content-area {
+        width: calc(100% - 260px);
+        max-width: calc(100% - 260px);
+        min-width: 0;
+        flex: 0 0 calc(100% - 260px);
+        overflow-x: clip;
+    }
+}
+
+.server-v1.home-with-sidebar .home-layout,
+.server-v1.home-with-sidebar .topbar,
+.server-v1.home-with-sidebar .main-content,
+.server-v1.home-with-sidebar .hero,
+.server-v1.home-with-sidebar .anime-section,
+.server-v1.home-with-sidebar .footer {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.server-v1.home-with-sidebar .anime-row.anime-row-scroll,
+.server-v1.home-with-sidebar .schedule-preview-row {
+    max-width: 100%;
+    min-width: 0;
+}
+
+.server-v1.home-with-sidebar .anime-title,
+.server-v1.home-with-sidebar .hero-title,
+.server-v1.home-with-sidebar .schedule-chip {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.server-v1.home-with-sidebar .anime-meta {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.server-v1.home-with-sidebar .topbar .search-container {
+    min-width: 0;
+    max-width: 100%;
+}
+
 .home-with-sidebar .topbar {
     display: flex;
     align-items: center;

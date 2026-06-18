@@ -11,21 +11,40 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --bg-main: #141414;
+            --bg-panel: #1a1a1a;
+            --bg-card: #1f1f1f;
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --border-strong: rgba(255, 255, 255, 0.15);
+            --text-primary: #ffffff;
+            --text-muted: #9ea0a8;
+            --accent: #e50914;
+            --accent-soft: rgba(229, 9, 20, 0.16);
+            --accent-strong: rgba(229, 9, 20, 0.45);
+            --shadow-soft: 0 12px 32px rgba(0, 0, 0, 0.45);
+            --shadow-accent: 0 12px 32px rgba(229, 9, 20, 0.35);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #141414;
-            color: #f5f5f5;
+            background:
+                radial-gradient(circle at 12% 20%, rgba(229, 9, 20, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 88% 12%, rgba(229, 9, 20, 0.12) 0%, transparent 50%),
+                var(--bg-main);
+            color: var(--text-primary);
             min-height: 100vh;
             padding: 20px;
         }
 
         .navbar {
-            background: #0f0f0f;
-            border-radius: 15px;
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(14px);
+            border-radius: 16px;
             padding: 15px 30px;
             margin-bottom: 30px;
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.35);
-            border: 1px solid #262626;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
         }
 
         .navbar-content {
@@ -39,8 +58,9 @@
         .logo {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #e50914;
+            color: var(--accent);
             cursor: pointer;
+            text-shadow: 0 0 18px rgba(229, 9, 20, 0.35);
         }
 
         .nav-links {
@@ -49,22 +69,23 @@
             align-items: center;
         }
 
-        .nav-link {
-            display: inline-block;
-            color: #b3b3b3;
+        .nav-links a {
             text-decoration: none;
+            color: var(--text-muted);
             font-weight: 500;
-            padding: 8px 0;
-            transition: color 0.3s;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+            transition: color 0.3s ease, border-color 0.3s ease;
         }
 
-        .nav-link.active {
-            color: #e50914;
-            border-bottom: 2px solid #e50914;
+        .nav-links a:hover {
+            color: var(--text-primary);
         }
 
-        .nav-link:hover {
-            color: #e50914;
+        .nav-links a.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            font-weight: 600;
         }
 
         .container {
@@ -74,78 +95,135 @@
 
         .header {
             text-align: center;
-            margin-bottom: 50px;
-            background: #1f1f1f;
-            padding: 40px;
+            margin-bottom: 32px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            padding: 32px 30px;
             border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.45);
-            border: 1px solid #262626;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
         }
 
         .header h1 {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: #e50914;
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+            text-shadow: 0 0 18px rgba(0, 0, 0, 0.45);
+        }
+
+        .header h1::after {
+            content: '';
+            display: block;
+            width: 56px;
+            height: 3px;
+            margin: 14px auto 0;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--accent), transparent);
         }
 
         .header p {
-            color: #b3b3b3;
-            font-size: 1.2rem;
+            color: var(--text-muted);
+            font-size: 1.05rem;
             line-height: 1.6;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        @keyframes v3-properties-shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
         }
 
         .loading {
             text-align: center;
-            padding: 80px;
-            font-size: 1.5rem;
-            color: #e50914;
+            padding: 48px 24px;
+            font-size: 1rem;
+            color: var(--accent);
+            position: relative;
+            overflow: hidden;
+            border: 1px dashed var(--border-strong);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .loading::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            background-size: 200% 100%;
+            animation: v3-properties-shimmer 1.6s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .loading-text {
+            position: relative;
+            z-index: 1;
         }
 
         .properties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 22px;
             margin-bottom: 40px;
         }
 
+        @media (min-width: 1200px) {
+            .properties-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         .property-card {
-            background: #1c1c1c;
-            border-radius: 20px;
+            background: linear-gradient(180deg, var(--bg-card) 0%, #171717 100%);
+            border-radius: 16px;
             padding: 0;
             overflow: hidden;
-            transition: all 0.3s;
-            border: 1px solid #262626;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
             cursor: pointer;
         }
 
         .property-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 25px 35px rgba(0, 0, 0, 0.65);
-            border-color: #e50914;
+            box-shadow: var(--shadow-accent);
+            border-color: var(--accent-strong);
+        }
+
+        .property-card:focus-visible {
+            outline: none;
+            box-shadow: var(--shadow-accent), 0 0 0 3px rgba(229, 9, 20, 0.35);
         }
 
         .property-header {
-            padding: 30px;
-            background: linear-gradient(135deg, rgba(229, 9, 20, 0.3) 0%, rgba(26, 26, 26, 0.9) 100%);
+            padding: 28px 24px;
+            background: linear-gradient(135deg, var(--accent-soft) 0%, rgba(23, 23, 23, 0.95) 55%);
             text-align: center;
+            border-bottom: 1px solid var(--border-soft);
         }
 
         .property-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+            font-size: 2.75rem;
+            margin-bottom: 12px;
+            line-height: 1;
         }
 
         .property-title {
-            font-size: 1.8rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            color: #fff;
-            margin-bottom: 10px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
         }
 
         .property-count {
-            font-size: 1.1rem;
-            color: #d1d1d1;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .property-count strong {
+            color: var(--accent);
+            font-weight: 600;
         }
 
         .property-body {
@@ -156,56 +234,85 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
+            min-height: 3.25rem;
+            align-content: flex-start;
         }
 
         .preview-tag {
-            background: #2c2c2c;
+            background: rgba(255, 255, 255, 0.04);
             padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            color: #d1d1d1;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            border: 1px solid var(--border-soft);
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .property-card:hover .preview-tag {
+            border-color: rgba(229, 9, 20, 0.25);
         }
 
         .property-btn {
             width: 100%;
-            background: linear-gradient(135deg, #e50914 0%, #b20710 100%);
             color: #fff;
             border: none;
-            padding: 14px;
+            padding: 13px 16px;
             border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: filter 0.25s ease, box-shadow 0.25s ease;
+            pointer-events: none;
         }
 
-        .property-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 22px rgba(229, 9, 20, 0.4);
+        .property-card:hover .property-btn {
+            filter: brightness(1.06);
+            box-shadow: 0 8px 20px rgba(229, 9, 20, 0.35);
         }
 
         .error {
             text-align: center;
-            padding: 60px;
+            padding: 40px 24px;
             background: rgba(229, 9, 20, 0.08);
-            border-radius: 15px;
-            margin-top: 30px;
-            border: 1px solid rgba(229, 9, 20, 0.35);
+            border-radius: 16px;
+            border: 1px solid rgba(229, 9, 20, 0.28);
+            color: #ff8a8a;
         }
 
         .error h2 {
-            color: #ff4040;
-            margin-bottom: 15px;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .error p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .error-link {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .error-link:hover {
+            border-bottom-color: var(--accent);
         }
 
         .property-selector {
-            background: #1a1a1a;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 40px;
-            border: 1px solid #262626;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            background: rgba(31, 31, 31, 0.7);
+            border-radius: 16px;
+            padding: 14px 18px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-soft);
         }
 
         .property-selector form {
@@ -215,87 +322,114 @@
             flex-wrap: wrap;
         }
 
-        .property-selector p {
-            font-size: 1.1rem;
+        .property-selector-label {
+            font-size: 0.9rem;
             font-weight: 600;
-            color: #f5f5f5;
+            color: var(--text-muted);
             margin: 0;
+            white-space: nowrap;
         }
 
         .property-selector select {
             flex: 1;
-            min-width: 250px;
-            padding: 12px 20px;
-            background: #0f0f0f;
-            border: 1px solid #333333;
-            border-radius: 10px;
-            color: #f5f5f5;
-            font-size: 1rem;
+            min-width: 220px;
+            padding: 10px 16px;
+            background: rgba(12, 12, 12, 0.85);
+            border: 1px solid var(--border-soft);
+            border-radius: 999px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
         .property-selector select:hover {
-            border-color: #e50914;
-            box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
+            border-color: var(--accent-strong);
         }
 
         .property-selector select:focus {
             outline: none;
-            border-color: #e50914;
-            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+            border-color: rgba(229, 9, 20, 0.55);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.14);
         }
 
         .property-selector select option {
-            background: #141414;
-            color: #f5f5f5;
-            padding: 10px;
+            background: var(--bg-main);
+            color: var(--text-primary);
         }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2rem;
+            body.v3-properties-page {
+                padding: 12px;
             }
 
-            .header p {
-                font-size: 1rem;
+            .navbar {
+                padding: 14px 16px;
+                border-radius: 14px;
+            }
+
+            .navbar-content {
+                justify-content: center;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 14px;
+            }
+
+            .header {
+                padding: 24px 18px;
+                margin-bottom: 24px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
             }
 
             .properties-grid {
                 grid-template-columns: 1fr;
             }
 
-            .nav-links {
+            .property-selector form {
                 flex-direction: column;
+                align-items: stretch;
+            }
+
+            .property-selector select {
                 width: 100%;
-                gap: 12px;
+                min-width: 0;
             }
         }
     </style>
 </head>
-<body>
-    <div class="navbar">
+<body class="v3-properties-page">
+    <nav class="navbar" aria-label="Navigasi utama">
         <div class="navbar-content">
-            <div class="logo" onclick="window.location.href='/v3/home'">Kuramanime V3</div>
+            <div class="logo" onclick="window.location.href='/v3/home'" role="link" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.location.href='/v3/home';}">🎌 AnimMe V3</div>
             <div class="nav-links">
-                <a href="/v3/home" class="nav-link">Beranda</a>
-                <a href="/v3/properties" class="nav-link active">Properti</a>
-                <a href="/v3/search" class="nav-link">Cari</a>
+                <a href="/v3/home">Beranda</a>
+                <a href="/v3/animelist">Daftar Anime</a>
+                <a href="/v3/ongoing">Sedang Tayang</a>
+                <a href="/v3/finished">Selesai Tayang</a>
+                <a href="/v3/movie">Film</a>
+                <a href="/v3/properties" class="active" aria-current="page">Properti</a>
+                <a href="/v3/search">Cari</a>
             </div>
         </div>
-    </div>
+    </nav>
 
     <div class="container">
-        <div class="header">
+        <header class="header">
             <h1>📚 Daftar Properti Anime</h1>
-            <p>Temukan anime berdasarkan Genre, Musim, Studio, atau Tipe yang kamu inginkan</p>
-        </div>
+            <p>Temukan anime berdasarkan genre, musim, studio, tipe, kualitas, adaptasi, atau negara.</p>
+        </header>
 
-        <div class="property-selector">
+        <div class="property-selector" aria-label="Lompat ke daftar properti">
             <form id="chooseGenreEtcForm" onsubmit="event.preventDefault();">
-                <p>Properti:</p>
-                <select id="chooseGenreEtc" name="genre_etc">
-                    <option value="" disabled selected>- pilih -</option>
+                <label class="property-selector-label" id="propertySelectLabel" for="chooseGenreEtc">Lompat ke:</label>
+                <select id="chooseGenreEtc" name="genre_etc" aria-labelledby="propertySelectLabel">
+                    <option value="" disabled selected>Pilih kategori…</option>
                     <option value="/v3/genres" title="Semua Genre">Daftar Genre</option>
                     <option value="/v3/seasons" title="Musim">Daftar Musim</option>
                     <option value="/v3/studios" title="Studio">Daftar Studio</option>
@@ -307,8 +441,10 @@
             </form>
         </div>
 
-        <div id="content">
-            <div class="loading">Memuat data properti...</div>
+        <div id="content" role="region" aria-live="polite" aria-busy="true" aria-label="Grup properti anime">
+            <div class="loading" role="status">
+                <span class="loading-text">Memuat data properti…</span>
+            </div>
         </div>
     </div>
 
@@ -391,26 +527,27 @@
                 }
             ];
 
+            content.setAttribute('aria-busy', 'false');
             content.innerHTML = `
                 <div class="properties-grid">
                     ${propertyData.map(prop => `
-                        <div class="property-card" onclick="window.location.href='${prop.url}'">
+                        <article class="property-card" tabindex="0" onclick="window.location.href='${prop.url}'">
                             <div class="property-header">
-                                <div class="property-icon">${prop.icon}</div>
-                                <div class="property-title">${prop.title}</div>
-                                <div class="property-count">${prop.count} ${prop.title}</div>
+                                <div class="property-icon" aria-hidden="true">${prop.icon}</div>
+                                <h2 class="property-title">${prop.title}</h2>
+                                <p class="property-count"><strong>${prop.count}</strong> entri</p>
                             </div>
                             <div class="property-body">
                                 <div class="property-preview">
-                                    ${prop.preview.map(item => `
+                                    ${prop.preview.length ? prop.preview.map(item => `
                                         <span class="preview-tag">${item}</span>
-                                    `).join('')}
+                                    `).join('') : '<span class="preview-tag">Belum ada pratinjau</span>'}
                                 </div>
-                                <button class="property-btn" style="background: ${prop.gradient}">
-                                    Lihat Semua ${prop.title}
+                                <button type="button" class="property-btn" style="background: ${prop.gradient}">
+                                    Lihat semua ${prop.title}
                                 </button>
                             </div>
-                        </div>
+                        </article>
                     `).join('')}
                 </div>
             `;
@@ -418,10 +555,11 @@
 
         function showError(message) {
             const content = document.getElementById('content');
+            content.setAttribute('aria-busy', 'false');
             content.innerHTML = `
-                <div class="error">
-                    <h2>❌ ${message}</h2>
-                    <p>Silakan coba lagi nanti atau kembali ke <a href="/v3/home" style="color: #e50914;">beranda</a>.</p>
+                <div class="error" role="alert">
+                    <h2>${message}</h2>
+                    <p>Silakan coba lagi nanti atau kembali ke <a href="/v3/home" class="error-link">beranda</a>.</p>
                 </div>
             `;
         }

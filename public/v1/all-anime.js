@@ -119,16 +119,25 @@ document.addEventListener('DOMContentLoaded', () => {
     applyServerClass(currentServer);
     initMobileFilters();
     updateMobileFilterVisibility();
+
+    document.getElementById('filterTitle')?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            applyFilters();
+        }
+    });
+
+    document.querySelectorAll('input[name="genre"]').forEach((checkbox) => {
+        checkbox.addEventListener('change', updateGenreButtonText);
+    });
     
-    // Pre-fill genre filter if specified in URL
+    // Pre-fill genre filter before first V2 request if specified in URL
     if (genreParam && currentServer === 'v2') {
-        setTimeout(() => {
-            const genreCheckbox = document.querySelector(`input[name="genre"][value="${genreParam}"]`);
-            if (genreCheckbox) {
-                genreCheckbox.checked = true;
-                updateGenreButtonText();
-            }
-        }, 100);
+        const genreCheckbox = document.querySelector(`input[name="genre"][value="${CSS.escape(genreParam)}"]`);
+        if (genreCheckbox) {
+            genreCheckbox.checked = true;
+            updateGenreButtonText();
+        }
     }
     
     loadAllAnimePage();
@@ -396,8 +405,8 @@ async function loadAllAnimePage(page = 1) {
     const mobileToggle = document.getElementById('mobileFilterToggle');
     
     if (currentServer === 'v2') {
-        pageTitle.textContent = 'Daftar Anime (Samehadaku)';
-        pageDescription.textContent = 'Semua anime dengan filter';
+        pageTitle.textContent = 'Katalog Anime Samehadaku';
+        pageDescription.textContent = 'Cari anime berdasarkan judul, status, tipe, genre, dan urutan.';
         
         // Show filters for V2
         if (filters) {
@@ -428,6 +437,8 @@ async function loadAllAnimePage(page = 1) {
         
         if (data && data.data && data.data.animeData) {
             displayAllAnimeV2(data.data.animeData);
+            renderActiveFilterChips(currentFilters);
+            updateCatalogSummary(data.data.animeData.length, data.data.pagination);
             
             // Handle pagination
             if (data.data.pagination) {
@@ -521,6 +532,7 @@ function goToPreviousPage() {
 function applyFilters() {
     if (currentServer === 'v2') {
         currentPage = 1; // Reset to first page when applying filters
+        closeMobileFilters();
         loadAllAnimePage(1);
     }
 }
@@ -538,6 +550,7 @@ function resetFilters() {
         
         // Update genre button text
         updateGenreButtonText();
+        renderActiveFilterChips({ title: '', status: '', type: '', order: 'title', genre: [] });
         
         currentPage = 1;
         loadAllAnimePage(1);
@@ -563,6 +576,68 @@ function getSelectedGenres() {
     return Array.from(checkboxes).map(cb => cb.value);
 }
 
+function closeMobileFilters() {
+    const filters = document.getElementById('animeFilters');
+    const toggle = document.getElementById('mobileFilterToggle');
+    if (window.innerWidth <= 768 && filters && toggle) {
+        filters.classList.remove('mobile-open');
+        toggle.classList.remove('active');
+        toggle.setAttribute('aria-expanded', 'false');
+    }
+}
+
+function updateCatalogSummary(itemCount, pagination) {
+    const summary = document.getElementById('catalogSummary');
+    const summaryText = document.getElementById('catalogSummaryText');
+    if (!summary || !summaryText || currentServer !== 'v2') return;
+
+    summary.hidden = false;
+    const current = pagination?.current_page || currentPage || 1;
+    const total = pagination?.total_pages || pagination?.last_page || 1;
+    summaryText.textContent = `${itemCount || 0} anime · Halaman ${current} dari ${total}`;
+}
+
+function renderActiveFilterChips(filters) {
+    const container = document.getElementById('activeFilterChips');
+    if (!container || currentServer !== 'v2') return;
+
+    container.replaceChildren();
+    const chips = [];
+    if (filters.title) chips.push({ key: 'title', label: `Judul: ${filters.title}` });
+    if (filters.status) chips.push({ key: 'status', label: `Status: ${filters.status}` });
+    if (filters.type) chips.push({ key: 'type', label: `Type: ${filters.type}` });
+    if (filters.order && filters.order !== 'title') chips.push({ key: 'order', label: `Urutan: ${filters.order}` });
+    (filters.genre || []).forEach((genre) => chips.push({ key: 'genre', value: genre, label: `Genre: ${genre}` }));
+
+    container.hidden = chips.length === 0;
+    chips.forEach((chip) => {
+        const item = document.createElement('span');
+        item.className = 'filter-chip';
+        item.textContent = chip.label;
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('aria-label', `Hapus filter ${chip.label}`);
+        button.textContent = '×';
+        button.addEventListener('click', () => removeFilterChip(chip));
+        item.appendChild(button);
+        container.appendChild(item);
+    });
+}
+
+function removeFilterChip(chip) {
+    if (chip.key === 'title') document.getElementById('filterTitle').value = '';
+    if (chip.key === 'status') document.getElementById('filterStatus').value = '';
+    if (chip.key === 'type') document.getElementById('filterType').value = '';
+    if (chip.key === 'order') document.getElementById('filterOrder').value = 'title';
+    if (chip.key === 'genre') {
+        const checkbox = document.querySelector(`input[name="genre"][value="${CSS.escape(chip.value)}"]`);
+        if (checkbox) checkbox.checked = false;
+        updateGenreButtonText();
+    }
+    applyFilters();
+}
+
 function updateGenreButtonText() {
     const selected = getSelectedGenres();
     const btn = document.getElementById('genreToggleBtn');
@@ -575,19 +650,6 @@ function updateGenreButtonText() {
         btn.innerHTML = `Genre (${selected.length} dipilih) ${arrow}`;
     }
 }
-
-// Add event listener to genre checkboxes to update button text
-document.addEventListener('DOMContentLoaded', () => {
-    // ... existing code ...
-    
-    // Add listeners to genre checkboxes
-    setTimeout(() => {
-        const genreCheckboxes = document.querySelectorAll('input[name="genre"]');
-        genreCheckboxes.forEach(cb => {
-            cb.addEventListener('change', updateGenreButtonText);
-        });
-    }, 100);
-});
 
 // Smooth scroll to section (for V1)
 document.addEventListener('click', (e) => {

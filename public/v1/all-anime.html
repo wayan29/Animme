@@ -6,6 +6,7 @@
     <title>Semua Anime - AnimMe</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/mobile.css">
+    <link rel="stylesheet" href="/v2/all-anime.css">
 </head>
 <body class="server-v1 page-all-anime">
     <nav class="navbar scrolled">
@@ -39,8 +40,13 @@
 
     <main class="main-content">
         <section class="all-anime-header">
+            <span class="v2-catalog-kicker v2-only">V2 · Samehadaku Catalog</span>
             <h2 id="pageTitle">Daftar Lengkap Anime</h2>
             <p id="pageDescription">Semua anime A-Z</p>
+            <div class="v2-catalog-hints v2-only" id="catalogSummary" hidden>
+                <span>Gunakan filter untuk mempersempit hasil.</span>
+                <span id="catalogSummaryText">Memuat katalog...</span>
+            </div>
         </section>
 
         <button class="mobile-filter-toggle v2-only hidden" id="mobileFilterToggle" type="button" aria-expanded="false">
@@ -100,6 +106,8 @@
                 </div>
             </div>
             
+            <div class="active-filter-chips" id="activeFilterChips" hidden></div>
+
             <!-- Genre Panel (Collapsible) -->
             <div class="genre-panel" id="genrePanel" style="display: none;">
                 <div class="genre-grid" id="genreGrid">

@@ -130,10 +130,10 @@
         }
 
         .sort-button {
-            background: var(--bg-card);
+            background: linear-gradient(180deg, var(--bg-card), #191919);
             border: 1px solid var(--border-soft);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 16px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -173,13 +173,6 @@
         .sort-desc {
             font-size: 0.85rem;
             color: var(--text-muted);
-        }
-
-        .loading {
-            text-align: center;
-            padding: 60px;
-            font-size: 1.3rem;
-            color: var(--accent);
         }
 
         .anime-grid {
@@ -302,6 +295,38 @@
             font-weight: 600;
         }
 
+
+        .list-tools{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:18px;padding:14px 16px;border:1px solid var(--border-soft);border-radius:16px;background:rgba(31,31,31,.7);box-shadow:var(--shadow-soft);flex-wrap:wrap}
+        .letter-nav{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .letter-pill{font:inherit;color:var(--text-muted);padding:8px 12px;border-radius:999px;border:1px solid var(--border-soft);background:rgba(255,255,255,.03);font-weight:700;cursor:pointer}
+        .letter-pill:hover{color:var(--text-primary);border-color:var(--accent-strong);background:var(--accent-soft)}
+        .letter-divider{width:1px;height:28px;background:var(--border-soft);margin:0 4px}
+        .toolbar-search{display:flex;gap:10px;align-items:center;flex:1;min-width:200px;max-width:420px;justify-content:flex-end}
+        .toolbar-search-input{flex:1;min-width:0;padding:10px 16px;border:1px solid var(--border-soft);border-radius:999px;background:rgba(12,12,12,.85);color:var(--text-primary);font-size:.95rem;outline:none}
+        .toolbar-search-input:focus{border-color:rgba(229,9,20,.55);box-shadow:0 0 0 3px rgba(229,9,20,.14)}
+        .search-cta{color:#fff;font-weight:700;padding:10px 18px;border-radius:999px;background:var(--accent);border:none;cursor:pointer;font:inherit;white-space:nowrap}
+        @keyframes v3-list-shimmer{from{background-position:200% 0}
+to{background-position:-200% 0}
+}
+        .loading {
+            text-align: center;
+            padding: 48px 24px;
+            font-size: 1rem;
+            color: var(--accent);
+            position:relative;overflow:hidden;border:1px dashed var(--border-strong);border-radius:16px}
+        .loading::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.05),transparent);background-size:200% 100%;animation:v3-list-shimmer 1.6s ease-in-out infinite;pointer-events:none}
+        .loading-text{position:relative;z-index:1}
+        .loading.error-state{color:#ff8a8a;border-style:solid;border-color:rgba(229,9,20,.28);background:rgba(229,9,20,.08)}
+        .loading.error-state::before{display:none}
+        .empty-state{grid-column:1/-1;text-align:center;padding:56px 24px;color:var(--text-muted);border-radius:16px;border:1px solid var(--border-soft);background:var(--bg-panel)}
+        .anime-card{background:linear-gradient(180deg,var(--bg-card) 0%,#171717 100%)}
+        .anime-poster-wrap{position:relative;overflow:hidden;background:#111}
+        .anime-poster-wrap::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 58%,rgba(0,0,0,.5) 100%)}
+        .anime-poster{aspect-ratio:2/3;height:auto;transition:transform .35s ease}
+        .anime-card:hover .anime-poster{transform:scale(1.03)}
+        .trending-badge{z-index:2}
+
+
         /* Desktop: Maksimal 6 kolom */
         @media (min-width: 1200px) {
             .anime-grid {
@@ -310,6 +335,9 @@
         }
 
         @media (max-width: 768px) {
+            body.v3-animelist-page { padding: 12px; }
+            .list-tools { flex-direction: column; align-items: stretch; }
+            .toolbar-search { max-width: none; width: 100%; }
             .sort-menu {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
                 gap: 10px;
@@ -328,7 +356,7 @@
             }
 
             .anime-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 12px;
             }
 
@@ -338,7 +366,7 @@
         }
     </style>
 </head>
-<body>
+<body class="v3-animelist-page">
     <nav class="navbar">
         <div class="navbar-content">
             <div class="logo" onclick="window.location.href='/v3/home'">🎌 AnimMe V3</div>
@@ -355,6 +383,20 @@
             <h1>📺 Daftar Anime</h1>
             <p>Jelajahi semua anime dengan berbagai pilihan urutan sorting</p>
             <p id="headerStats"></p>
+        </div>
+
+        <div class="list-tools" aria-label="Navigasi daftar anime">
+            <div class="letter-nav" aria-label="Pintasan urutan">
+                <button type="button" class="letter-pill" onclick="loadAnimeList(1, 'ascending')" title="Urut A-Z">A-Z</button>
+                <button type="button" class="letter-pill" onclick="loadAnimeList(1, 'descending')" title="Urut Z-A">Z-A</button>
+                <span class="letter-divider" aria-hidden="true"></span>
+                <button type="button" class="letter-pill" onclick="loadAnimeList(1, 'latest')">Terbaru</button>
+                <button type="button" class="letter-pill" onclick="loadAnimeList(1, 'updated')">Terupdate</button>
+            </div>
+            <form class="toolbar-search" action="/v3/search" method="get" role="search">
+                <input type="search" name="q" class="toolbar-search-input" placeholder="Cari judul..." autocomplete="off" aria-label="Cari anime">
+                <button type="submit" class="search-cta">Cari</button>
+            </form>
         </div>
 
         <div class="sort-menu">
@@ -400,9 +442,7 @@
             </div>
         </div>
 
-        <div id="loadingIndicator" class="loading" style="display: block;">
-            ⏳ Memuat daftar anime...
-        </div>
+        <div id="loadingIndicator" class="loading" style="display: block;"><span class="loading-text">⏳ Memuat daftar anime…</span></div>
 
         <div id="animeGrid" class="anime-grid" style="display: none;"></div>
 
@@ -430,7 +470,10 @@
             updateActiveButton(orderBy);
             
             try {
-                document.getElementById('loadingIndicator').style.display = 'block';
+                const loadingEl = document.getElementById('loadingIndicator');
+                loadingEl.classList.remove('error-state');
+                loadingEl.innerHTML = '<span class="loading-text">⏳ Memuat daftar anime…</span>';
+                loadingEl.style.display = 'block';
                 document.getElementById('animeGrid').style.display = 'none';
                 document.getElementById('pagination').style.display = 'none';
 
@@ -451,8 +494,9 @@
                 document.getElementById('loadingIndicator').style.display = 'none';
             } catch (error) {
                 console.error('Error loading anime list:', error);
-                document.getElementById('loadingIndicator').innerHTML = 
-                    '❌ Gagal memuat daftar anime. Silakan refresh halaman.';
+                const loadingEl = document.getElementById('loadingIndicator');
+                loadingEl.classList.add('error-state');
+                loadingEl.innerHTML = '<span class="loading-text">❌ Gagal memuat daftar anime. Silakan refresh halaman.</span>';
             }
         }
 
@@ -461,7 +505,7 @@
             const animeList = data.anime_list || [];
 
             if (animeList.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; color:#a0a0b0; grid-column: 1/-1;">Tidak ada anime tersedia</p>';
+                grid.innerHTML = '<div class="empty-state"><div style="font-size:2.5rem;margin-bottom:12px;opacity:.55">📭</div>Tidak ada anime untuk urutan ini</div>';
                 grid.style.display = 'grid';
                 return;
             }
@@ -469,7 +513,7 @@
             grid.innerHTML = animeList.map(anime => `
                 <div class="anime-card" onclick="window.location.href='/v3/detail?animeId=${anime.anime_id}&slug=${anime.slug}'">
                     ${anime.is_trending ? '<div class="trending-badge">🔥 Trending</div>' : ''}
-                    <img src="${anime.poster}" alt="${anime.title}" class="anime-poster" onerror="this.src='https://via.placeholder.com/180x260?text=No+Image'">
+                    <div class="anime-poster-wrap"><img src="${anime.poster}" alt="" class="anime-poster" loading="lazy" onerror="this.src='https://via.placeholder.com/180x260?text=No+Image'"></div>
                     <div class="anime-info">
                         <div class="anime-title">${anime.title}</div>
                         ${anime.episode_text ? `<div class="anime-episode">${anime.episode_text}</div>` : ''}
@@ -494,13 +538,14 @@
         function displayPagination(pagination) {
             const paginationDiv = document.getElementById('pagination');
             
+            const orderArg = currentOrderBy ? `'${currentOrderBy}'` : 'null';
             paginationDiv.innerHTML = `
-                <button onclick="loadAnimeList(${pagination.current_page - 1}, '${currentOrderBy || ''}')" 
+                <button type="button" onclick="loadAnimeList(${pagination.current_page - 1}, ${orderArg})" 
                         ${!pagination.has_prev ? 'disabled' : ''}>
                     ‹ Sebelumnya
                 </button>
                 <span>Halaman ${pagination.current_page}${pagination.total_pages ? ' / ' + pagination.total_pages : ''}</span>
-                <button onclick="loadAnimeList(${pagination.current_page + 1}, '${currentOrderBy || ''}')" 
+                <button type="button" onclick="loadAnimeList(${pagination.current_page + 1}, ${orderArg})" 
                         ${!pagination.has_next ? 'disabled' : ''}>
                     Berikutnya ›
                 </button>

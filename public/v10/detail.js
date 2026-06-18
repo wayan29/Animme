@@ -40,6 +40,13 @@ function formatEpisodeLabel(episodeNumber) {
     return /^ep(isode)?\b/i.test(raw) ? raw : `Episode ${raw}`;
 }
 
+function displayValue(value, fallback = '-') {
+    if (value == null) return fallback;
+    const text = String(value).trim();
+    if (!text || text.toLowerCase() === 'n/a') return fallback;
+    return text;
+}
+
 function getAnimeSlug() {
     const urlParams = new URLSearchParams(window.location.search);
     const querySlug = urlParams.get('slug');
@@ -164,7 +171,7 @@ function renderAnimeDetail() {
                 <div class="anime-detail-poster">
                     <img src="${animeData.poster || '/placeholder.jpg'}" alt="${escapeHtml(animeData.title || 'Anime poster')}">
                     <div class="anime-detail-rating">
-                        <span class="rating-value">${escapeHtml(animeData.rating || 'N/A')}</span>
+                        <span class="rating-value">${escapeHtml(displayValue(animeData.rating))}</span>
                         <span class="rating-label">Score</span>
                     </div>
                 </div>
@@ -220,7 +227,7 @@ function renderAnimeDetail() {
                     <div class="v10-side-stats">
                         <div class="v10-side-stat">
                             <span class="label">Score</span>
-                            <strong>${escapeHtml(animeData.rating || 'N/A')}</strong>
+                            <strong>${escapeHtml(displayValue(animeData.rating))}</strong>
                         </div>
                         <div class="v10-side-stat">
                             <span class="label">Rate</span>

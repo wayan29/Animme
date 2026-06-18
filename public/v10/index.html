@@ -289,6 +289,164 @@
         body.server-v10 .v10-home-card-placeholder .v10-home-card-link {
             color: rgba(255, 255, 255, 0.68);
         }
+
+        /* V10 UI cleanup: tighter cards, less duplicated/noisy content, clearer text. */
+        body.server-v10 .v10-hero-banner {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 20px;
+            align-items: center;
+            padding: 22px 24px;
+            margin-bottom: 26px;
+            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(17, 19, 28, 0.96), rgba(10, 12, 18, 0.96));
+            border: 1px solid rgba(239, 68, 68, 0.14);
+        }
+
+        body.server-v10 .v10-hero-copy h2 {
+            margin: 6px 0 8px;
+            font-size: 1.55rem;
+            line-height: 1.2;
+        }
+
+        body.server-v10 .v10-hero-copy p {
+            margin: 0;
+            max-width: 760px;
+            color: #cbd5e1;
+            line-height: 1.55;
+        }
+
+        body.server-v10 .v10-hero-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(82px, 1fr));
+            gap: 10px;
+        }
+
+        body.server-v10 .v10-hero-stat {
+            min-width: 82px;
+            padding: 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            text-align: center;
+        }
+
+        body.server-v10 .v10-hero-stat .label {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        body.server-v10 .v10-hero-stat strong {
+            display: block;
+            color: #fff;
+            margin-top: 4px;
+            font-size: 1.35rem;
+        }
+
+        body.server-v10 .v10-home-shortcuts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 6px 0 34px;
+        }
+
+        body.server-v10 .v10-home-shortcut-card {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            text-decoration: none;
+            color: #fff;
+            background: rgba(17, 19, 28, 0.96);
+            border: 1px solid rgba(239, 68, 68, 0.12);
+        }
+
+        body.server-v10 .v10-home-shortcut-card .shortcut-label {
+            color: #f87171;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        body.server-v10 .v10-home-shortcut-card strong {
+            color: #e5e7eb;
+            font-size: 0.9rem;
+            line-height: 1.35;
+        }
+
+        body.server-v10 .anime-section {
+            margin-bottom: 36px;
+        }
+
+        body.server-v10 .v10-home-card {
+            min-height: 382px;
+            border-radius: 14px;
+        }
+
+        body.server-v10 .v10-home-card .anime-info {
+            gap: 9px;
+            padding: 12px 12px 14px;
+        }
+
+        body.server-v10 .v10-home-card .anime-title {
+            font-size: 0.94rem;
+            line-height: 1.35;
+            min-height: 2.55em;
+        }
+
+        body.server-v10 .v10-home-card-meta,
+        body.server-v10 .v10-home-card-footer {
+            gap: 6px;
+        }
+
+        body.server-v10 .anime-type,
+        body.server-v10 .anime-episode,
+        body.server-v10 .v10-home-card-link {
+            font-size: 0.72rem;
+            line-height: 1.2;
+        }
+
+        body.server-v10 .v10-home-card-placeholder {
+            min-height: 340px;
+        }
+
+        @media (min-width: 1100px) {
+            body.server-v10 .anime-row {
+                grid-template-columns: repeat(5, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body.server-v10 .v10-hero-banner {
+                grid-template-columns: 1fr;
+                padding: 16px;
+            }
+
+            body.server-v10 .v10-hero-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            body.server-v10 .v10-home-shortcuts {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            body.server-v10 .v10-home-card {
+                min-height: 315px;
+            }
+
+            body.server-v10 .v10-home-card .anime-info {
+                padding: 10px;
+            }
+
+            body.server-v10 .v10-home-card .anime-title {
+                font-size: 0.82rem;
+            }
+        }
     </style>
 </head>
 <body class="server-v10 home-with-sidebar">

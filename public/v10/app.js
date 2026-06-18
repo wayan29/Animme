@@ -76,8 +76,11 @@ async function loadHomePage() {
         displayCarousel(homeData.trending.slice(0, 5));
     }
 
-    if (homeData.trending && homeData.trending.length > 0) {
-        renderAnimeRow('recommendedAnime', buildRecommendations(homeData), 'recommendedCount');
+    const recommendations = buildRecommendations(homeData);
+    if (recommendations.length > 0) {
+        renderAnimeRow('recommendedAnime', recommendations, 'recommendedCount');
+    } else {
+        hideSection('recommendedAnime');
     }
 
     // Render trending anime
@@ -95,19 +98,27 @@ async function loadHomePage() {
         renderAnimeRow('latestEpisodes', homeData.latest_episodes, 'latestCount');
     }
 
-    // Load pagination info
-    loadAnimeList(currentPage);
+    // Home uses /home latest_episodes directly. Do not overwrite with /anime-list here,
+    // because anime-list is catalog data and makes the home "Episode Baru" section messy.
 }
 
 function buildRecommendations(data) {
-    const merged = [...(data.trending || []), ...(data.airing || []), ...(data.latest_episodes || [])];
+    const trendingKeys = new Set((data.trending || []).map((item) => item.slug || item.title).filter(Boolean));
+    const merged = [...(data.featured || []), ...(data.airing || []), ...(data.latest_episodes || [])];
     const seen = new Set();
+
     return merged.filter((item) => {
         const key = item.slug || item.title;
-        if (!key || seen.has(key)) return false;
+        if (!key || seen.has(key) || trendingKeys.has(key)) return false;
         seen.add(key);
         return true;
-    }).slice(0, 10);
+    }).slice(0, 8);
+}
+
+function hideSection(containerId) {
+    const container = document.getElementById(containerId);
+    const section = container?.closest('.anime-section');
+    if (section) section.style.display = 'none';
 }
 
 function displayCarousel(items) {
@@ -245,10 +256,12 @@ function renderAnimeRow(containerId, animeList, countId) {
 
     const sectionClass = containerId === 'latestEpisodes' ? 'v10-card-latest' : 'v10-card-featured';
 
-    container.innerHTML = animeList.map(anime => `
-        <a class="anime-card v10-home-card ${sectionClass}" href="/v10/detail?slug=${anime.slug}">
+    container.innerHTML = animeList.map(anime => {
+        const href = resolveV10ItemUrl(anime, containerId);
+        return `
+        <a class="anime-card v10-home-card ${sectionClass}" href="${href}">
             <div class="anime-poster">
-                <img src="${anime.poster || '/placeholder.jpg'}" alt="${anime.title}" loading="lazy">
+                <img src="${anime.poster || '/placeholder.jpg'}" alt="${anime.title}" loading="${containerId === 'latestEpisodes' ? 'eager' : 'lazy'}" decoding="async">
                 <div class="anime-overlay">
                     <div class="anime-rating">${anime.rating || anime.status || 'Vidku'}</div>
                 </div>
@@ -265,11 +278,21 @@ function renderAnimeRow(containerId, animeList, countId) {
                 </div>
             </div>
         </a>
-    `).join('');
+    `;
+    }).join('');
 
-    if ((containerId === 'airingAnime' || containerId === 'latestEpisodes') && animeList.length > 0) {
+    if (containerId === 'airingAnime' && animeList.length > 0) {
         fillHomeRowGaps(containerId, animeList.length);
     }
+}
+
+function resolveV10ItemUrl(anime, containerId) {
+    const slug = encodeURIComponent(anime?.slug || '');
+    if (!slug) return '#';
+    if (containerId === 'latestEpisodes' || anime?.episode_number || anime?.url?.includes('/watch/')) {
+        return `/v10/episode?slug=${slug}`;
+    }
+    return `/v10/detail?slug=${slug}`;
 }
 
 function fillHomeRowGaps(containerId, count) {

@@ -737,9 +737,10 @@ function renderAnimeCards(items) {
     }
 
     const tvCardClass = isTvPreset() ? ' tv-series-card' : '';
+    const advancedCardClass = isAdvancedPreset() ? ' advanced-result-card' : '';
 
     container.innerHTML = items.map((item) => `
-        <article class="anime-card${tvCardClass}" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
+        <article class="anime-card${tvCardClass}${advancedCardClass}" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
             <div class="anime-poster">
                 <img src="${escapeHtml(item.poster || '/placeholder.jpg')}" alt="${escapeHtml(item.title || 'Anime')}" loading="lazy">
                 <div class="anime-overlay">
@@ -812,6 +813,10 @@ function isMoviePreset() {
 
 function isTvPreset() {
     return currentPreset === 'tv' || currentPath === '/v10/tv-show';
+}
+
+function isAdvancedPreset() {
+    return currentPreset === 'advanced' || currentPath === '/v10/advanced-search';
 }
 
 function showLoading(message) {

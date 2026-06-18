@@ -12,6 +12,16 @@
         /* Player Settings CSS Variables */
         :root {
             --player-primary-color: #ff7755;
+            --player-accent-2: #ff6b9d;
+            --player-bg: #0f0f12;
+            --player-surface: #17171c;
+            --player-surface-2: #1f1f26;
+            --player-surface-3: #27272a;
+            --player-border: rgba(255, 255, 255, 0.08);
+            --player-radius: 14px;
+            --player-radius-sm: 10px;
+            --player-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
+            --player-shadow-glow: 0 10px 28px rgba(255, 119, 85, 0.28);
             --player-font-family: 'Rubik', sans-serif;
         }
 
@@ -24,6 +34,10 @@
         body {
             overflow-x: hidden;
             max-width: 100vw;
+            background:
+                radial-gradient(circle at top left, rgba(255, 119, 85, 0.12), transparent 28%),
+                radial-gradient(circle at top right, rgba(255, 107, 157, 0.08), transparent 24%),
+                var(--player-bg);
         }
 
         .episode-container {
@@ -774,6 +788,181 @@
             font-size: 0.85rem;
         }
 
+        /* V3 visual refresh: CSS-only, scoped to this page */
+        .episode-header {
+            position: relative;
+            padding-left: 16px;
+            margin-bottom: 18px;
+        }
+
+        .episode-header::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 5px;
+            bottom: 5px;
+            width: 4px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, var(--player-primary-color), var(--player-accent-2));
+            box-shadow: var(--player-shadow-glow);
+        }
+
+        .episode-header h1 {
+            font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin-bottom: 7px;
+        }
+
+        .episode-header .anime-title {
+            color: #c7c7cc;
+        }
+
+        .episode-header .episode-num {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: rgba(255, 119, 85, 0.13);
+            border: 1px solid rgba(255, 119, 85, 0.22);
+            color: var(--player-primary-color);
+        }
+
+        .player-section,
+        .sidebar-section,
+        .download-section {
+            background: linear-gradient(180deg, var(--player-surface) 0%, #121216 100%);
+            border: 1px solid var(--player-border);
+            border-radius: var(--player-radius);
+            box-shadow: var(--player-shadow);
+        }
+
+        .player-controls {
+            background: linear-gradient(180deg, var(--player-surface-2), var(--player-surface));
+            border-bottom: 1px solid var(--player-border);
+        }
+
+        .video-container {
+            border-top-left-radius: var(--player-radius-sm);
+            border-top-right-radius: var(--player-radius-sm);
+        }
+
+        .control-group select {
+            appearance: none;
+            -webkit-appearance: none;
+            min-width: 145px;
+            padding: 8px 34px 8px 12px;
+            border-radius: 999px;
+            background-color: var(--player-surface-3);
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ff7755' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            border: 1px solid var(--player-border);
+            transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+        }
+
+        .control-group select:hover,
+        .control-group select:focus {
+            background-color: #303038;
+            border-color: var(--player-primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 119, 85, 0.18);
+        }
+
+        .sidebar-section h2,
+        .download-section h2 {
+            position: relative;
+            padding-bottom: 11px;
+            border-bottom: 1px solid var(--player-border);
+            color: #fff;
+        }
+
+        .sidebar-section h2::after,
+        .download-section h2::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 42px;
+            height: 2px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--player-primary-color), var(--player-accent-2));
+        }
+
+        .episode-btn,
+        .download-btn,
+        .nav-btn {
+            border-radius: var(--player-radius-sm);
+            border-color: var(--player-border);
+            transition: background-color .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease;
+        }
+
+        .episode-btn,
+        .download-btn,
+        .nav-btn:not(.detail) {
+            background: var(--player-surface-2);
+        }
+
+        .episode-btn:hover,
+        .download-btn:hover,
+        .nav-btn:hover {
+            transform: none;
+            background: var(--player-surface-3);
+            border-color: rgba(255, 119, 85, 0.45);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+        }
+
+        .episode-btn.active,
+        .episode-btn.active:hover,
+        .nav-btn:hover:not(.disabled) {
+            background: linear-gradient(135deg, var(--player-primary-color) 0%, var(--player-accent-2) 100%);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: var(--player-shadow-glow);
+        }
+
+        .episode-btn {
+            position: relative;
+        }
+
+        .episode-btn.active::after {
+            content: "";
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+        }
+
+        .quality-group {
+            background: var(--player-surface-2);
+            border: 1px solid var(--player-border);
+            border-radius: var(--player-radius-sm);
+        }
+
+        .quality-group h3 {
+            border-bottom-color: var(--player-border);
+            color: #f4f4f5;
+        }
+
+        .youtube-play-button {
+            background: rgba(255, 119, 85, 0.94) !important;
+        }
+
+        .youtube-play-button:hover {
+            background: rgba(255, 119, 85, 1) !important;
+        }
+
+        @media (min-width: 969px) {
+            .player-sidebar {
+                position: sticky;
+                top: 90px;
+            }
+        }
+
         /* Mobile responsive - prevent horizontal scroll */
         @media (max-width: 968px) {
             /* Force no horizontal scroll */
@@ -1101,6 +1290,34 @@
 
             .episode-grid {
                 grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            }
+        }
+
+        /* Final mobile polish overrides after legacy mobile blocks */
+        @media (max-width: 768px) {
+            .player-sidebar .sidebar-section,
+            .download-section,
+            .player-section {
+                background: linear-gradient(180deg, var(--player-surface) 0%, #121216 100%);
+                border: 1px solid var(--player-border);
+                border-radius: var(--player-radius);
+                box-shadow: var(--player-shadow);
+            }
+
+            .player-sidebar .sidebar-section {
+                border-top: 3px solid rgba(255, 119, 85, 0.72);
+                border-bottom: 3px solid rgba(255, 107, 157, 0.55);
+            }
+
+            .episode-btn {
+                border-width: 1px;
+                border-radius: var(--player-radius-sm);
+            }
+
+            .episode-btn.active {
+                transform: none;
+                background: linear-gradient(135deg, var(--player-primary-color) 0%, var(--player-accent-2) 100%);
+                box-shadow: var(--player-shadow-glow);
             }
         }
     </style>

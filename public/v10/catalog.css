@@ -472,6 +472,375 @@ body.v10-catalog-page {
     }
 }
 
+/* A-Z Anime List preset: library / index browsing (body.v10-preset-az from catalog.js) */
+.v10-catalog-page.v10-preset-az {
+    background:
+        radial-gradient(ellipse 100% 70% at 12% -12%, rgba(251, 191, 36, 0.14), transparent 38%),
+        radial-gradient(circle at 88% 8%, rgba(244, 114, 182, 0.10), transparent 32%),
+        radial-gradient(circle at 50% 100%, rgba(99, 102, 241, 0.06), transparent 40%),
+        linear-gradient(180deg, #0f1014 0%, #12131a 42%, #09090c 100%);
+}
+
+.v10-preset-az .v10-page-hero,
+.v10-preset-az .catalog-panel,
+.v10-preset-az .anime-filters,
+.v10-preset-az .pagination-container,
+.v10-preset-az .az-letter-strip {
+    border-color: rgba(251, 191, 36, 0.14);
+    background:
+        linear-gradient(180deg, rgba(22, 22, 30, 0.97), rgba(12, 12, 18, 0.96));
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.v10-preset-az .v10-page-hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 248px;
+}
+
+.v10-preset-az .v10-page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+    background: linear-gradient(180deg, #fde68a 0%, #fbbf24 42%, #a78bfa 100%);
+    pointer-events: none;
+}
+
+.v10-preset-az .v10-page-hero::after {
+    content: 'A–Z';
+    position: absolute;
+    right: clamp(14px, 4vw, 52px);
+    bottom: -8px;
+    max-width: min(55vw, 280px);
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.035);
+    font-size: clamp(3.5rem, 12vw, 9rem);
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.v10-preset-az .v10-page-hero > * {
+    min-width: 0;
+}
+
+.v10-preset-az .hero-kicker,
+.v10-preset-az .section-badge,
+.v10-preset-az .shortcut-chip.active {
+    background: rgba(251, 191, 36, 0.14);
+    border-color: rgba(251, 191, 36, 0.34);
+    color: #fde68a;
+}
+
+.v10-preset-az .hero-copy h2 {
+    max-width: 760px;
+    background: linear-gradient(135deg, #fffbeb 0%, #fde68a 40%, #c4b5fd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.03em;
+}
+
+.v10-preset-az .hero-copy p {
+    color: rgba(255, 251, 235, 0.72);
+}
+
+.v10-preset-az .hero-stat {
+    background: linear-gradient(180deg, rgba(251, 191, 36, 0.12), rgba(255, 255, 255, 0.035));
+    border-color: rgba(251, 191, 36, 0.22);
+}
+
+.v10-preset-az .hero-stat strong,
+.v10-preset-az .section-title {
+    color: #fffbeb;
+}
+
+.v10-preset-az .section-title::after {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 3px;
+    margin-top: 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #fbbf24, rgba(167, 139, 250, 0));
+}
+
+.v10-preset-az .shortcut-chip:hover,
+.v10-preset-az .shortcut-chip.active {
+    box-shadow: 0 10px 22px rgba(251, 191, 36, 0.12);
+}
+
+.v10-preset-az .mobile-filter-toggle {
+    border-color: rgba(251, 191, 36, 0.2);
+    background: rgba(18, 18, 26, 0.88);
+    color: #fef3c7;
+}
+
+.v10-preset-az .az-letter-strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 14px;
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(251, 191, 36, 0.14);
+    min-width: 0;
+}
+
+.v10-preset-az .az-letter-strip[hidden] {
+    display: none !important;
+}
+
+.v10-preset-az .az-letter-strip-label {
+    flex: 0 0 auto;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(253, 230, 138, 0.85);
+}
+
+.v10-preset-az .az-letter-strip-scroll {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: nowrap;
+    gap: 8px;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(251, 191, 36, 0.35) transparent;
+    padding-bottom: 2px;
+}
+
+.v10-preset-az .az-letter-strip-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.v10-preset-az .az-letter-strip-scroll::-webkit-scrollbar-thumb {
+    background: rgba(251, 191, 36, 0.28);
+    border-radius: 999px;
+}
+
+.v10-preset-az .az-letter-btn {
+    flex: 0 0 auto;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 10px;
+    border-radius: 12px;
+    border: 1px solid rgba(251, 191, 36, 0.18);
+    background: rgba(8, 8, 12, 0.55);
+    color: rgba(255, 251, 235, 0.88);
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.16s ease, background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.v10-preset-az .az-letter-btn:hover {
+    transform: translateY(-1px);
+    border-color: rgba(251, 191, 36, 0.42);
+    background: rgba(251, 191, 36, 0.12);
+    color: #fffbeb;
+}
+
+.v10-preset-az .az-letter-btn.active {
+    border-color: rgba(251, 191, 36, 0.55);
+    background: linear-gradient(180deg, rgba(251, 191, 36, 0.28), rgba(167, 139, 250, 0.14));
+    color: #fffbeb;
+    box-shadow: 0 8px 18px rgba(251, 191, 36, 0.14);
+}
+
+.v10-preset-az .az-letter-btn-all {
+    min-width: 52px;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+}
+
+.v10-preset-az .filter-row,
+.v10-preset-az .filter-group {
+    min-width: 0;
+}
+
+.v10-preset-az .filter-group label {
+    color: rgba(254, 243, 199, 0.9);
+}
+
+.v10-preset-az .filter-group input,
+.v10-preset-az .filter-group select,
+.v10-preset-az .genre-panel,
+.v10-preset-az .genre-checkbox {
+    max-width: 100%;
+    border-color: rgba(251, 191, 36, 0.12);
+    background-color: rgba(8, 8, 12, 0.72);
+}
+
+.v10-preset-az .filter-group input:focus,
+.v10-preset-az .filter-group select:focus {
+    border-color: rgba(251, 191, 36, 0.52);
+    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.11);
+}
+
+.v10-preset-az .filter-group.preset-order-az label {
+    color: #fde68a;
+}
+
+.v10-preset-az .filter-group.preset-order-az select {
+    border-color: rgba(251, 191, 36, 0.32);
+    color: #fde68a;
+    font-weight: 600;
+}
+
+.v10-preset-az .btn-primary {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    box-shadow: 0 10px 22px rgba(245, 158, 11, 0.16);
+}
+
+.v10-preset-az .btn-secondary {
+    border-color: rgba(251, 191, 36, 0.24);
+}
+
+.v10-preset-az .v10-catalog-grid.anime-grid {
+    gap: 16px;
+}
+
+.v10-preset-az .v10-catalog-grid .anime-card.az-list-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(26, 26, 34, 0.98), rgba(12, 12, 18, 0.98));
+    border: 1px solid rgba(251, 191, 36, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.26);
+}
+
+.v10-preset-az .v10-catalog-grid .anime-card.az-list-card::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(251, 191, 36, 0.55), rgba(167, 139, 250, 0.25), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.v10-preset-az .v10-catalog-grid .anime-card.az-list-card:hover::after,
+.v10-preset-az .v10-catalog-grid .anime-card.az-list-card:focus-within::after {
+    opacity: 1;
+}
+
+.v10-preset-az .v10-catalog-grid .anime-card.az-list-card:hover {
+    border-color: rgba(251, 191, 36, 0.28);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(251, 191, 36, 0.1);
+}
+
+.v10-preset-az .v10-catalog-grid .anime-poster {
+    background: #07070a;
+}
+
+.v10-preset-az .v10-catalog-grid .anime-title {
+    color: #fffbeb;
+    font-weight: 650;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.v10-preset-az .v10-catalog-grid .anime-type {
+    background: rgba(167, 139, 250, 0.16);
+    color: #ddd6fe;
+    border: 1px solid rgba(167, 139, 250, 0.26);
+}
+
+.v10-preset-az .v10-catalog-grid .anime-status {
+    background: rgba(251, 191, 36, 0.12);
+    color: #fde68a;
+    border: 1px solid rgba(251, 191, 36, 0.22);
+}
+
+.v10-preset-az .v10-catalog-grid .anime-episode {
+    background: rgba(99, 102, 241, 0.14);
+    color: #c7d2fe;
+    border: 1px solid rgba(99, 102, 241, 0.22);
+}
+
+.v10-preset-az .v10-catalog-grid .genre-tag {
+    background: rgba(251, 191, 36, 0.08);
+    border-color: rgba(251, 191, 36, 0.18);
+    color: rgba(254, 243, 199, 0.88);
+}
+
+.v10-preset-az .pagination-btn:not(:disabled):hover {
+    background: rgba(251, 191, 36, 0.14);
+    border-color: rgba(251, 191, 36, 0.34);
+    color: #fde68a;
+}
+
+.v10-preset-az .loading,
+.v10-preset-az .empty-state {
+    border-color: rgba(251, 191, 36, 0.2);
+    background: rgba(251, 191, 36, 0.06);
+    color: rgba(255, 251, 235, 0.75);
+}
+
+@media (max-width: 768px) {
+    .v10-preset-az .v10-page-hero {
+        min-height: 0;
+        padding: 20px;
+    }
+
+    .v10-preset-az .v10-page-hero::after {
+        font-size: 2.75rem;
+        right: 12px;
+        bottom: -4px;
+    }
+
+    .v10-preset-az .hero-stats {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .v10-preset-az .hero-stat {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .v10-preset-az .az-letter-strip {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 12px 14px;
+    }
+
+    .v10-preset-az .az-letter-strip-scroll {
+        margin: 0 -4px;
+        padding: 4px 4px 6px;
+    }
+
+    .v10-preset-az .az-letter-btn {
+        min-width: 36px;
+        height: 36px;
+        font-size: 0.82rem;
+        border-radius: 10px;
+    }
+
+    .v10-preset-az .v10-catalog-grid.anime-grid {
+        gap: 12px;
+    }
+
+    .v10-preset-az .v10-catalog-grid .anime-card.az-list-card {
+        border-radius: 14px;
+    }
+}
+
+
 .v10-catalog-page [hidden] {
     display: none !important;
 }
@@ -1032,5 +1401,26 @@ body.v10-catalog-page {
 
     .v10-preset-advanced .v10-catalog-grid .anime-card.advanced-result-card {
         border-radius: 14px;
+    }
+}
+
+/* V10 catalog shell overflow guard for sidebar layouts */
+.v10-catalog-page.home-with-sidebar .content-area {
+    min-width: 0;
+    max-width: calc(100vw - 260px);
+    overflow-x: clip;
+}
+
+.v10-catalog-page.home-with-sidebar .main-content,
+.v10-catalog-page.home-with-sidebar .topbar,
+.v10-catalog-page.home-with-sidebar .footer {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1024px) {
+    .v10-catalog-page.home-with-sidebar .content-area {
+        max-width: 100vw;
     }
 }

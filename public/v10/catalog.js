@@ -320,7 +320,7 @@ function syncFiltersFromQuery() {
     if (PAGE_KIND !== 'all-anime') return;
 
     const filters = {};
-    ['title', 'status', 'type', 'order', 'orderby', 'producer', 'studio', 'season'].forEach((key) => {
+    ['title', 'status', 'type', 'order', 'orderby', 'letter', 'producer', 'studio', 'season'].forEach((key) => {
         if (currentQuery.has(key)) {
             filters[key] = currentQuery.get(key) || '';
         }
@@ -336,10 +336,17 @@ function syncFiltersFromQuery() {
 
 function syncPresetFilterChrome() {
     const typeGroup = document.getElementById('filterType')?.closest('.filter-group');
-    if (!typeGroup) return;
+    if (typeGroup) {
+        const locked = currentPreset === 'tv' || currentPreset === 'movie';
+        typeGroup.classList.toggle('preset-type-locked', locked);
+    }
 
-    const locked = currentPreset === 'tv' || currentPreset === 'movie';
-    typeGroup.classList.toggle('preset-type-locked', locked);
+    const orderGroup = document.getElementById('filterOrder')?.closest('.filter-group');
+    if (orderGroup) {
+        orderGroup.classList.toggle('preset-order-az', currentPreset === 'az');
+    }
+
+    syncAzLetterStrip();
 }
 
 function fillFilters(filters, preserveExistingGenres) {
@@ -429,7 +436,7 @@ function resetFilters() {
         window.location.href = '/v10/advanced-search';
         return;
     }
-    if (currentPath === '/v10/tv-show' || currentPath === '/v10/movie' || currentPath === '/v10/airing') {
+    if (currentPath === '/v10/tv-show' || currentPath === '/v10/movie' || currentPath === '/v10/airing' || currentPath === '/v10/az-list') {
         window.location.href = currentPath;
         return;
     }
@@ -738,9 +745,10 @@ function renderAnimeCards(items) {
 
     const tvCardClass = isTvPreset() ? ' tv-series-card' : '';
     const advancedCardClass = isAdvancedPreset() ? ' advanced-result-card' : '';
+    const azCardClass = isAzPreset() ? ' az-list-card' : '';
 
     container.innerHTML = items.map((item) => `
-        <article class="anime-card${tvCardClass}${advancedCardClass}" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
+        <article class="anime-card${tvCardClass}${advancedCardClass}${azCardClass}" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
             <div class="anime-poster">
                 <img src="${escapeHtml(item.poster || '/placeholder.jpg')}" alt="${escapeHtml(item.title || 'Anime')}" loading="lazy">
                 <div class="anime-overlay">
@@ -805,6 +813,57 @@ function renderResultSubtitle(item) {
     }
 
     return 'Buka detail anime';
+}
+
+const AZ_LETTER_NAV = ['#', '0-9', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+
+function isAzPreset() {
+    return currentPreset === 'az' || currentPath === '/v10/az-list';
+}
+
+function syncAzLetterStrip() {
+    const strip = document.getElementById('azLetterStrip');
+    const scroll = document.getElementById('azLetterStripScroll');
+    if (!strip || !scroll) return;
+
+    const show = isAzPreset();
+    strip.hidden = !show;
+    if (!show) return;
+
+    const activeLetter = (currentQuery.get('letter') || '').trim();
+    if (!scroll.dataset.bound) {
+        scroll.dataset.bound = '1';
+        scroll.addEventListener('click', (event) => {
+            const btn = event.target.closest('.az-letter-btn');
+            if (!btn) return;
+            navigateAzLetter(btn.dataset.letter ?? '');
+        });
+    }
+
+    const allActive = !activeLetter;
+    const allBtn = `<button type="button" class="az-letter-btn az-letter-btn-all${allActive ? ' active' : ''}" data-letter="" role="listitem">Semua</button>`;
+    const letterBtns = AZ_LETTER_NAV.map((letter) => {
+        const active = activeLetter.toLowerCase() === String(letter).toLowerCase()
+            || (letter.length === 1 && letter !== '#' && activeLetter.toUpperCase() === letter);
+        return `<button type="button" class="az-letter-btn${active ? ' active' : ''}" data-letter="${escapeHtml(letter)}" role="listitem">${escapeHtml(letter)}</button>`;
+    }).join('');
+    scroll.innerHTML = allBtn + letterBtns;
+}
+
+function navigateAzLetter(letter) {
+    const params = new URLSearchParams(window.location.search);
+    params.delete('page');
+    const normalized = String(letter || '').trim();
+    if (normalized) {
+        params.set('letter', normalized);
+    } else {
+        params.delete('letter');
+    }
+    if (!params.has('order')) {
+        params.set('order', 'az');
+    }
+    const qs = params.toString();
+    window.location.href = `/v10/az-list${qs ? `?${qs}` : ''}`;
 }
 
 function isMoviePreset() {

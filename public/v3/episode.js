@@ -1033,16 +1033,16 @@ function loadVideo(sources, startTime = 0) {
     // Cleanup any existing HLS instance first
     cleanupHLS();
 
+    const validSources = sources.filter(source => safeUrl(source.url, ''));
+    if (validSources.length === 0) {
+        showError('No valid video sources available.');
+        return;
+    }
+
     // Check if this is an HLS stream (single source with .m3u8)
     if (validSources.length === 1 && isHLSStream(validSources[0].url)) {
         console.log('Detected HLS stream, using HLS player');
         loadVideoWithHLS(validSources[0].url, startTime);
-        return;
-    }
-
-    const validSources = sources.filter(source => safeUrl(source.url, ''));
-    if (validSources.length === 0) {
-        showError('No valid video sources available.');
         return;
     }
 
@@ -1058,7 +1058,6 @@ function loadVideo(sources, startTime = 0) {
     const video = document.createElement('video');
     video.controls = true;
     video.controlsList = 'nodownload';
-    video.crossOrigin = 'anonymous';
     video.playsInline = true;
     video.preload = 'metadata';
     video.style.width = '100%';

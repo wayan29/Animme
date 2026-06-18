@@ -400,6 +400,12 @@ async function resetPlayer() {
     if (videoContainer) {
         videoContainer.innerHTML = ''
     }
+
+    const externalHelp = document.getElementById('externalPlayerHelp')
+    if (externalHelp) {
+        externalHelp.style.display = 'none'
+        externalHelp.innerHTML = ''
+    }
 }
 
 function createVideoElement() {
@@ -471,15 +477,26 @@ function renderIframePlayer(url) {
     iframe.allowFullscreen = true
     iframe.setAttribute('frameborder', '0')
     iframe.setAttribute('scrolling', 'no')
-    iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture'
+    iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture; web-share'
     iframe.referrerPolicy = 'no-referrer-when-downgrade'
-    iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation'
 
     videoContainer.appendChild(iframe)
     setPlaybackMode('iframe')
     renderQualityList([], 'server', 'iframe')
+    renderExternalPlayerHelp(url)
     hidePlayerLoading()
-    setPlayerStatus('Server eksternal dimuat via iframe', 'success')
+    setPlayerStatus('Server eksternal siap. Jika tidak bisa play, buka server asli.', 'success')
+}
+
+function renderExternalPlayerHelp(url) {
+    const helpEl = document.getElementById('externalPlayerHelp')
+    if (!helpEl) return
+
+    helpEl.style.display = 'flex'
+    helpEl.innerHTML = `
+        <span>Player eksternal dimuat dari mirror. Jika tombol play tidak merespons, buka server asli.</span>
+        <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Buka server asli</a>
+    `
 }
 
 function getCurrentVideoElement() {
@@ -501,7 +518,7 @@ function renderQualityList(options = [], selected = 'auto', type = 'none') {
     }
 
     if (!options.length) {
-        const fallbackLabel = type === 'iframe' ? 'Ikuti server' : (type === 'file' ? 'Sumber asli' : 'Auto')
+        const fallbackLabel = type === 'iframe' ? 'Server iframe' : (type === 'file' ? 'Sumber asli' : 'Auto')
         container.innerHTML = `<span class="quality-pill muted">${escapeHtml(fallbackLabel)}</span>`
         renderOverlayQualityMenu()
         updateCustomPlayerUi()

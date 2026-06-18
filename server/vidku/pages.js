@@ -512,7 +512,8 @@ async function scrapeEpisode(episodeSlug) {
 
         const extraServers = $('[data-embed-id]').map((_, element) => {
             const label = $(element).text().replace(/\s+/g, ' ').trim()
-            const decodedPayload = decodeEmbedPayload($(element).attr('data-embed-id') || '')
+            const rawPayload = $(element).attr('data-embed-id') || ''
+            const decodedPayload = decodeEmbedPayload(rawPayload) || rawPayload
             const decodedPlayers = parsePlayerData(decodedPayload)
             const decodedUrl = decodedPlayers[0]?.src || (/^https?:\/\//i.test(decodedPayload) ? decodedPayload : '')
 
@@ -520,7 +521,7 @@ async function scrapeEpisode(episodeSlug) {
                 name: label || 'Default',
                 url: normalizeUrl(decodedUrl)
             }
-        }).get().filter((server) => server.name || server.url)
+        }).get().filter((server) => server.url)
 
         const streamServers = [
             {

@@ -110,32 +110,6 @@ function escapeHtml(value = '') {
 }
 
 
-function isAbyssPlayerUrl(url = '') {
-    try {
-        const parsed = new URL(url, window.location.origin)
-        return /(^|\.)abyssplayer\.com$/i.test(parsed.hostname)
-    } catch (error) {
-        return /abyssplayer\.com/i.test(String(url))
-    }
-}
-
-function renderExternalOnlyPlayer(url, reason = '') {
-    const videoContainer = document.getElementById('videoContainer')
-    if (!videoContainer) return
-
-    videoContainer.innerHTML = `
-        <div class="video-fallback external-only-fallback">
-            <p>${escapeHtml(reason || 'Server eksternal ini menolak dimuat di iframe pada beberapa browser.')}</p>
-            <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer" class="download-link-chip">Buka server asli</a>
-        </div>
-    `
-    setPlaybackMode('iframe')
-    renderQualityList([], 'server', 'iframe')
-    renderExternalPlayerHelp(url)
-    hidePlayerLoading()
-    setPlayerStatus('Server ini perlu dibuka langsung. Pilih server lain jika tersedia.', 'info')
-}
-
 function isDashStream(url = '') {
     return /\.mpd($|\?)/i.test(url)
 }
@@ -501,9 +475,12 @@ function renderIframePlayer(url) {
 
     const iframe = document.createElement('iframe')
     iframe.src = url
+    iframe.width = '640'
+    iframe.height = '360'
     iframe.allowFullscreen = true
+    iframe.setAttribute('allowfullscreen', '')
     iframe.setAttribute('frameborder', '0')
-    iframe.setAttribute('scrolling', 'no')
+    iframe.setAttribute('scrolling', '0')
     iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture; web-share'
     iframe.referrerPolicy = 'no-referrer-when-downgrade'
 
@@ -521,7 +498,7 @@ function renderExternalPlayerHelp(url) {
 
     helpEl.style.display = 'flex'
     helpEl.innerHTML = `
-        <span>Player eksternal dimuat dari mirror. Jika muncul peringatan keamanan/anti-debug, tutup DevTools dan buka server asli atau pilih mirror lain.</span>
+        <span>Player iframe dimuat sesuai format embed server. Jika muncul peringatan keamanan Abyss, tutup DevTools/F12 lalu reload, atau buka server asli.</span>
         <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Buka server asli</a>
     `
 }
@@ -962,14 +939,6 @@ async function playStreamingServer(index) {
 
         if (isDirectVideoFile(server.url)) {
             loadDirectVideo(server.url)
-            return
-        }
-
-        if (isAbyssPlayerUrl(server.url)) {
-            renderExternalOnlyPlayer(
-                server.url,
-                'AbyssPlayer sedang menolak akses iframe karena proteksi anti-debug/anti-embed. Buka server asli atau pilih mirror lain.'
-            )
             return
         }
 

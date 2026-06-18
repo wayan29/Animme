@@ -23,6 +23,12 @@ function buildDetailPageUrl(animeId, slug) {
     return `/v3/detail?animeId=${enc(animeId)}&slug=${enc(slug)}`;
 }
 
+function toMediaProxyUrl(url, referer = 'https://v18.kuramanime.ing/') {
+    const safeSourceUrl = safeUrl(url, '');
+    if (!safeSourceUrl) return '';
+    return `/api/media-proxy?url=${enc(safeSourceUrl)}&referer=${enc(referer)}`;
+}
+
 let episodeData = null;
 let currentServer = null;
 let currentQuality = null;
@@ -1065,15 +1071,19 @@ function loadVideo(sources, startTime = 0) {
 
     // Add sources - prioritize selected quality
     const selectedSource = validSources.find(s => s.quality === currentQuality) || validSources[0];
+    const orderedSources = [
+        selectedSource,
+        ...validSources.filter((source) => source !== selectedSource)
+    ];
+    const shouldProxySource = shouldUseKuramaFallback;
     console.log('Selected quality source:', selectedSource.quality);
 
-    // Add all sources to video element
-    // Sources are sorted lowest to highest (360p, 480p, 720p, 1080p)
-    // Browser will auto-select first source (lowest) for fast initial load
-    // Other qualities are available for user selection without re-download
-    validSources.forEach((source, index) => {
+    // Add all sources to video element, with selected quality first.
+    // Kuramadrive URLs are proxied through our same-origin range proxy because
+    // upstream CORS only allows Kuramanime origins and can stop playback early.
+    orderedSources.forEach((source, index) => {
         const sourceElement = document.createElement('source');
-        const sourceUrl = safeUrl(source.url, '');
+        const sourceUrl = shouldProxySource ? toMediaProxyUrl(source.url) : safeUrl(source.url, '');
         if (!sourceUrl) return;
         sourceElement.src = sourceUrl;
         sourceElement.type = source.type;

@@ -1198,7 +1198,30 @@ app.get('/api/v7/nekopoi/search', async (req, res) => {
 });
 
 app.get('/api/v7/nekopoi/hentai-list', async (req, res) => {
-    return sendV7Maintenance(res);
+    try {
+        const letter = String(req.query.letter || '').trim().toUpperCase();
+        if (letter && !/^[A-Z0-9#]$/.test(letter)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid list letter',
+                data: null
+            });
+        }
+
+        console.log(`[V7] Nekopoi API - Hentai list request${letter ? ` letter ${letter}` : ''}`);
+        const data = letter
+            ? await nekopoiScraper.scrapeHentaiListByLetter(letter)
+            : await nekopoiScraper.scrapeHentaiList();
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Hentai list error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi hentai list',
+            data: null
+        });
+    }
 });
 
 // Test endpoint to check if streaming URL can be downloaded

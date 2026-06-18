@@ -153,7 +153,7 @@ function registerPages(app) {
         'v7/detail': 'maintenance',
         'v7/episode': 'episode',
         'v7/search': 'search',
-        'v7/list': 'maintenance'
+        'v7/list': 'list'
     };
     Object.entries(v7StaticRoutes).forEach(([route, file]) => {
         registerHtmlAliases(app, route, file, 'v7');

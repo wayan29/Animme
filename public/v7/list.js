@@ -284,7 +284,10 @@ function setupServerSelector() {
             v4: '/v4/home',
             v5: '/v5/home',
             v6: '/v6/home',
-            v7: '/v7/home'
+            v7: '/v7/home',
+            v8: '/v8/home',
+            v9: '/v9/home',
+            v10: '/v10/home'
         };
 
         const targetPath = versionMap[selectedVersion];

@@ -48,6 +48,54 @@ function showPlayerError(message) {
     updateAlert(message, 'error');
 }
 
+function isDirectVideoUrl(url = '') {
+    return /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(String(url));
+}
+
+function isRestrictedEmbedUrl(url = '') {
+    try {
+        const host = new URL(url, window.location.origin).hostname.toLowerCase();
+        return host === 'filedon.co' || host.endsWith('.filedon.co');
+    } catch (error) {
+        return /filedon\.co/i.test(String(url));
+    }
+}
+
+function findPreferredInitialServer(servers = []) {
+    const preferredPatterns = [
+        /wibufile\s*1080p/i,
+        /wibufile\s*720p/i,
+        /blogspot/i,
+        /mega\s*1080p/i,
+        /mega\s*720p/i
+    ];
+
+    for (const pattern of preferredPatterns) {
+        const index = servers.findIndex((server) => pattern.test(server?.label || ''));
+        if (index >= 0) return index;
+    }
+
+    return -1;
+}
+
+function renderDirectVideoPlayer(streamUrl) {
+    const wrapper = getPlayerWrapper();
+    if (!wrapper) return;
+
+    wrapper.innerHTML = '';
+    const video = document.createElement('video');
+    video.src = streamUrl;
+    video.controls = true;
+    video.playsInline = true;
+    video.preload = 'metadata';
+    video.style.width = '100%';
+    video.style.height = '100%';
+    video.style.background = '#000';
+    wrapper.appendChild(video);
+
+    updateAlert('Memutar file video langsung. Jika gagal, coba server lain atau buka server asli.');
+}
+
 function renderIframePlayer(streamUrl) {
     const wrapper = getPlayerWrapper();
     if (!wrapper) return;
@@ -55,17 +103,34 @@ function renderIframePlayer(streamUrl) {
         showPlayerError('Stream belum tersedia untuk episode ini.');
         return;
     }
+
+    if (isDirectVideoUrl(streamUrl)) {
+        renderDirectVideoPlayer(streamUrl);
+        return;
+    }
     
     wrapper.innerHTML = '';
     const iframe = document.createElement('iframe');
     iframe.src = streamUrl;
     iframe.allowFullscreen = true;
+    iframe.setAttribute('allowfullscreen', '');
     iframe.setAttribute('frameborder', '0');
-    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('scrolling', '0');
     iframe.referrerPolicy = 'no-referrer-when-downgrade';
     iframe.allow = 'autoplay *; fullscreen *; encrypted-media *; accelerometer *; gyroscope *; picture-in-picture *; clipboard-write *; web-share *';
-    iframe.sandbox = 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation';
     wrapper.appendChild(iframe);
+
+    updateAlert('Jika muncul "Embed Access Restricted", pilih server lain (Blogspot/Wibufile/Mega) atau buka server asli.');
+
+    const fallback = document.createElement('div');
+    fallback.className = 'player-fallback-link';
+    const link = document.createElement('a');
+    link.href = streamUrl;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.textContent = 'Buka server asli';
+    fallback.appendChild(link);
+    wrapper.appendChild(fallback);
 }
 
 function getEpisodeSlugFromURL() {
@@ -337,10 +402,16 @@ async function initEpisodePage() {
     renderDownloadSections(episode);
     renderNavigation(episode);
     
-    if (episode.default_stream_url) {
+    const preferredServerIndex = findPreferredInitialServer(episode.stream_servers || []);
+
+    if (episode.default_stream_url && !isRestrictedEmbedUrl(episode.default_stream_url)) {
         renderIframePlayer(episode.default_stream_url);
+    } else if (preferredServerIndex >= 0) {
+        switchToServer(preferredServerIndex);
     } else if (episode.stream_servers && episode.stream_servers.length > 0) {
         switchToServer(0);
+    } else if (episode.default_stream_url) {
+        renderIframePlayer(episode.default_stream_url);
     } else {
         showPlayerError('Stream belum tersedia.');
     }

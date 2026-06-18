@@ -92,18 +92,25 @@
             const openMenu = () => {
                 sidebar?.classList.add('active');
                 backdrop?.classList.add('active');
+                document.body.classList.add('sidebar-open');
                 document.body.style.overflow = 'hidden';
             };
 
             const closeMenu = () => {
                 sidebar?.classList.remove('active');
                 backdrop?.classList.remove('active');
+                document.body.classList.remove('sidebar-open');
                 document.body.style.overflow = '';
             };
 
             menuToggle?.addEventListener('click', openMenu);
             menuCloseBtn?.addEventListener('click', closeMenu);
             backdrop?.addEventListener('click', closeMenu);
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && document.body.classList.contains('sidebar-open')) {
+                    closeMenu();
+                }
+            });
         });
     </script>
     <script src="/shared/server-select.js"></script>

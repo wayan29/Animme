@@ -291,11 +291,13 @@ function initSidebarToggle() {
     const openSidebar = () => {
         sidebar?.classList.add('active');
         backdrop?.classList.add('active');
+        document.body.classList.add('sidebar-open');
     };
 
     const closeSidebar = () => {
         sidebar?.classList.remove('active');
         backdrop?.classList.remove('active');
+        document.body.classList.remove('sidebar-open');
     };
 
     menuToggle?.addEventListener('click', openSidebar);
@@ -305,6 +307,12 @@ function initSidebarToggle() {
     // Close sidebar when clicking nav links
     sidebarLinks.forEach(link => {
         link.addEventListener('click', closeSidebar);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && document.body.classList.contains('sidebar-open')) {
+            closeSidebar();
+        }
     });
 }
 

@@ -1,5 +1,24 @@
 const { BASE_URL, fetchPage, imageProxy, extractSlugFromUrl, cleanText, parseEpisodeNumber } = require('./helpers');
 
+function extractBackgroundImage(style = '') {
+    if (!style) return null;
+    const match = style.match(/url\((['"]?)(.*?)\1\)/i);
+    return match ? match[2] : null;
+}
+
+function pushEpisode(episodes, { title, url, poster, date = '', series = '' }) {
+    if (!title || !url) return;
+    episodes.push({
+        title,
+        slug: extractSlugFromUrl(url),
+        poster: imageProxy(poster),
+        url,
+        date,
+        series,
+        episode: parseEpisodeNumber(title)
+    });
+}
+
 // Scrape homepage - latest episodes
 async function scrapeHomepage(page = 1) {
     try {
@@ -41,8 +60,45 @@ async function scrapeHomepage(page = 1) {
             }
         });
 
+        // Fallback for current Nekopoi theme (.nk-post-card) while keeping legacy parser above.
+        if (episodes.length === 0) {
+            $('.nk-post-card').each((_, element) => {
+                const $elem = $(element);
+                const titleElem = $elem.find('.nk-post-meta h2 a, h2 a').first();
+                const title = cleanText(titleElem.text());
+                const url = titleElem.attr('href');
+                const $thumb = $elem.find('.nk-thumb-crop').first();
+                const poster = extractBackgroundImage($thumb.attr('style'))
+                    || $elem.find('img').first().attr('src')
+                    || $elem.find('img').first().attr('data-src');
+                const date = cleanText($elem.find('.nk-post-meta > span').first().text());
+                const seriesTitle = cleanText($elem.find('.nk-series-link').first().text());
+
+                pushEpisode(episodes, { title, url, poster, date, series: seriesTitle });
+            });
+        }
+
+        // Last-resort fallback for simple article/post markup.
+        if (episodes.length === 0) {
+            $('article h2 a[href], .post h2 a[href], h2 a[href]').each((_, element) => {
+                const $link = $(element);
+                const title = cleanText($link.text());
+                const url = $link.attr('href');
+                if (!url || !url.startsWith(BASE_URL)) return;
+
+                const $container = $link.closest('article, .post, .nk-post-card, div');
+                const $thumb = $container.find('.nk-thumb-crop').first();
+                const poster = extractBackgroundImage($thumb.attr('style'))
+                    || $container.find('img').first().attr('src')
+                    || $container.find('img').first().attr('data-src');
+                const date = cleanText($container.find('time, .date, .posted-on, span').first().text());
+
+                pushEpisode(episodes, { title, url, poster, date });
+            });
+        }
+
         // Pagination info
-        const hasNextPage = $('.pagination .next, .nav-links .next, a.next').length > 0;
+        const hasNextPage = $('.pagination .next, .nav-links .next, a.next, .page-numbers.next').length > 0;
         const hasPrevPage = page > 1;
 
         return {

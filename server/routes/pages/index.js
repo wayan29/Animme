@@ -33,7 +33,7 @@ function registerPages(app) {
     registerHtmlRoute(app, '/v4/home', path.join(__dirname, '../../../public/v4/index.html'));
     registerHtmlRoute(app, '/v5/home', path.join(__dirname, '../../../public/v5/index.html'));
     registerHtmlRoute(app, '/v6/home', path.join(__dirname, '../../../public/v6/index.html'));
-    registerHtmlRoute(app, '/v7/home', path.join(__dirname, '../../../public/v7/maintenance.html'));
+    registerHtmlRoute(app, '/v7/home', path.join(__dirname, '../../../public/v7/index.html'));
 
     registerHtmlRoute(app, '/v8', path.join(__dirname, '../../../public/v8/index.html'));
     registerHtmlRoute(app, '/v8/home', path.join(__dirname, '../../../public/v8/index.html'));
@@ -149,7 +149,7 @@ function registerPages(app) {
     });
 
     const v7StaticRoutes = {
-        'v7/home': 'maintenance',
+        'v7/home': 'index',
         'v7/detail': 'maintenance',
         'v7/episode': 'maintenance',
         'v7/search': 'maintenance',

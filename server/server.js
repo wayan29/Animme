@@ -1119,7 +1119,21 @@ function sendV7Maintenance(res) {
 }
 
 app.get('/api/v7/nekopoi/home', async (req, res) => {
-    return sendV7Maintenance(res);
+    try {
+        const rawPage = parseInt(req.query.page, 10) || 1;
+        const page = Math.min(1000, Math.max(1, rawPage));
+        console.log(`[V7] Nekopoi API - Home request page ${page}`);
+        const data = await nekopoiScraper.scrapeHomepage(page);
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Home error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi homepage',
+            data: null
+        });
+    }
 });
 
 app.get('/api/v7/nekopoi/detail/:slug(*)', async (req, res) => {

@@ -243,10 +243,10 @@ function applyPresetFromPath() {
         '/v10/airing': {
             preset: 'airing',
             filters: { status: '3', order: 'updated' },
-            title: 'Sedang Tayang',
-            description: 'Anime yang masih aktif tayang dan rutin mendapat update episode baru.',
-            kicker: 'Airing',
-            sectionTitle: '🟢 Anime Sedang Tayang'
+            title: 'Anime Sedang Tayang',
+            description: 'Pantau anime yang masih aktif rilis episode baru — cocok untuk mengejar update mingguan dari Vidku.',
+            kicker: 'Live Airing',
+            sectionTitle: '🟢 Update Sedang Berjalan'
         },
         '/v10/az-list': {
             preset: 'az',
@@ -344,6 +344,12 @@ function syncPresetFilterChrome() {
     const orderGroup = document.getElementById('filterOrder')?.closest('.filter-group');
     if (orderGroup) {
         orderGroup.classList.toggle('preset-order-az', currentPreset === 'az');
+        orderGroup.classList.toggle('preset-order-airing', currentPreset === 'airing');
+    }
+
+    const statusGroup = document.getElementById('filterStatus')?.closest('.filter-group');
+    if (statusGroup) {
+        statusGroup.classList.toggle('preset-status-airing', currentPreset === 'airing');
     }
 
     syncAzLetterStrip();
@@ -746,9 +752,10 @@ function renderAnimeCards(items) {
     const tvCardClass = isTvPreset() ? ' tv-series-card' : '';
     const advancedCardClass = isAdvancedPreset() ? ' advanced-result-card' : '';
     const azCardClass = isAzPreset() ? ' az-list-card' : '';
+    const airingCardClass = isAiringPreset() ? ' airing-live-card' : '';
 
     container.innerHTML = items.map((item) => `
-        <article class="anime-card${tvCardClass}${advancedCardClass}${azCardClass}" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
+        <article class="anime-card${tvCardClass}${advancedCardClass}${azCardClass}${airingCardClass}" onclick="window.location.href='/v10/detail?slug=${encodeURIComponent(item.slug)}'">
             <div class="anime-poster">
                 <img src="${escapeHtml(item.poster || '/placeholder.jpg')}" alt="${escapeHtml(item.title || 'Anime')}" loading="lazy">
                 <div class="anime-overlay">
@@ -876,6 +883,10 @@ function isTvPreset() {
 
 function isAdvancedPreset() {
     return currentPreset === 'advanced' || currentPath === '/v10/advanced-search';
+}
+
+function isAiringPreset() {
+    return currentPreset === 'airing' || currentPath === '/v10/airing';
 }
 
 function showLoading(message) {

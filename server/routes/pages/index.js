@@ -152,7 +152,7 @@ function registerPages(app) {
         'v7/home': 'index',
         'v7/detail': 'maintenance',
         'v7/episode': 'episode',
-        'v7/search': 'maintenance',
+        'v7/search': 'search',
         'v7/list': 'maintenance'
     };
     Object.entries(v7StaticRoutes).forEach(([route, file]) => {

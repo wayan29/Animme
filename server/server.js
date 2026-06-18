@@ -1166,7 +1166,35 @@ app.get('/api/v7/nekopoi/episode/:slug(*)', async (req, res) => {
 });
 
 app.get('/api/v7/nekopoi/search', async (req, res) => {
-    return sendV7Maintenance(res);
+    try {
+        const query = String(req.query.q || req.query.query || req.query.keyword || '').trim();
+        const rawPage = parseInt(req.query.page, 10) || 1;
+        const page = Math.min(100, Math.max(1, rawPage));
+
+        if (!query || query.length > 100 || /[\x00-\x1F\x7F]/.test(query)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid search query',
+                data: {
+                    query,
+                    results: [],
+                    totalResults: 0
+                }
+            });
+        }
+
+        console.log(`[V7] Nekopoi API - Search request: ${query} page ${page}`);
+        const data = await nekopoiScraper.scrapeSearch(query, page);
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Search error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to search Nekopoi',
+            data: null
+        });
+    }
 });
 
 app.get('/api/v7/nekopoi/hentai-list', async (req, res) => {

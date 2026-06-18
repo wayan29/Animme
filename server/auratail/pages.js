@@ -1,14 +1,15 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const puppeteer = require('puppeteer');
-const { BASE_URL, extractStreamingUrls, proxyImageUrl, extractSlug, extractAnimeSlug, extractAnimeId, extractAnimeIdFromSlug } = require('./helpers');
+const { BASE_URL, extractStreamingUrls, proxyImageUrl, extractSlug, extractAnimeSlug, extractAnimeId, extractAnimeIdFromSlug, fetchDailymotionVideos } = require('./helpers');
 
 async function scrapeHome() {
     try {
         const { data } = await axios.get(BASE_URL, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            }
+            },
+            timeout: 8000
         });
 
         const $ = cheerio.load(data);
@@ -197,10 +198,52 @@ async function scrapeHome() {
             }
         });
 
+        // If auratail.vip returned no useful data, use Dailymotion fallback
+        const hasAnyData =
+            result.featured_anime.length ||
+            result.latest_episodes.length ||
+            result.trending_anime.length ||
+            result.recommendations.length;
+
+        if (!hasAnyData) {
+            console.warn('Auratail returned no data; falling back to Dailymotion');
+            const dmVideos = await fetchDailymotionVideos(30);
+            result.featured_anime = dmVideos.slice(0, 6);
+            result.latest_episodes = dmVideos.slice(0, 25);
+            result.latest_updates = dmVideos.slice(0, 25);
+            result.popular_today = dmVideos.slice(0, 15);
+            result.trending_anime = dmVideos.slice(0, 10);
+            result.ongoing_series = dmVideos.slice(0, 12);
+            result.recommendations = dmVideos.slice(0, 20);
+            result.source = 'dailymotion';
+            return result;
+        }
+
+        result.source = 'auratail';
         return result;
     } catch (error) {
-        console.error('Auratail scrapeHome error:', error.message);
-        throw error;
+        console.warn('Auratail scrapeHome error:', error.message);
+
+        // Fallback: use Dailymotion user "auratail" public API
+        const dmVideos = await fetchDailymotionVideos(30);
+        const latest = dmVideos.slice(0, 25);
+        const featured = dmVideos.slice(0, 6);
+        const popular = dmVideos.slice(0, 15);
+        const trending = dmVideos.slice(0, 10);
+        const ongoing = dmVideos.slice(0, 12);
+        const recommendations = dmVideos.slice(0, 20);
+
+        return {
+            featured_anime: featured,
+            latest_episodes: latest,
+            trending_anime: trending,
+            ongoing_series: ongoing,
+            completed_series: [],
+            latest_updates: latest,
+            popular_today: popular,
+            recommendations: recommendations,
+            source: 'dailymotion'
+        };
     }
 }
 

@@ -215,6 +215,57 @@ function extractAnimeId(url) {
     return '';
 }
 
+/**
+ * Fetch latest videos from Dailymotion user "auratail"
+ * Used as fallback/replacement when auratail.vip is down
+ */
+async function fetchDailymotionVideos(limit = 30) {
+    try {
+        const fields = [
+            'id', 'title', 'description',
+            'thumbnail_url', 'thumbnail_240_url', 'thumbnail_360_url', 'thumbnail_480_url',
+            'url', 'embed_url',
+            'created_time', 'duration', 'views_total',
+            'channel', 'owner', 'owner.screenname'
+        ].join(',');
+
+        const url = `https://api.dailymotion.com/user/auratail/videos?fields=${fields}&limit=${limit}&sort=recent`;
+
+        const { data } = await axios.get(url, { timeout: 15000 });
+
+        if (!data || !Array.isArray(data.list)) {
+            return [];
+        }
+
+        return data.list.map((video) => {
+            const match = video.title.match(/^(.*?)\s+Episode\s+(\d+)/i);
+            const seriesTitle = match ? match[1].trim() : video.title;
+            const episodeNum = match ? match[2] : '';
+
+            const poster = video.thumbnail_480_url || video.thumbnail_360_url || video.thumbnail_url || null;
+            const animeId = video.id ? parseInt(video.id.replace(/[^0-9]/g, '').slice(-8) || '0', 10) : 0;
+
+            return {
+                title: seriesTitle,
+                slug: seriesTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+                anime_id: animeId || video.id,
+                poster: poster,
+                episode: episodeNum ? `Episode ${episodeNum}` : 'Latest',
+                type: 'ONA',
+                url: video.url || `https://www.dailymotion.com/video/${video.id}`,
+                dailymotion_id: video.id,
+                embed_url: video.embed_url || `https://geo.dailymotion.com/player.html?video=${video.id}`,
+                duration: video.duration || null,
+                views_total: video.views_total || 0,
+                created_time: video.created_time || null
+            };
+        });
+    } catch (error) {
+        console.error('[Auratail] Dailymotion fetch error:', error.message);
+        return [];
+    }
+}
+
 module.exports = {
     extractStreamingUrls,
     extractStreamingUrlsForServer,
@@ -225,5 +276,6 @@ module.exports = {
     extractAnimeSlug,
     extractAnimeId,
     extractAnimeIdFromSlug,
-    BASE_URL
+    BASE_URL,
+    fetchDailymotionVideos
 };

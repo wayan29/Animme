@@ -110,13 +110,10 @@ function renderCarousel(animeList) {
     console.log('[V9] First anime poster:', animeList[0].poster);
 
     container.innerHTML = animeList.map((anime, index) => {
-        // Create internal V9 detail URL
-        const detailUrl = anime.anime_id && anime.slug 
-            ? `/v9/detail?animeId=${anime.anime_id}&slug=${anime.slug}`
-            : anime.url || '#';
+        const detailUrl = escapeAttribute(resolveAnimeUrl(anime));
             
         return `
-        <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="goToDetail('${anime.anime_id || ''}', '${anime.slug || ''}')">
+        <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="window.open('${detailUrl}', '_blank')">
             <div class="carousel-image" style="background-image: url('${anime.poster || '/placeholder.svg'}');"></div>
             <div class="carousel-content">
                 <h2 class="carousel-title">${anime.title}</h2>
@@ -125,7 +122,7 @@ function renderCarousel(animeList) {
                     ${anime.type ? `<span class="carousel-type">${anime.type}</span>` : ''}
                 </div>
                 ${anime.description ? `<p class="carousel-description">${anime.description.substring(0, 150)}...</p>` : ''}
-                <div class="carousel-btn-watch" onclick="event.stopPropagation(); goToDetail('${anime.anime_id || ''}', '${anime.slug || ''}')">
+                <div class="carousel-btn-watch" onclick="event.stopPropagation(); window.open('${detailUrl}', '_blank')">
                     ▶ Lihat Detail
                 </div>
             </div>
@@ -203,18 +200,7 @@ function renderAnimeRow(containerId, animeList, countBadgeId) {
     }
 
     container.innerHTML = animeList.map(anime => {
-        // Determine the correct detail URL - prioritize internal V9 first
-        let detailUrl = '#';
-        if (anime.slug && anime.anime_id) {
-            // Internal V9 detail with ID and slug (preferred)
-            detailUrl = `/v9/detail?animeId=${anime.anime_id}&slug=${anime.slug}`;
-        } else if (anime.slug) {
-            // Internal V9 detail with slug only
-            detailUrl = `/v9/detail?slug=${anime.slug}`;
-        } else if (anime.url && !anime.url.includes('auratail.vip')) {
-            // Only use external URL if not from auratail
-            detailUrl = anime.url;
-        }
+        const detailUrl = escapeAttribute(resolveAnimeUrl(anime));
 
         return `
             <div class="anime-card" onclick="window.open('${detailUrl}', '_blank')">
@@ -259,6 +245,29 @@ function goToDetail(animeId, slug) {
     } else {
         console.warn('[V9] Missing animeId or slug for detail navigation');
     }
+}
+
+function isDailymotionItem(anime) {
+    return !!(anime && (anime.dailymotion_id || (anime.url && anime.url.includes('dailymotion.com'))));
+}
+
+function escapeAttribute(str) {
+    if (str === undefined || str === null) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#039;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function resolveAnimeUrl(anime) {
+    if (!anime) return '#';
+    if (isDailymotionItem(anime)) {
+        return anime.url || (anime.dailymotion_id ? `https://www.dailymotion.com/video/${anime.dailymotion_id}` : '#');
+    }
+    if (anime.anime_id && anime.slug) {
+        return `/v9/detail?animeId=${anime.anime_id}&slug=${anime.slug}`;
+    }
+    if (anime.slug) {
+        return `/v9/detail?slug=${anime.slug}`;
+    }
+    return anime.url || '#';
 }
 
 function initMobileSearch() {

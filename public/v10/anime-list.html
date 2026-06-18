@@ -9,7 +9,7 @@
     <link rel="icon" href="/placeholder.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/v10/catalog.css">
 </head>
-<body class="server-v10 home-with-sidebar v10-catalog-page" data-page-kind="anime-list">
+<body class="server-v10 home-with-sidebar v10-catalog-page v10-preset-latest" data-page-kind="anime-list">
     <div class="home-layout">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -70,28 +70,35 @@
             <main class="main-content">
                 <section class="v10-page-hero">
                     <div class="hero-copy">
-                        <span class="hero-kicker" id="pageKicker">Update Harian</span>
+                        <span class="hero-kicker" id="pageKicker">⚡ Fresh Episodes</span>
                         <h2 id="pageTitle">Episode Terbaru</h2>
-                        <p id="pageDescription">Rilis terbaru dari Vidku, cocok untuk langsung lanjut nonton episode yang baru turun.</p>
+                        <p id="pageDescription">Feed rilis terbaru Vidku untuk langsung lanjut nonton episode yang baru turun.</p>
                     </div>
                     <div class="hero-stats">
                         <div class="hero-stat">
-                            <span class="label">Total</span>
+                            <span class="label">Di Halaman Ini</span>
                             <strong id="resultCount">0</strong>
                         </div>
                         <div class="hero-stat">
                             <span class="label">Halaman</span>
                             <strong id="pageCount">1 / 1</strong>
                         </div>
+                        <div class="hero-stat">
+                            <span class="label">Feed</span>
+                            <strong>Terbaru</strong>
+                        </div>
                     </div>
                 </section>
 
-                <section class="v10-shortcut-strip">
-                    <a href="/v10/airing" class="shortcut-chip">Sedang Tayang</a>
-                    <a href="/v10/az-list" class="shortcut-chip">A-Z Anime List</a>
-                    <a href="/v10/tv-show" class="shortcut-chip">TV Show</a>
-                    <a href="/v10/movie" class="shortcut-chip">Movie</a>
-                    <a href="/v10/advanced-search" class="shortcut-chip">Advanced Search</a>
+                <section class="v10-shortcut-strip" aria-label="Navigasi katalog Vidku">
+                    <a href="/v10/anime-list" class="shortcut-chip active">📺 Episode Terbaru</a>
+                    <a href="/v10/schedule" class="shortcut-chip">📅 Jadwal Tayang</a>
+                    <a href="/v10/airing" class="shortcut-chip">🟢 Sedang Tayang</a>
+                    <a href="/v10/az-list" class="shortcut-chip">🔤 A-Z Anime List</a>
+                    <a href="/v10/advanced-search" class="shortcut-chip">🎯 Advanced Search</a>
+                    <a href="/v10/tv-show" class="shortcut-chip">📡 TV Show</a>
+                    <a href="/v10/movie" class="shortcut-chip">🎬 Movie</a>
+                    <a href="/v10/all-anime" class="shortcut-chip">📚 Semua Anime</a>
                 </section>
 
                 <section class="catalog-panel">

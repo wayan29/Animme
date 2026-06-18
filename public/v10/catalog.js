@@ -453,8 +453,8 @@ function loadPageData() {
     if (PAGE_KIND === 'anime-list') {
         updatePageMeta({
             title: 'Episode Terbaru',
-            description: 'Rilis terbaru dari Vidku, cocok untuk langsung lanjut nonton episode yang baru turun.',
-            kicker: 'Update Harian',
+            description: 'Feed rilis terbaru Vidku untuk langsung lanjut nonton episode yang baru turun.',
+            kicker: '⚡ Fresh Episodes',
             sectionTitle: '📺 Daftar Episode Baru'
         });
         loadLatestEpisodes();
@@ -475,6 +475,7 @@ function loadPageData() {
 }
 
 async function loadLatestEpisodes() {
+    document.body.classList.add('v10-preset-latest');
     showLoading('Memuat episode terbaru...');
     const response = await fetchJson(`${API_BASE}/anime-list/${currentPage}`);
 
@@ -721,23 +722,39 @@ function renderEpisodeCards(items) {
         return;
     }
 
-    container.innerHTML = items.map((item) => `
-        <article class="anime-card" onclick="window.location.href='/v10/episode?slug=${encodeURIComponent(item.slug)}'">
-            <div class="anime-poster">
-                <img src="${escapeHtml(item.poster || '/placeholder.jpg')}" alt="${escapeHtml(item.title || item.full_title || 'Episode')}" loading="lazy">
-                <div class="anime-overlay">
+    container.innerHTML = items.map((item, index) => {
+        const episodeLabel = item.episode_number ? `Episode ${escapeHtml(String(item.episode_number))}` : 'Episode Baru';
+        const title = item.title || item.full_title || 'Episode';
+        const subtitle = item.full_title && item.full_title !== item.title ? item.full_title : 'Buka halaman episode terbaru';
+        return `
+        <article class="anime-card latest-episode-card${index === 0 && currentPage === 1 ? ' latest-first-drop' : ''}" onclick="window.location.href='/v10/episode?slug=${encodeURIComponent(item.slug)}'" role="link" tabindex="0">
+            <div class="anime-poster latest-episode-poster">
+                <img src="${escapeHtml(item.poster || '/placeholder.jpg')}" alt="${escapeHtml(title)}" loading="lazy" decoding="async">
+                <div class="anime-overlay latest-overlay">
+                    <span class="latest-new-badge">NEW</span>
                     ${item.type ? `<span class="anime-type">${escapeHtml(item.type)}</span>` : '<span class="anime-type">Episode</span>'}
                 </div>
+                <span class="latest-episode-badge">${episodeLabel}</span>
             </div>
             <div class="anime-info">
-                <h3 class="anime-title">${escapeHtml(item.title || item.full_title || 'Episode')}</h3>
+                <h3 class="anime-title">${escapeHtml(title)}</h3>
                 <div class="meta-stack">
-                    ${item.episode_number ? `<span class="anime-episode">Episode ${escapeHtml(String(item.episode_number))}</span>` : ''}
-                    <span class="result-subtitle">${escapeHtml(item.full_title || 'Buka halaman episode')}</span>
+                    <span class="result-subtitle">${escapeHtml(subtitle)}</span>
+                    <span class="latest-watch-link">Tonton episode →</span>
                 </div>
             </div>
         </article>
-    `).join('');
+    `;
+    }).join('');
+
+    container.querySelectorAll('.latest-episode-card[role="link"]').forEach((card) => {
+        card.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                card.click();
+            }
+        });
+    });
 }
 
 function renderAnimeCards(items) {

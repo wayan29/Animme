@@ -43,6 +43,7 @@
             background: #000;
         }
 
+        .player-wrapper iframe,
         .player-wrapper video {
             position: absolute;
             top: 0;
@@ -51,6 +52,44 @@
             height: 100%;
             border: 0;
             background: #000;
+        }
+
+        .servers-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .server-button {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #ffe8e8;
+            border-radius: 999px;
+            padding: 8px 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .server-button:hover {
+            background: rgba(231, 76, 60, 0.4);
+        }
+
+        .server-button.active {
+            background: var(--accent-color);
+            color: #1a0a0f;
+            border-color: var(--accent-color);
+        }
+
+        .player-fallback {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.72);
+            text-align: center;
+            padding: 22px;
         }
 
         /* Download Queue */

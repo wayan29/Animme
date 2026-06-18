@@ -102,12 +102,26 @@ async function scrapeEpisode(slug) {
 
         const streamUrls = [];
         const seenStreams = new Set();
+        const streamLabelsById = {};
+        $('#nk-player-tabs a[href^="#"]').each((_, elem) => {
+            const $link = $(elem);
+            const target = String($link.attr('href') || '').replace(/^#/, '');
+            const label = cleanText($link.text());
+            if (target && label) {
+                streamLabelsById[target] = label;
+            }
+        });
+
         $('#nk-player .nk-player-frame iframe[src], .nk-player-frame iframe[src], .nk-player-wrapper iframe[src], .video-player iframe[src], .player iframe[src], iframe[src]').each((_, elem) => {
             const src = $(elem).attr('src');
+            const frameId = cleanText($(elem).closest('.nk-player-frame').attr('id') || '');
+            const label = streamLabelsById[frameId] || frameId || `Server ${streamUrls.length + 1}`;
             pushUniqueUrl(streamUrls, seenStreams, {
                 provider: detectProvider(src),
                 url: src,
-                quality: cleanText($(elem).closest('.nk-player-frame').attr('id') || '') || 'Stream'
+                label,
+                quality: label,
+                type: 'iframe'
             });
         });
 

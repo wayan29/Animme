@@ -1,10 +1,11 @@
-// AnimMe V7 - Download-Only Episode Application
+// AnimMe V7 - Episode Streaming + Download Application
 const API_BASE = '/api/v7/nekopoi';
 
 const appState = {
     episodeData: null,
     downloadQueue: [],
     activeVideo: null,
+    currentStreamIndex: 0,
     isLoading: false,
     error: null
 };
@@ -15,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileSearch();
     setupServerSelector();
     setupSearchHandler();
+    setupStreamSwitcher();
     
     // Setup page unload cleanup
     window.addEventListener('beforeunload', () => {
@@ -99,6 +101,7 @@ function renderEpisode() {
         thumbnail,
         description,
         videoInfo,
+        streamUrls,
         downloadLinks,
         genres,
         navigation
@@ -111,19 +114,32 @@ function renderEpisode() {
     queueSection.id = 'downloadQueue';
     container.appendChild(queueSection);
 
-    // Video Player (for cached videos)
+    // Stream Player
     const playerSection = document.createElement('div');
-    playerSection.innerHTML = `
-        <h3 class="section-title">📺 Video Player (Download Required)</h3>
-        <div class="player-wrapper" id="videoPlayer">
-            <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: rgba(255, 255, 255, 0.6); text-align: center; padding: 20px;">
-                <div>
-                    <p style="margin-bottom: 16px;">📥 Download video terlebih dahulu untuk menonton</p>
-                    <p style="font-size: 0.9rem;">Video yang diunduh akan tersimpan di browser dan dapat diputar tanpa iklan</p>
+    const availableStreams = Array.isArray(streamUrls) ? streamUrls.filter(stream => stream && stream.url) : [];
+    appState.currentStreamIndex = 0;
+
+    if (availableStreams.length > 0) {
+        playerSection.innerHTML = `
+            <h3 class="section-title">📺 Video Player</h3>
+            <div class="player-wrapper" id="videoPlayer">
+                ${renderPlayer(availableStreams[0])}
+            </div>
+            ${availableStreams.length > 1 ? renderServerButtons(availableStreams) : ''}
+        `;
+    } else {
+        playerSection.innerHTML = `
+            <h3 class="section-title">📺 Video Player</h3>
+            <div class="player-wrapper" id="videoPlayer">
+                <div class="player-fallback">
+                    <div>
+                        <p style="margin-bottom: 16px;">Streaming tidak tersedia untuk episode ini.</p>
+                        <p style="font-size: 0.9rem;">Gunakan link download/manual di bawah jika tersedia.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    `;
+        `;
+    }
     container.appendChild(playerSection);
 
     // Title & Info
@@ -155,42 +171,6 @@ function renderEpisode() {
             </div>
         `;
         container.appendChild(genresSection);
-    }
-
-    // Stream URLs for testing (hidden by default)
-    const { streamUrls } = appState.episodeData;
-    if (streamUrls && streamUrls.length > 0) {
-        const streamSection = document.createElement('div');
-        streamSection.innerHTML = `
-            <details style="background: rgba(243, 156, 18, 0.1); border: 1px solid rgba(243, 156, 18, 0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
-                <summary style="cursor: pointer; font-weight: 600; color: var(--accent-color); font-size: 1.1rem;">
-                    🧪 Test Streaming URLs (${streamUrls.length} found)
-                </summary>
-                <div style="margin-top: 16px;">
-                    <p style="color: rgba(255, 232, 232, 0.7); margin-bottom: 12px; font-size: 0.9rem;">
-                        Klik "Test" untuk cek apakah URL bisa di-download. Streaming embeds biasanya tidak bisa di-download langsung.
-                    </p>
-                    <div style="display: grid; gap: 8px;">
-                        ${streamUrls.map(stream => `
-                            <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 12px; display: flex; align-items: center; gap: 12px;">
-                                <div style="flex: 1; min-width: 0;">
-                                    <div style="font-weight: 600; color: #ffe8e8; margin-bottom: 4px;">
-                                        ${escapeHtml(stream.provider || 'Unknown')} - ${escapeHtml(stream.quality || 'Stream')}
-                                    </div>
-                                    <div style="font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                                        ${escapeHtml(stream.url)}
-                                    </div>
-                                </div>
-                                <button class="host-btn" onclick="testDownloadUrl('${escapeHtml(stream.url)}', '${escapeHtml(stream.provider)} - ${escapeHtml(stream.quality)}')">
-                                    🧪 Test
-                                </button>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </details>
-        `;
-        container.appendChild(streamSection);
     }
 
     // Download Links Section
@@ -273,6 +253,80 @@ function renderEpisode() {
         `;
         container.appendChild(navSection);
     }
+}
+
+function renderPlayer(streamData) {
+    if (!streamData || !streamData.url) {
+        return '<div class="player-fallback"><p>Video tidak tersedia.</p></div>';
+    }
+
+    const url = streamData.url;
+    const type = streamData.type || '';
+    const isDirectVideo = /\.(mp4|mkv|avi|webm|m3u8)(\?|$)/i.test(url) || type.includes('video/');
+
+    if (isDirectVideo) {
+        return `
+            <video controls playsinline>
+                <source src="${escapeAttribute(url)}" type="${escapeAttribute(type || 'video/mp4')}">
+                Browser Anda tidak mendukung video player.
+            </video>
+        `;
+    }
+
+    return `
+        <iframe
+            src="${escapeAttribute(url)}"
+            allowfullscreen
+            allow="autoplay; fullscreen; picture-in-picture"
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    `;
+}
+
+function renderServerButtons(streamUrls) {
+    return `
+        <h3 class="section-title">🎬 Pilih Server</h3>
+        <div class="servers-grid">
+            ${streamUrls.map((stream, index) => {
+                const label = stream.label || stream.quality || stream.provider || `Server ${index + 1}`;
+                const provider = stream.provider && !label.toLowerCase().includes(stream.provider.toLowerCase())
+                    ? ` · ${stream.provider}`
+                    : '';
+                return `
+                    <button class="server-button ${index === 0 ? 'active' : ''}" type="button" data-stream-index="${index}">
+                        ${escapeHtml(label)}${escapeHtml(provider)}
+                    </button>
+                `;
+            }).join('')}
+        </div>
+    `;
+}
+
+function setupStreamSwitcher() {
+    document.addEventListener('click', (event) => {
+        const button = event.target.closest('.server-button[data-stream-index]');
+        if (!button) return;
+
+        const index = parseInt(button.dataset.streamIndex, 10);
+        if (!Number.isNaN(index)) {
+            switchStream(index);
+        }
+    });
+}
+
+function switchStream(index) {
+    const streamData = appState.episodeData?.streamUrls?.[index];
+    if (!streamData) return;
+
+    appState.currentStreamIndex = index;
+    const playerWrapper = document.getElementById('videoPlayer');
+    if (playerWrapper) {
+        playerWrapper.innerHTML = renderPlayer(streamData);
+    }
+
+    document.querySelectorAll('.server-button[data-stream-index]').forEach((button) => {
+        button.classList.toggle('active', Number(button.dataset.streamIndex) === index);
+    });
 }
 
 function groupDownloadLinks(downloadLinks) {
@@ -940,6 +994,10 @@ function hideError() {
 
 function escapeHtml(text) {
     const div = document.createElement('div');
-    div.textContent = String(text);
+    div.textContent = text == null ? '' : String(text);
     return div.innerHTML;
+}
+
+function escapeAttribute(text) {
+    return escapeHtml(text).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
 }

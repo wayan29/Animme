@@ -1346,6 +1346,19 @@ app.get('/api/v9/auratail/episode/:animeId/:slug/:episodeNum', async (req, res) 
     }
 });
 
+// Auratail Dailymotion Video (for Dailymotion fallback items)
+app.get('/api/v9/auratail/video/:videoId', async (req, res) => {
+    try {
+        const { videoId } = req.params;
+        console.log(`[V9] Fetching Dailymotion video: ${videoId}`);
+        const data = await auratailScraper.scrapeDailymotionVideo(videoId);
+        res.json({ status: 'success', data });
+    } catch (error) {
+        console.error('[V9] API Error /video:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 // Auratail Search
 app.get('/api/v9/auratail/search', async (req, res) => {
     try {

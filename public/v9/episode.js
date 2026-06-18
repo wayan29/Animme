@@ -9,7 +9,8 @@ function getUrlParams() {
     return {
         animeId: urlParams.get('animeId'),
         slug: urlParams.get('slug'),
-        episode: urlParams.get('episode')
+        episode: urlParams.get('episode'),
+        videoId: urlParams.get('videoId')
     };
 }
 
@@ -67,6 +68,29 @@ async function loadEpisodeDetail() {
 
     console.log('[V9] Loading episode detail:', params);
 
+    // Dailymotion fallback: load single video by videoId
+    if (params.videoId) {
+        try {
+            showLoading();
+            const videoResponse = await fetchAPI(`/video/${params.videoId}`);
+            if (!videoResponse || !videoResponse.data) {
+                throw new Error('Data video tidak valid');
+            }
+            episodeData = videoResponse.data;
+            renderEpisodeDetail(episodeData);
+            // No episode list for Dailymotion fallback
+            const listContainer = document.getElementById('episodeList');
+            if (listContainer) {
+                listContainer.innerHTML = '<div class="loading">Daftar episode tidak tersedia untuk video Dailymotion.</div>';
+            }
+            showEpisodeContent();
+        } catch (error) {
+            console.error('[V9] Error loading Dailymotion video:', error);
+            showError('Gagal memuat video: ' + error.message);
+        }
+        return;
+    }
+
     if (!params.animeId || !params.slug || !params.episode) {
         showError('Parameter episode tidak lengkap');
         return;
@@ -113,12 +137,23 @@ async function loadEpisodeDetail() {
 
 function renderEpisodeDetail(data) {
     // Update document title
-    document.title = `${data.anime_title || 'Anime'} - Episode ${data.episode} - AnimMe V9`;
+    document.title = `${data.anime_title || data.title || 'Video'} - Episode ${data.episode || ''} - AnimMe V9`;
     
     // Update breadcrumb
-    document.getElementById('breadcrumbAnime').textContent = data.anime_title || 'Anime Detail';
-    document.getElementById('breadcrumbAnime').href = `/v9/detail?animeId=${getUrlParams().animeId}&slug=${getUrlParams().slug}`;
-    document.getElementById('breadcrumbEpisode').textContent = `Episode ${data.episode}`;
+    const params = getUrlParams();
+    const animeBreadcrumb = document.getElementById('breadcrumbAnime');
+    const episodeBreadcrumb = document.getElementById('breadcrumbEpisode');
+
+    if (animeBreadcrumb) {
+        animeBreadcrumb.textContent = data.anime_title || 'Anime Detail';
+        animeBreadcrumb.href = params.animeId && params.slug
+            ? `/v9/detail?animeId=${params.animeId}&slug=${params.slug}`
+            : '/v9/home';
+    }
+
+    if (episodeBreadcrumb) {
+        episodeBreadcrumb.textContent = data.episode ? `Episode ${data.episode}` : (data.title || 'Video');
+    }
 
     // Episode title
     document.getElementById('episodeTitle').textContent = data.title || `Episode ${data.episode}`;

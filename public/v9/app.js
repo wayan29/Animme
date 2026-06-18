@@ -259,7 +259,9 @@ function escapeAttribute(str) {
 function resolveAnimeUrl(anime) {
     if (!anime) return '#';
     if (isDailymotionItem(anime)) {
-        return anime.url || (anime.dailymotion_id ? `https://www.dailymotion.com/video/${anime.dailymotion_id}` : '#');
+        return anime.dailymotion_id
+            ? `/v9/episode?videoId=${encodeURIComponent(anime.dailymotion_id)}`
+            : (anime.url || '#');
     }
     if (anime.anime_id && anime.slug) {
         return `/v9/detail?animeId=${anime.anime_id}&slug=${anime.slug}`;

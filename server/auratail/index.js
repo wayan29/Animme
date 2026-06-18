@@ -8,6 +8,7 @@ module.exports = {
     scrapeDetail: pages.scrapeDetail,
     scrapeEpisode: pages.scrapeEpisode,
     scrapeBatch: pages.scrapeBatch,
+    scrapeDailymotionVideo: pages.scrapeDailymotionVideo,
     
     // Property functions
     scrapeGenreList: properties.scrapeGenreList,
@@ -22,5 +23,6 @@ module.exports = {
     proxyImageUrl: helpers.proxyImageUrl,
     extractSlug: helpers.extractSlug,
     extractAnimeId: helpers.extractAnimeId,
-    BASE_URL: helpers.BASE_URL
+    BASE_URL: helpers.BASE_URL,
+    fetchDailymotionVideos: helpers.fetchDailymotionVideos
 };

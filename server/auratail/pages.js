@@ -551,9 +551,59 @@ async function scrapeBatch(animeId, slug, batchRange) {
     }
 }
 
+/**
+ * Scrape single Dailymotion video (for V9 Dailymotion fallback)
+ */
+async function scrapeDailymotionVideo(videoId) {
+    if (!videoId) {
+        throw new Error('videoId is required');
+    }
+
+    const fields = [
+        'id', 'title', 'description',
+        'thumbnail_url', 'thumbnail_240_url', 'thumbnail_360_url', 'thumbnail_480_url',
+        'url', 'embed_url',
+        'created_time', 'duration', 'views_total',
+        'channel', 'owner', 'owner.screenname'
+    ].join(',');
+
+    const url = `https://api.dailymotion.com/video/${videoId}?fields=${fields}`;
+    const { data } = await axios.get(url, { timeout: 15000 });
+
+    if (!data || !data.id) {
+        throw new Error('Video not found on Dailymotion');
+    }
+
+    const match = data.title.match(/^(.*?)\s+Episode\s+(\d+)/i);
+    const seriesTitle = match ? match[1].trim() : data.title;
+    const episodeNum = match ? match[2] : '';
+    const poster = data.thumbnail_480_url || data.thumbnail_360_url || data.thumbnail_url || null;
+    const embedUrl = data.embed_url || `https://geo.dailymotion.com/player.html?video=${data.id}`;
+
+    return {
+        title: data.title,
+        anime_title: seriesTitle,
+        episode: episodeNum || 'Latest',
+        poster: poster,
+        iframe_url: embedUrl,
+        dailymotion_id: data.id,
+        url: data.url || `https://www.dailymotion.com/video/${data.id}`,
+        duration: data.duration || null,
+        views_total: data.views_total || 0,
+        navigation: { prev_episode: null, next_episode: null },
+        streaming_servers: [{
+            name: 'Dailymotion',
+            sources: [{ quality: 'auto', type: 'text/html', url: embedUrl }]
+        }],
+        download_links: [],
+        episode_list: []
+    };
+}
+
 module.exports = {
     scrapeHome,
     scrapeDetail,
     scrapeEpisode,
-    scrapeBatch
+    scrapeBatch,
+    scrapeDailymotionVideo
 };

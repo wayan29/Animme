@@ -57,11 +57,36 @@ function clearElement(element) {
     }
 }
 
-function createStatusMessage(message, className = 'error') {
-    const div = document.createElement('div');
-    div.className = className;
-    div.textContent = message;
-    return div;
+function createStatusPanel(message, variant = 'error') {
+    const panel = document.createElement('div');
+    panel.className = `status-panel status-panel--${variant}`;
+    panel.setAttribute('role', variant === 'error' ? 'alert' : 'status');
+
+    if (variant === 'loading') {
+        const spinner = document.createElement('div');
+        spinner.className = 'v8-spinner';
+        spinner.setAttribute('aria-hidden', 'true');
+        panel.appendChild(spinner);
+    } else if (variant === 'error') {
+        const icon = document.createElement('span');
+        icon.className = 'status-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = '⚠️';
+        panel.appendChild(icon);
+    } else if (variant === 'empty') {
+        const icon = document.createElement('span');
+        icon.className = 'status-icon';
+        icon.setAttribute('aria-hidden', 'true');
+        icon.textContent = '📭';
+        panel.appendChild(icon);
+    }
+
+    const text = document.createElement('p');
+    text.className = 'status-message';
+    text.textContent = message;
+    panel.appendChild(text);
+
+    return panel;
 }
 
 function renderError(message = 'Gagal memuat data anime') {
@@ -70,25 +95,24 @@ function renderError(message = 'Gagal memuat data anime') {
 
     clearElement(latestContainer);
     latestContainer.classList.remove('loading');
+    latestContainer.setAttribute('aria-busy', 'false');
 
-    const error = createStatusMessage(message, 'error');
+    const panel = createStatusPanel(message, 'error');
     const retryButton = document.createElement('button');
     retryButton.type = 'button';
-    retryButton.className = 'pagination-btn';
+    retryButton.className = 'status-retry';
     retryButton.textContent = 'Coba Lagi';
-    retryButton.style.marginTop = '12px';
     retryButton.addEventListener('click', loadHomePage);
-
-    error.appendChild(document.createElement('br'));
-    error.appendChild(retryButton);
-    latestContainer.appendChild(error);
+    panel.appendChild(retryButton);
+    latestContainer.appendChild(panel);
 }
 
 function renderSkeletonCards(container, count = 12) {
     if (!container) return;
 
     clearElement(container);
-    container.classList.add('loading');
+    container.classList.remove('loading');
+    container.setAttribute('aria-busy', 'true');
 
     const fragment = document.createDocumentFragment();
 
@@ -188,9 +212,10 @@ async function loadHomePage() {
 
         clearElement(latestContainer);
         latestContainer.classList.remove('loading');
+        latestContainer.setAttribute('aria-busy', 'false');
 
         if (animeList.length === 0) {
-            latestContainer.appendChild(createStatusMessage('Tidak ada anime tersedia', 'error'));
+            latestContainer.appendChild(createStatusPanel('Tidak ada anime tersedia di halaman ini', 'empty'));
             renderPagination(pagination);
             return;
         }
@@ -198,6 +223,7 @@ async function loadHomePage() {
         const fragment = document.createDocumentFragment();
         animeList.forEach(anime => fragment.appendChild(createAnimeCard(anime)));
         latestContainer.appendChild(fragment);
+        latestContainer.setAttribute('aria-busy', 'false');
 
         renderPagination(pagination);
     } catch (error) {

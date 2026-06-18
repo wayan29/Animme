@@ -14,6 +14,8 @@
             --surface-border: rgba(245, 158, 11, 0.18);
             --text-muted: rgba(255, 237, 213, 0.72);
             min-height: 100vh;
+            overflow-x: clip;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background:
                 radial-gradient(circle at top, rgba(245, 158, 11, 0.16), transparent 28%),
                 linear-gradient(180deg, #120d08 0%, #18110a 35%, #0c0906 100%);
@@ -44,6 +46,10 @@
             font-size: 1.8rem;
             font-weight: 800;
             letter-spacing: 0.02em;
+            background: linear-gradient(135deg, #fff7ed 0%, #fbbf24 55%, #f59e0b 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .server-v8 .version-tag {
@@ -144,6 +150,34 @@
 
         .server-v8 .hero-panel {
             padding: 28px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .server-v8 .hero-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0 auto 0 0;
+            width: 4px;
+            border-radius: 22px 0 0 22px;
+            background: linear-gradient(180deg, #fbbf24, var(--secondary-color));
+            pointer-events: none;
+        }
+
+        .server-v8 .hero-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            color: #fde68a;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
         .server-v8 .hero-panel h1 {
@@ -244,6 +278,16 @@
             color: #fff7ed;
         }
 
+        .server-v8 .section-title::after {
+            content: '';
+            display: block;
+            width: 48px;
+            height: 3px;
+            margin-top: 10px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, var(--primary-color), transparent);
+        }
+
         .server-v8 .section-badge {
             padding: 6px 12px;
             border-radius: 999px;
@@ -256,9 +300,14 @@
         .server-v8 .anime-grid {
             gap: 18px;
             grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            min-width: 0;
         }
 
         .server-v8 .anime-card {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            height: 100%;
             background: linear-gradient(180deg, rgba(36, 26, 18, 0.96), rgba(19, 14, 10, 0.96));
             border: 1px solid rgba(245, 158, 11, 0.08);
             overflow: hidden;
@@ -423,29 +472,133 @@
             100% { transform: translateX(100%); }
         }
 
-        .server-v8 .loading,
-        .server-v8 .error {
+        .server-v8 .status-panel {
             grid-column: 1 / -1;
-            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 28px 20px;
             text-align: center;
-            border-radius: 16px;
+            border-radius: 18px;
+            max-width: 100%;
         }
 
-        .server-v8 .loading {
+        .server-v8 .status-panel--loading {
             background: rgba(255, 255, 255, 0.04);
+            border: 1px dashed rgba(245, 158, 11, 0.22);
             color: var(--text-muted);
         }
 
-        .server-v8 .error {
+        .server-v8 .status-panel--error {
             background: rgba(185, 28, 28, 0.18);
             color: #fecaca;
-            border: 1px solid rgba(248, 113, 113, 0.2);
+            border: 1px solid rgba(248, 113, 113, 0.28);
         }
 
-        .server-v8 footer {
+        .server-v8 .status-panel--empty {
+            background: rgba(245, 158, 11, 0.08);
+            color: #fde68a;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .server-v8 .status-icon {
+            font-size: 1.75rem;
+            line-height: 1;
+            opacity: 0.9;
+        }
+
+        .server-v8 .status-message {
+            margin: 0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            max-width: 36ch;
+        }
+
+        .server-v8 .status-retry {
+            margin-top: 4px;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: #1c1208;
+            transition: transform 0.2s ease, filter 0.2s ease;
+        }
+
+        .server-v8 .status-retry:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+        }
+
+        .server-v8 .v8-spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid rgba(245, 158, 11, 0.2);
+            border-top-color: #fbbf24;
+            border-radius: 50%;
+            animation: v8Spin 0.85s linear infinite;
+        }
+
+        @keyframes v8Spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .server-v8 .pagination-container {
+            padding: 8px 0 0;
+            margin-top: 8px !important;
+        }
+
+        .server-v8 .pagination-info {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 4px;
+        }
+
+        .server-v8 .pagination-btn {
+            background: rgba(21, 15, 10, 0.96);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            color: #fff7ed;
+            border-radius: 12px;
+            min-height: 44px;
+        }
+
+        .server-v8 .pagination-btn:hover:not(.disabled):not(.active) {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.45);
+            color: #fbbf24;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .server-v8 .pagination-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-color: transparent;
+            color: #1c1208;
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.25);
+        }
+
+        .server-v8 .pagination-dots {
+            color: rgba(255, 237, 213, 0.45);
+        }
+
+        .server-v8 footer.v8-footer {
             margin: 0 4% 40px;
             padding: 24px;
             color: var(--text-muted);
+            text-align: center;
+        }
+
+        .server-v8 footer.v8-footer strong {
+            color: #fbbf24;
+        }
+
+        .server-v8 footer.v8-footer .v8-footer-muted {
+            margin-top: 10px;
+            opacity: 0.7;
+            font-size: 0.88rem;
         }
 
         @media (max-width: 1024px) {
@@ -591,7 +744,8 @@
             .server-v8 .anime-thumb img,
             .server-v8 .anime-thumb::after,
             .server-v8 .skeleton-thumb::after,
-            .server-v8 .skeleton-line::after {
+            .server-v8 .skeleton-line::after,
+            .server-v8 .v8-spinner {
                 animation: none;
                 transition: none;
             }
@@ -624,6 +778,7 @@
     <div class="container">
         <section class="hero-banner">
             <div class="hero-panel">
+                <p class="hero-kicker" aria-hidden="true">Kusonime · Batch ID</p>
                 <h1>Batch download Kusonime yang lebih rapi dan enak dilihat</h1>
                 <p>
                     Halaman V8 sekarang difokuskan untuk menampilkan rilisan batch terbaru dengan layout yang lebih bersih,
@@ -663,9 +818,7 @@
                 <h2 class="section-title">📥 Anime Terbaru - Batch Download</h2>
                 <span class="section-badge" id="latestCountBadge">0 item</span>
             </div>
-            <div id="latestAnime" class="anime-grid loading">
-                <div class="loading">Memuat anime...</div>
-            </div>
+            <div id="latestAnime" class="anime-grid" aria-busy="true" aria-live="polite"></div>
             <div class="pagination-container" id="paginationContainer" style="display: none; margin-top: 24px;">
                 <div class="pagination-info" id="paginationInfo"></div>
                 <div class="pagination-buttons" id="paginationButtons"></div>
@@ -673,10 +826,10 @@
         </section>
     </div>
 
-    <footer style="text-align: center;">
+    <footer class="v8-footer">
         <p><strong>Kusonime - Batch Download</strong></p>
         <p>Download anime batch dengan subtitle Indonesia</p>
-        <p style="margin-top: 10px; opacity: 0.7;">Powered by AnimMe API</p>
+        <p class="v8-footer-muted">Powered by AnimMe API</p>
     </footer>
 
     <script src="/v8/app.js"></script>

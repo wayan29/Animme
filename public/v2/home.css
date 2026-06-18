@@ -1,0 +1,496 @@
+/* V2 Samehadaku home refresh - scoped to shared V1 shell when server-v2 is active */
+.server-v2.home-with-sidebar {
+    background:
+        radial-gradient(ellipse 115% 70% at 50% -18%, rgba(229, 9, 20, 0.20), transparent 42%),
+        radial-gradient(circle at 86% 12%, rgba(255, 138, 0, 0.10), transparent 30%),
+        linear-gradient(180deg, #0d0b0f 0%, #141014 42%, #08080b 100%);
+    color: #fff;
+}
+
+.server-v2.home-with-sidebar .content-area,
+.server-v2.home-with-sidebar .main-content,
+.server-v2.home-with-sidebar .topbar,
+.server-v2.home-with-sidebar .footer {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.server-v2.home-with-sidebar .content-area {
+    overflow-x: clip;
+}
+
+.server-v2.home-with-sidebar .topbar {
+    background: rgba(10, 10, 14, 0.68);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(18px);
+}
+
+.server-v2.home-with-sidebar .topbar.scrolled {
+    background: rgba(10, 10, 14, 0.92);
+}
+
+.server-v2.home-with-sidebar .sidebar {
+    background:
+        radial-gradient(circle at top left, rgba(229, 9, 20, 0.16), transparent 34%),
+        #101014;
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.server-v2.home-with-sidebar .sidebar .nav-link.active {
+    background: linear-gradient(135deg, rgba(229, 9, 20, 0.22), rgba(255, 138, 0, 0.12));
+    border-color: rgba(229, 9, 20, 0.35);
+    color: #fff;
+}
+
+.server-v2.home-with-sidebar .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: clamp(440px, 70vh, 720px);
+    height: auto;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background-position: center top;
+    background-size: cover;
+}
+
+.server-v2.home-with-sidebar .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        radial-gradient(circle at 76% 34%, rgba(229, 9, 20, 0.30), transparent 34%),
+        linear-gradient(90deg, rgba(8, 8, 10, 0.96) 0%, rgba(8, 8, 10, 0.78) 44%, rgba(8, 8, 10, 0.28) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.10) 0%, #141014 100%);
+    pointer-events: none;
+}
+
+.server-v2.home-with-sidebar .hero::after {
+    content: 'SAMEHADAKU';
+    position: absolute;
+    right: clamp(14px, 4vw, 58px);
+    bottom: -8px;
+    z-index: 1;
+    max-width: min(68vw, 620px);
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.04);
+    font-size: clamp(3rem, 8vw, 7rem);
+    line-height: 1;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    pointer-events: none;
+}
+
+.server-v2.home-with-sidebar .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 760px;
+    padding: 78px 4% 44px;
+}
+
+.server-v2.home-with-sidebar .hero-content::before {
+    content: 'V2 · Samehadaku';
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 12px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(229, 9, 20, 0.16);
+    border: 1px solid rgba(229, 9, 20, 0.34);
+    color: #fecaca;
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.server-v2.home-with-sidebar .hero-title {
+    max-width: 12ch;
+    font-size: clamp(2rem, 5vw, 4.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg, #fff 0%, #fecaca 45%, #ff8a00 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    overflow-wrap: anywhere;
+}
+
+.server-v2.home-with-sidebar .hero-description {
+    max-width: 680px;
+    color: rgba(255, 237, 213, 0.80);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.server-v2.home-with-sidebar .hero-buttons {
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.server-v2.home-with-sidebar .btn-primary {
+    background: linear-gradient(135deg, #e50914, #ff8a00);
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(229, 9, 20, 0.24);
+}
+
+.server-v2.home-with-sidebar .btn-secondary {
+    border-color: rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.server-v2.home-with-sidebar .main-content {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    padding-top: 26px;
+    overflow: hidden;
+}
+
+.server-v2.home-with-sidebar .anime-section {
+    min-width: 0;
+    margin-bottom: 28px;
+    padding: 24px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+        radial-gradient(circle at top right, rgba(229, 9, 20, 0.12), transparent 32%),
+        linear-gradient(180deg, rgba(24, 16, 20, 0.94), rgba(11, 11, 15, 0.94));
+    box-shadow: 0 18px 46px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+.server-v2.home-with-sidebar .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 20px;
+    flex-wrap: wrap;
+}
+
+.server-v2.home-with-sidebar .section-title {
+    position: relative;
+    margin: 0;
+    padding: 0 0 12px;
+    border: 0;
+    color: #fff7ed;
+    font-size: clamp(1.25rem, 2.5vw, 1.9rem);
+    letter-spacing: -0.02em;
+}
+
+.server-v2.home-with-sidebar .section-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 64px;
+    height: 3px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #e50914, rgba(255, 138, 0, 0));
+}
+
+.server-v2.home-with-sidebar .section-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 13px;
+    border-radius: 999px;
+    border: 1px solid rgba(229, 9, 20, 0.28);
+    background: rgba(229, 9, 20, 0.10);
+    color: #fecaca;
+    font-size: 0.86rem;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.server-v2.home-with-sidebar .section-link:hover {
+    color: #fff;
+    border-color: rgba(229, 9, 20, 0.50);
+    background: rgba(229, 9, 20, 0.18);
+}
+
+.server-v2.home-with-sidebar .anime-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(14px, 1.6vw, 22px);
+    min-width: 0;
+    overflow: visible;
+}
+
+.server-v2.home-with-sidebar .anime-card {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    border-radius: 18px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.035));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.server-v2.home-with-sidebar .anime-card::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, #e50914, rgba(255, 138, 0, 0.64), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .server-v2.home-with-sidebar .anime-card:hover,
+    .server-v2.home-with-sidebar .anime-card:focus-within {
+        transform: translateY(-6px);
+        border-color: rgba(229, 9, 20, 0.50);
+        box-shadow: 0 22px 50px rgba(229, 9, 20, 0.16), 0 18px 42px rgba(0, 0, 0, 0.50);
+    }
+
+    .server-v2.home-with-sidebar .anime-card:hover::after,
+    .server-v2.home-with-sidebar .anime-card:focus-within::after {
+        opacity: 1;
+    }
+}
+
+.server-v2.home-with-sidebar .anime-thumb {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2 / 3;
+    height: auto;
+    background: #0b0b0f;
+}
+
+.server-v2.home-with-sidebar .anime-thumb::after {
+    content: '▶';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.42);
+    color: #fff;
+    font-size: 1.6rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.server-v2.home-with-sidebar .anime-card:hover .anime-thumb::after,
+.server-v2.home-with-sidebar .anime-card:focus-within .anime-thumb::after {
+    opacity: 1;
+}
+
+.server-v2.home-with-sidebar .anime-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+}
+
+.server-v2.home-with-sidebar .anime-card:hover .anime-poster {
+    transform: scale(1.04);
+}
+
+.server-v2.home-with-sidebar .anime-info {
+    min-width: 0;
+    padding: 12px 12px 14px;
+}
+
+.server-v2.home-with-sidebar .anime-title {
+    min-height: 2.7em;
+    color: #fff;
+    font-size: 0.92rem;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+}
+
+.server-v2.home-with-sidebar .anime-meta {
+    min-width: 0;
+    color: rgba(255, 237, 213, 0.66);
+    font-size: 0.80rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.server-v2.home-with-sidebar .top-ten-card {
+    background:
+        linear-gradient(145deg, rgba(229, 9, 20, 0.16), rgba(255, 255, 255, 0.04)),
+        #161616;
+}
+
+.server-v2.home-with-sidebar .rank-badge,
+.server-v2.home-with-sidebar .rating-badge,
+.server-v2.home-with-sidebar .play-now-badge {
+    position: absolute;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-weight: 900;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+.server-v2.home-with-sidebar .rank-badge {
+    left: 10px;
+    top: 10px;
+    padding: 7px 11px;
+    background: linear-gradient(135deg, #e50914, #ff8a00);
+    color: #fff;
+}
+
+.server-v2.home-with-sidebar .rating-badge {
+    right: 10px;
+    top: 10px;
+    max-width: 52%;
+    padding: 7px 10px;
+    background: rgba(0, 0, 0, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #fff;
+    font-size: 0.76rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    backdrop-filter: blur(8px);
+}
+
+.server-v2.home-with-sidebar .play-now-badge {
+    left: 10px;
+    bottom: 10px;
+    padding: 6px 10px;
+    background: rgba(229, 9, 20, 0.92);
+    color: #fff;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+}
+
+.server-v2.home-with-sidebar #projectMovieSection {
+    background:
+        radial-gradient(circle at top right, rgba(255, 138, 0, 0.14), transparent 32%),
+        linear-gradient(180deg, rgba(24, 16, 20, 0.94), rgba(11, 11, 15, 0.94));
+}
+
+.server-v2.home-with-sidebar .skeleton-card {
+    border-radius: 18px;
+}
+
+.server-v2.home-with-sidebar .skeleton-thumb {
+    aspect-ratio: 2 / 3;
+    height: auto;
+}
+
+.server-v2.home-with-sidebar .error-state,
+.server-v2.home-with-sidebar .error {
+    grid-column: 1 / -1;
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+    .server-v2.home-with-sidebar .anime-row {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .server-v2.home-with-sidebar .hero {
+        min-height: 520px;
+        align-items: flex-end;
+        padding-bottom: 42px;
+        background-position: center top;
+    }
+
+    .server-v2.home-with-sidebar .hero::after {
+        right: 12px;
+        bottom: -4px;
+        max-width: 78vw;
+        font-size: 2.6rem;
+        letter-spacing: 0.05em;
+    }
+
+    .server-v2.home-with-sidebar .hero-content {
+        width: 100%;
+        padding: 0 18px;
+    }
+
+    .server-v2.home-with-sidebar .hero-title {
+        max-width: 100%;
+        font-size: clamp(2rem, 11vw, 3.2rem);
+    }
+
+    .server-v2.home-with-sidebar .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .server-v2.home-with-sidebar .hero-buttons .btn {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    .server-v2.home-with-sidebar .main-content {
+        padding: 18px 14px 44px;
+    }
+
+    .server-v2.home-with-sidebar .anime-section {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .server-v2.home-with-sidebar .section-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .server-v2.home-with-sidebar .section-title {
+        font-size: 1.25rem;
+    }
+
+    .server-v2.home-with-sidebar .anime-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .server-v2.home-with-sidebar .anime-card {
+        border-radius: 14px;
+    }
+
+    .server-v2.home-with-sidebar .anime-info {
+        padding: 10px;
+    }
+
+    .server-v2.home-with-sidebar .anime-title {
+        font-size: 0.82rem;
+    }
+
+    .server-v2.home-with-sidebar .anime-meta {
+        font-size: 0.70rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .server-v2.home-with-sidebar .anime-row {
+        gap: 10px;
+    }
+
+    .server-v2.home-with-sidebar .anime-info {
+        padding: 9px;
+    }
+
+    .server-v2.home-with-sidebar .anime-title {
+        font-size: 0.76rem;
+    }
+}

@@ -94,13 +94,21 @@ function clearHeroSkeleton() {
 function updateSectionLinks(isV2) {
     const ongoingViewAll = document.getElementById('ongoingViewAll');
     const completedViewAll = document.getElementById('completedViewAll');
+    const footerSource = document.querySelector('.footer p:first-child');
+
+    if (footerSource) {
+        footerSource.innerHTML = isV2
+            ? '<strong>AnimMe</strong> — Sumber: Samehadaku'
+            : '<strong>AnimMe</strong> — Sumber: Otakudesu';
+    }
 
     if (ongoingViewAll) {
         ongoingViewAll.href = isV2 ? '/anime-terbaru' : '/ongoing';
+        ongoingViewAll.style.display = isV2 ? 'none' : '';
     }
     if (completedViewAll) {
         completedViewAll.href = isV2 ? '/anime-terbaru' : '/completed';
-        completedViewAll.style.display = isV2 ? 'none' : '';
+        completedViewAll.style.display = '';
     }
 }
 
@@ -243,8 +251,8 @@ async function loadHomePage() {
         const recentAnime = data.data.recent_anime || [];
         
         // Update section titles for V2
-        document.getElementById('ongoingTitle').textContent = 'Top 10 Minggu Ini';
-        document.getElementById('completedTitle').textContent = 'Anime Terbaru';
+        document.getElementById('ongoingTitle').textContent = '🔥 Top 10 Minggu Ini';
+        document.getElementById('completedTitle').textContent = '🆕 Episode Terbaru';
         
         // Show Project Movie section for V2
         const projectMovieSection = document.getElementById('projectMovieSection');
@@ -507,6 +515,13 @@ function createAnimeCard(anime, type = 'ongoing') {
         ratingBadge.className = 'rating-badge';
         ratingBadge.textContent = `⭐ ${anime.rating}`;
         thumb.appendChild(ratingBadge);
+    }
+
+    if (currentServer === 'v2' && type === 'recent') {
+        const playBadge = document.createElement('div');
+        playBadge.className = 'play-now-badge';
+        playBadge.textContent = '▶ Episode Baru';
+        thumb.appendChild(playBadge);
     }
 
     thumb.appendChild(createPosterImage(anime));

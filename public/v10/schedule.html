@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="/mobile.css">
     <link rel="stylesheet" href="/v10/schedule.css">
 </head>
-<body class="server-v10 home-with-sidebar v10-schedule-page">
+<body class="server-v10 home-with-sidebar v10-schedule-page v10-preset-schedule">
     <div class="home-layout">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
@@ -69,7 +69,7 @@
             <main class="main-content">
                 <section class="v10-page-hero">
                     <div class="hero-copy">
-                        <span class="hero-kicker">Weekly Schedule</span>
+                        <span class="hero-kicker">📅 Weekly Schedule</span>
                         <h2 id="pageTitle">Jadwal Tayang Anime</h2>
                         <p id="pageDescription">Pantau jadwal rilis mingguan Vidku per hari agar gampang cek anime yang tayang hari ini.</p>
                     </div>
@@ -82,11 +82,32 @@
                             <span class="label">Jumlah</span>
                             <strong id="resultCount">0</strong>
                         </div>
+                        <div class="hero-stat">
+                            <span class="label">Total Minggu Ini</span>
+                            <strong id="weekTotalCount">0</strong>
+                        </div>
                     </div>
                 </section>
 
+                <div class="v10-shortcut-strip" aria-label="Navigasi katalog Vidku">
+                    <a href="/v10/anime-list" class="shortcut-chip">Episode Terbaru</a>
+                    <a href="/v10/schedule" class="shortcut-chip active">Jadwal Tayang</a>
+                    <a href="/v10/airing" class="shortcut-chip">Sedang Tayang</a>
+                    <a href="/v10/az-list" class="shortcut-chip">A-Z Anime List</a>
+                    <a href="/v10/advanced-search" class="shortcut-chip">Advanced Search</a>
+                    <a href="/v10/tv-show" class="shortcut-chip">TV Show</a>
+                    <a href="/v10/movie" class="shortcut-chip">Movie</a>
+                </div>
+
                 <section class="schedule-panel">
-                    <div class="schedule-tabs" id="dayTabs">
+                    <div class="schedule-panel-head">
+                        <div>
+                            <span class="section-kicker">Pilih Hari</span>
+                            <h3 class="section-title">📅 Tayang <span id="sectionDayLabel">Hari Ini</span></h3>
+                        </div>
+                        <span class="section-badge" id="sectionBadge">0 anime</span>
+                    </div>
+                    <div class="schedule-tabs" id="dayTabs" aria-label="Pilih hari tayang">
                         <div class="loading">Memuat hari tayang...</div>
                     </div>
                     <div class="schedule-grid" id="scheduleContainer">

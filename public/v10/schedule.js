@@ -9,6 +9,15 @@ const DAY_LABELS = {
     sabtu: 'Sabtu',
     minggu: 'Minggu'
 };
+const DAY_SHORT_LABELS = {
+    senin: 'Sen',
+    selasa: 'Sel',
+    rabu: 'Rab',
+    kamis: 'Kam',
+    jumat: 'Jum',
+    sabtu: 'Sab',
+    minggu: 'Min'
+};
 
 let scheduleData = {};
 let activeDay = getCurrentDayName();
@@ -141,6 +150,7 @@ async function loadSchedule() {
     }
 
     renderDayTabs();
+    updateWeekTotal();
     renderScheduleCards();
 }
 
@@ -148,27 +158,43 @@ function renderDayTabs() {
     const dayTabs = document.getElementById('dayTabs');
     if (!dayTabs) return;
 
+    const today = getCurrentDayName();
     dayTabs.innerHTML = DAY_ORDER.map((day) => {
         const count = (scheduleData[day] || []).length;
-        const activeClass = day === activeDay ? 'active' : '';
+        const activeClass = day === activeDay ? ' active' : '';
+        const todayClass = day === today ? ' is-today' : '';
+        const emptyClass = count ? '' : ' is-empty';
         return `
-            <button class="schedule-tab ${activeClass}" type="button" onclick="selectScheduleDay('${day}')">
-                ${DAY_LABELS[day]}${count ? ` (${count})` : ''}
+            <button class="schedule-tab${activeClass}${todayClass}${emptyClass}" type="button" onclick="selectScheduleDay('${day}')" aria-selected="${day === activeDay}">
+                <span class="tab-day">
+                    <span class="tab-long">${DAY_LABELS[day]}</span>
+                    <span class="tab-short">${DAY_SHORT_LABELS[day]}</span>
+                </span>
+                <span class="tab-count">${count ? `${count} anime` : 'Kosong'}</span>
             </button>
         `;
     }).join('');
+
+    const activeTab = dayTabs.querySelector('.schedule-tab.active');
+    if (activeTab && typeof activeTab.scrollIntoView === 'function') {
+        activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
 }
 
 function renderScheduleCards() {
     const container = document.getElementById('scheduleContainer');
     const activeDayLabel = document.getElementById('activeDayLabel');
     const resultCount = document.getElementById('resultCount');
+    const sectionDayLabel = document.getElementById('sectionDayLabel');
+    const sectionBadge = document.getElementById('sectionBadge');
 
     if (!container) return;
 
-    const items = scheduleData[activeDay] || [];
+    const items = sortScheduleItems(scheduleData[activeDay] || []);
     if (activeDayLabel) activeDayLabel.textContent = DAY_LABELS[activeDay] || '-';
     if (resultCount) resultCount.textContent = String(items.length);
+    if (sectionDayLabel) sectionDayLabel.textContent = DAY_LABELS[activeDay] || '-';
+    if (sectionBadge) sectionBadge.textContent = `${items.length} anime`;
     document.title = `AnimMe V10 - Jadwal ${DAY_LABELS[activeDay] || 'Tayang'}`;
 
     if (items.length === 0) {
@@ -203,6 +229,24 @@ function renderEmptyState(message) {
     const container = document.getElementById('scheduleContainer');
     if (!container) return;
     container.innerHTML = `<div class="empty-state">${escapeHtml(message)}</div>`;
+}
+
+function updateWeekTotal() {
+    const weekTotalCount = document.getElementById('weekTotalCount');
+    if (!weekTotalCount) return;
+
+    const total = DAY_ORDER.reduce((sum, day) => sum + (Array.isArray(scheduleData[day]) ? scheduleData[day].length : 0), 0);
+    weekTotalCount.textContent = String(total);
+}
+
+function sortScheduleItems(items) {
+    return [...items].sort((a, b) => getScheduleTimeValue(a) - getScheduleTimeValue(b));
+}
+
+function getScheduleTimeValue(item) {
+    const value = String(item?.scheduled_time || item?.episode_date || '').match(/(\d{1,2})[:.](\d{2})/);
+    if (!value) return Number.MAX_SAFE_INTEGER;
+    return (Number(value[1]) * 60) + Number(value[2]);
 }
 
 function getScheduleTarget(item) {

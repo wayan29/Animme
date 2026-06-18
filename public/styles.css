@@ -4408,3 +4408,269 @@ body.server-v10 .error {
         flex-direction: column;
     }
 }
+
+/* V1 /anime-terbaru — aligned with ongoing/completed list cards */
+.page-anime-terbaru .completed-header {
+    padding: 120px 4% 32px;
+}
+
+.page-anime-terbaru .completed-header .items-per-page-control {
+    margin: 24px auto 0;
+    max-width: 520px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.page-anime-terbaru .completed-container {
+    padding: 24px 4% 80px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.page-anime-terbaru .anime-list {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    align-items: stretch;
+    width: 100%;
+    min-width: 0;
+}
+
+.page-anime-terbaru .anime-list-item {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    min-width: 0;
+}
+
+.page-anime-terbaru .anime-list-item:hover,
+.page-anime-terbaru .anime-list-item:focus-visible {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.35);
+    outline: none;
+}
+
+.page-anime-terbaru .anime-thumb {
+    position: relative;
+    overflow: hidden;
+    background: #101010;
+}
+
+.page-anime-terbaru .anime-poster {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.page-anime-terbaru .anime-list-item:hover .anime-poster {
+    transform: scale(1.04);
+}
+
+.page-anime-terbaru .anime-info {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    flex: 1;
+    min-width: 0;
+}
+
+.page-anime-terbaru .anime-title {
+    white-space: normal;
+    line-height: 1.35;
+    font-weight: 600;
+    color: #ffffff;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.page-anime-terbaru .anime-meta {
+    font-size: 0.9rem;
+    color: #d0d0d0;
+}
+
+.page-anime-terbaru .anime-date {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: #8d8d8d;
+}
+
+@media (min-width: 1200px) {
+    .page-anime-terbaru .anime-list {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+    .page-anime-terbaru .anime-list {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+    .page-anime-terbaru .anime-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+}
+
+
+/* V1 /anime-terbaru card consistency refresh */
+.page-anime-terbaru {
+    background:
+        radial-gradient(ellipse 100% 60% at 50% -14%, rgba(229, 9, 20, 0.18), transparent 42%),
+        linear-gradient(180deg, #0f0f14 0%, #14141d 44%, #0b0b10 100%);
+}
+
+.page-anime-terbaru .completed-header {
+    position: relative;
+    overflow: hidden;
+}
+
+.page-anime-terbaru .completed-header::after {
+    content: 'TERBARU';
+    position: absolute;
+    right: clamp(12px, 5vw, 70px);
+    bottom: 8px;
+    max-width: min(70vw, 520px);
+    overflow: hidden;
+    color: rgba(255, 255, 255, 0.035);
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.page-anime-terbaru .completed-header h2,
+.page-anime-terbaru .completed-header p,
+.page-anime-terbaru .items-per-page-control {
+    position: relative;
+    z-index: 1;
+}
+
+.page-anime-terbaru .completed-header h2 {
+    background: linear-gradient(135deg, #fff 0%, #ffb4b8 48%, #e50914 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.page-anime-terbaru .completed-header .items-per-page-control {
+    border: 1px solid rgba(229, 9, 20, 0.20);
+    background: rgba(12, 12, 18, 0.72);
+    border-radius: 18px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+}
+
+.page-anime-terbaru .items-select:focus {
+    border-color: rgba(229, 9, 20, 0.65);
+    box-shadow: 0 0 0 4px rgba(229, 9, 20, 0.14);
+}
+
+.page-anime-terbaru .anime-list {
+    align-items: stretch;
+}
+
+.page-anime-terbaru .anime-list-item {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+        linear-gradient(135deg, #1a1a2e 0%, #121826 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.32);
+}
+
+.page-anime-terbaru .anime-list-item::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 3px;
+    background: linear-gradient(90deg, #e50914, rgba(255, 180, 184, 0.65), transparent);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.page-anime-terbaru .anime-list-item:hover::after,
+.page-anime-terbaru .anime-list-item:focus-visible::after {
+    opacity: 1;
+}
+
+.page-anime-terbaru .anime-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    background: linear-gradient(180deg, #161621, #0d0d12);
+}
+
+.page-anime-terbaru .anime-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.35));
+    z-index: 1;
+    pointer-events: none;
+}
+
+.page-anime-terbaru .anime-poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+    display: block;
+}
+
+.page-anime-terbaru .anime-info {
+    overflow: hidden;
+}
+
+.page-anime-terbaru .anime-title {
+    min-height: 2.7em;
+    font-size: 0.92rem;
+    overflow-wrap: anywhere;
+}
+
+.page-anime-terbaru .anime-meta,
+.page-anime-terbaru .anime-date {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.page-anime-terbaru .anime-meta {
+    font-size: 0.85rem;
+    color: #ffb4b8;
+    font-weight: 700;
+}
+
+.page-anime-terbaru .anime-date {
+    color: rgba(255, 255, 255, 0.58);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-anime-terbaru .anime-list-item,
+    .page-anime-terbaru .anime-poster {
+        transition: none;
+    }
+}

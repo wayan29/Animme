@@ -847,7 +847,8 @@
     /* Already dark by default, but could add adjustments */
 }
 
-    /* Anime Grid - Mobile */
+@media (max-width: 768px) {
+/* Anime Grid - Mobile */
     .anime-grid {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 14px;
@@ -909,6 +910,42 @@
         padding: 12px 14px;
     }
 
+
+    /* V1 Anime Terbaru list */
+    .page-anime-terbaru .completed-header {
+        padding: 100px 16px 24px;
+    }
+
+    .page-anime-terbaru .completed-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .page-anime-terbaru .completed-container {
+        padding: 0 12px 60px;
+    }
+
+    .page-anime-terbaru .anime-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .page-anime-terbaru .anime-info {
+        padding: 12px;
+    }
+
+    .page-anime-terbaru .anime-title {
+        font-size: 0.85rem;
+    }
+
+    .page-anime-terbaru .anime-meta {
+        font-size: 0.8rem;
+    }
+
+    .page-anime-terbaru .pagination-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
     /* Detail V2 - Mobile */
     .detail-header {
         grid-template-columns: 1fr !important;
@@ -941,6 +978,7 @@
     .recommendation-poster {
         height: 200px;
     }
+}
 }
 
 /* Tablet - Recommendation Grid */
@@ -1008,5 +1046,99 @@
     .search-container .search-input,
     .search-container .search-btn {
         display: block !important;
+    }
+}
+
+/* V1 /anime-terbaru breakpoint fixes loaded after broad mobile rules */
+@media (min-width: 601px) and (max-width: 768px) {
+    .page-anime-terbaru .anime-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .page-anime-terbaru .completed-header {
+        padding: 96px 14px 22px;
+    }
+
+    .page-anime-terbaru .completed-header::after {
+        right: 8px;
+        bottom: 6px;
+        max-width: 80vw;
+        font-size: 2.45rem;
+    }
+
+    .page-anime-terbaru .completed-header h2 {
+        font-size: 1.7rem;
+    }
+
+    .page-anime-terbaru .completed-header p {
+        font-size: 0.92rem;
+    }
+
+    .page-anime-terbaru .completed-container {
+        padding: 0 12px 56px;
+    }
+
+    .page-anime-terbaru .anime-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        padding: 0;
+    }
+
+    .page-anime-terbaru .anime-list-item {
+        border-radius: 12px;
+    }
+
+    .page-anime-terbaru .anime-info {
+        padding: 10px;
+        gap: 5px;
+    }
+
+    .page-anime-terbaru .anime-title {
+        min-height: 2.6em;
+        font-size: 0.78rem;
+        line-height: 1.3;
+    }
+
+    .page-anime-terbaru .anime-meta,
+    .page-anime-terbaru .anime-date {
+        font-size: 0.68rem;
+    }
+
+    .page-anime-terbaru .completed-header .items-per-page-control {
+        width: 100%;
+        max-width: 100%;
+        align-items: stretch;
+    }
+
+    .page-anime-terbaru .items-select {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .page-anime-terbaru .pagination-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .page-anime-terbaru .pagination-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 380px) {
+    .page-anime-terbaru .anime-list {
+        gap: 10px;
+    }
+
+    .page-anime-terbaru .anime-info {
+        padding: 9px;
+    }
+
+    .page-anime-terbaru .anime-title {
+        font-size: 0.74rem;
     }
 }

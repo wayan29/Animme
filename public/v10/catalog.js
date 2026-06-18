@@ -237,6 +237,8 @@ function redirectToSearch(keyword) {
 }
 
 function applyPresetFromPath() {
+    document.body.classList.remove('v10-preset-airing', 'v10-preset-az', 'v10-preset-advanced', 'v10-preset-tv', 'v10-preset-movie');
+
     const presetMap = {
         '/v10/airing': {
             preset: 'airing',
@@ -293,6 +295,7 @@ function applyPresetFromPath() {
     }
 
     currentPreset = preset.preset;
+    document.body.classList.add(`v10-preset-${preset.preset}`);
     updatePageMeta({
         title: preset.title,
         description: preset.description,

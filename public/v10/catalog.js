@@ -315,17 +315,18 @@ function applyPresetFromPath() {
 function syncFiltersFromQuery() {
     if (PAGE_KIND !== 'all-anime') return;
 
-    fillFilters({
-        title: currentQuery.get('title') || '',
-        status: currentQuery.get('status') || '',
-        type: currentQuery.get('type') || '',
-        order: IS_ADVANCED_SEARCH ? currentQuery.get('order') || '' : currentQuery.get('order') || '',
-        orderby: currentQuery.get('orderby') || '',
-        producer: currentQuery.get('producer') || '',
-        studio: currentQuery.get('studio') || '',
-        season: currentQuery.get('season') || '',
-        genre: currentQuery.getAll('genre')
-    }, true);
+    const filters = {};
+    ['title', 'status', 'type', 'order', 'orderby', 'producer', 'studio', 'season'].forEach((key) => {
+        if (currentQuery.has(key)) {
+            filters[key] = currentQuery.get(key) || '';
+        }
+    });
+
+    if (currentQuery.has('genre')) {
+        filters.genre = currentQuery.getAll('genre');
+    }
+
+    fillFilters(filters, true);
 }
 
 function fillFilters(filters, preserveExistingGenres) {

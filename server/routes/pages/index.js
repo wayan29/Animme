@@ -153,6 +153,7 @@ function registerPages(app) {
         'v7/detail': 'detail',
         'v7/episode': 'episode',
         'v7/search': 'search',
+        'v7/category': 'category',
         'v7/list': 'list'
     };
     Object.entries(v7StaticRoutes).forEach(([route, file]) => {

@@ -1136,6 +1136,35 @@ app.get('/api/v7/nekopoi/home', async (req, res) => {
     }
 });
 
+app.get('/api/v7/nekopoi/category/:slug', async (req, res) => {
+    try {
+        const slug = String(req.params.slug || '').trim().toLowerCase();
+        const rawPage = parseInt(req.query.page, 10) || 1;
+        const page = Math.min(100, Math.max(1, rawPage));
+        const allowedCategories = new Set(Object.keys(nekopoiScraper.CATEGORIES || {}));
+
+        if (!allowedCategories.has(slug)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid category slug',
+                data: null
+            });
+        }
+
+        console.log(`[V7] Nekopoi API - Category request: ${slug} page ${page}`);
+        const data = await nekopoiScraper.scrapeCategory(slug, page);
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Category error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi category',
+            data: null
+        });
+    }
+});
+
 app.get('/api/v7/nekopoi/detail/:slug(*)', async (req, res) => {
     try {
         const slug = String(req.params.slug || '').trim();

@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupServerSelector();
     setupSearchHandler();
     setupAllButton();
+    setupSectionGlobalControls();
+    setupHistorySync();
 });
 
 async function initializeApp() {
@@ -69,6 +71,7 @@ async function loadAnimeList(letter = '') {
         renderLetterNavigation();
         renderAnimeList();
         updateStats();
+        updateToolbarVisibility();
     } catch (error) {
         console.error('[V7] A-Z list API error:', error);
         showError('Gagal memuat daftar dari Nekopoi.');
@@ -101,7 +104,10 @@ function renderLetterNavigation() {
     // Keep "Semua" button
     const allBtn = navContainer.querySelector('.all-btn');
     if (allBtn) {
-        allBtn.classList.toggle('active', appState.currentLetter === '');
+        const isAllActive = appState.currentLetter === '';
+        allBtn.classList.toggle('active', isAllActive);
+        if (isAllActive) allBtn.setAttribute('aria-current', 'true');
+        else allBtn.removeAttribute('aria-current');
     }
 
     // Add letter buttons (compact label + count)
@@ -131,6 +137,15 @@ function renderLetterNavigation() {
 }
 
 function filterByLetter(letter) {
+    // If the page was loaded as a single-letter deep link, reload full data when returning to Semua.
+    if (!letter && appState.fullData?.letters?.length === 1) {
+        const url = new URL(window.location);
+        url.searchParams.delete('letter');
+        window.history.pushState({}, '', url);
+        loadAnimeList('');
+        return;
+    }
+
     appState.currentLetter = letter;
 
     // Update URL without reload
@@ -157,6 +172,7 @@ function filterByLetter(letter) {
 
     renderAnimeList();
     updateStats();
+    updateToolbarVisibility();
 
     // Scroll konten ke atas agar tidak tersesat setelah ganti huruf
     const main = document.querySelector('.main-content');
@@ -211,7 +227,7 @@ function renderAnimeList() {
                     container.appendChild(section);
                 }
             });
-            setupSectionGlobalControls();
+            updateToolbarVisibility();
             return;
         }
 
@@ -255,6 +271,25 @@ function setAllSectionsCollapsed(collapsed) {
 function setupSectionGlobalControls() {
     document.getElementById('expandAllBtn')?.addEventListener('click', () => setAllSectionsCollapsed(false));
     document.getElementById('collapseAllBtn')?.addEventListener('click', () => setAllSectionsCollapsed(true));
+}
+
+function setupHistorySync() {
+    window.addEventListener('popstate', () => {
+        const letter = new URLSearchParams(window.location.search).get('letter') || '';
+        if (letter && appState.fullData?.letters?.length === 1 && appState.fullData.letters[0]?.letter !== letter) {
+            loadAnimeList(letter);
+            return;
+        }
+        if (!letter && appState.fullData?.letters?.length === 1) {
+            loadAnimeList('');
+            return;
+        }
+        appState.currentLetter = letter;
+        renderLetterNavigation();
+        renderAnimeList();
+        updateStats();
+        updateToolbarVisibility();
+    });
 }
 
 function createAnimeCard(anime) {
@@ -421,6 +456,15 @@ function initMobileSearch() {
 }
 
 // Setup "Semua" button handler (dipanggil sekali setelah DOM ready)
+
+function updateToolbarVisibility() {
+    const hasSections = document.querySelectorAll('.letter-section').length > 0;
+    const expand = document.getElementById('expandAllBtn');
+    const collapse = document.getElementById('collapseAllBtn');
+    if (expand) expand.hidden = !hasSections;
+    if (collapse) collapse.hidden = !hasSections;
+}
+
 function setupAllButton() {
     const allBtn = document.querySelector('.letter-btn.all-btn');
     if (allBtn) {

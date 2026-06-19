@@ -32,7 +32,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
 
         .list-title {
@@ -48,7 +48,7 @@
 
         .letter-navigation {
             position: sticky;
-            top: 0;
+            top: 90px;
             z-index: 30;
             width: 100%;
             max-width: 100%;
@@ -262,10 +262,11 @@
             border-radius: 12px;
             background: rgba(26, 10, 15, 0.55);
             overflow: hidden;
-            scroll-margin-top: 110px;
+            scroll-margin-top: 175px;
         }
 
-        .letter-section.collapsed .anime-grid { display: none; }
+        .letter-section.collapsed .anime-grid,
+        .letter-section.collapsed .letter-section-panel { display: none; }
 
         .letter-section-title {
             width: 100%;
@@ -346,30 +347,34 @@
         }
 
         @media (max-width: 768px) {
+            .main-content {
+                padding: 6px 10px 0 !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+
             .list-header {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
                 align-items: flex-start;
             }
 
-            .list-title {
-                font-size: 1.3rem;
-            }
+            .list-title { font-size: 1.25rem; }
 
             .letter-navigation {
+                top: 82px !important;
+                margin-left: -10px !important;
+                margin-right: -10px !important;
+                border-radius: 0 !important;
+                border-left: 0;
+                border-right: 0;
+                padding: 8px 10px !important;
                 flex-wrap: nowrap;
                 justify-content: flex-start;
                 overflow-x: auto;
                 overflow-y: hidden;
                 scrollbar-width: thin;
                 scrollbar-color: rgba(231, 76, 60, 0.5) transparent;
-                top: 0;
-                margin-left: -12px;
-                margin-right: -12px;
-                border-radius: 0;
-                border-left: 0;
-                border-right: 0;
-                padding: 8px 12px;
                 gap: 5px;
             }
 
@@ -380,28 +385,43 @@
             }
 
             .letter-btn {
-                min-width: 36px;
-                padding: 6px 9px;
-                font-size: 0.78rem;
+                min-width: 34px;
+                padding: 5px 8px;
+                font-size: 0.76rem;
             }
 
             .letter-btn .letter-count { display: none; }
+            .letter-section { scroll-margin-top: 165px !important; }
+            .letter-section-panel { padding: 10px 6px !important; }
+            .letter-toggle-label { font-size: 1.05rem; }
+            .letter-toggle-count { font-size: 0.72rem; padding: 2px 8px; }
 
-            .anime-grid {
-                grid-template-columns: 1fr;
-                gap: 9px;
+            .server-v7 .anime-grid {
+                grid-template-columns: 1fr !important;
+                gap: 8px !important;
             }
 
-            .anime-item {
-                min-height: 60px;
-                padding: 10px 12px;
+            .server-v7 .anime-item {
+                min-height: 56px !important;
+                padding: 8px 10px !important;
+                gap: 8px !important;
             }
 
-            .anime-initial {
-                flex-basis: 34px;
-                width: 34px;
-                height: 34px;
-                font-size: 0.95rem;
+            .server-v7 .anime-initial {
+                flex-basis: 30px !important;
+                width: 30px !important;
+                height: 30px !important;
+                font-size: 0.9rem !important;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .letter-section-title,
+            .letter-toggle-mark,
+            .anime-item,
+            .letter-btn,
+            .ctrl-btn {
+                transition: none !important;
             }
         }
     </style>

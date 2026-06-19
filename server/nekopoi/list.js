@@ -83,17 +83,16 @@ function parseListGroups($, targetLetter = '') {
     return { list, letters };
 }
 
-// Scrape hentai list (A-Z listing)
-async function scrapeHentaiList() {
+async function scrapeAzList(pathname = 'hentai-list', label = 'hentai list') {
     try {
-        const url = `${BASE_URL}/hentai-list/`;
+        const url = `${BASE_URL}/${pathname}/`;
         const $ = await fetchPage(url);
         const { list, letters } = parseListGroups($);
 
         if (list.length === 0) {
             return {
                 status: 'error',
-                message: 'No hentai list entries found; upstream DOM may have changed',
+                message: `No ${label} entries found; upstream DOM may have changed`,
                 data: null
             };
         }
@@ -121,11 +120,10 @@ async function scrapeHentaiList() {
     }
 }
 
-// Scrape hentai list by specific letter
-async function scrapeHentaiListByLetter(letter) {
+async function scrapeAzListByLetter(pathname = 'hentai-list', letter) {
     try {
         const normalizedLetter = String(letter || '').trim().toUpperCase();
-        const url = `${BASE_URL}/hentai-list/`;
+        const url = `${BASE_URL}/${pathname}/`;
         const $ = await fetchPage(url);
         const { list } = parseListGroups($, normalizedLetter);
 
@@ -146,7 +144,27 @@ async function scrapeHentaiListByLetter(letter) {
     }
 }
 
+// Scrape hentai list (A-Z listing)
+async function scrapeHentaiList() {
+    return scrapeAzList('hentai-list', 'hentai list');
+}
+
+// Scrape hentai list by specific letter
+async function scrapeHentaiListByLetter(letter) {
+    return scrapeAzListByLetter('hentai-list', letter);
+}
+
+async function scrapeJavList() {
+    return scrapeAzList('jav-list', 'JAV list');
+}
+
+async function scrapeJavListByLetter(letter) {
+    return scrapeAzListByLetter('jav-list', letter);
+}
+
 module.exports = {
     scrapeHentaiList,
-    scrapeHentaiListByLetter
+    scrapeHentaiListByLetter,
+    scrapeJavList,
+    scrapeJavListByLetter
 };

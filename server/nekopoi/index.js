@@ -18,7 +18,8 @@ const { scrapeAnimeDetail } = require('./detail');
 const { scrapeEpisode } = require('./episode');
 const { scrapeSearch } = require('./search');
 const { CATEGORIES, scrapeCategory } = require('./category');
-const { scrapeHentaiList, scrapeHentaiListByLetter } = require('./list');
+const { scrapeGenreList, scrapeGenre } = require('./genre');
+const { scrapeHentaiList, scrapeHentaiListByLetter, scrapeJavList, scrapeJavListByLetter } = require('./list');
 
 // Export all modules
 module.exports = {
@@ -41,6 +42,10 @@ module.exports = {
     scrapeSearch,
     CATEGORIES,
     scrapeCategory,
+    scrapeGenreList,
+    scrapeGenre,
     scrapeHentaiList,
-    scrapeHentaiListByLetter
+    scrapeHentaiListByLetter,
+    scrapeJavList,
+    scrapeJavListByLetter
 };

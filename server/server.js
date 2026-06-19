@@ -1274,6 +1274,77 @@ app.get('/api/v7/nekopoi/hentai-list', async (req, res) => {
     }
 });
 
+app.get('/api/v7/nekopoi/jav-list', async (req, res) => {
+    try {
+        const letter = String(req.query.letter || '').trim().toUpperCase();
+        if (letter && !/^[A-Z0-9#]$/.test(letter)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid list letter',
+                data: null
+            });
+        }
+
+        console.log(`[V7] Nekopoi API - JAV list request${letter ? ` letter ${letter}` : ''}`);
+        const data = letter
+            ? await nekopoiScraper.scrapeJavListByLetter(letter)
+            : await nekopoiScraper.scrapeJavList();
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - JAV list error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi JAV list',
+            data: null
+        });
+    }
+});
+
+app.get('/api/v7/nekopoi/genres', async (req, res) => {
+    try {
+        console.log('[V7] Nekopoi API - Genre list request');
+        const data = await nekopoiScraper.scrapeGenreList();
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Genre list error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi genres',
+            data: null
+        });
+    }
+});
+
+app.get('/api/v7/nekopoi/genre/:slug', async (req, res) => {
+    try {
+        const slug = String(req.params.slug || '').trim().toLowerCase();
+        const rawPage = parseInt(req.query.page, 10) || 1;
+        const page = Math.min(100, Math.max(1, rawPage));
+
+        if (!/^[a-z0-9][a-z0-9_-]{0,80}$/i.test(slug)) {
+            return res.status(400).json({
+                status: 'error',
+                message: 'Invalid genre slug',
+                data: null
+            });
+        }
+
+        console.log(`[V7] Nekopoi API - Genre request: ${slug} page ${page}`);
+        const data = await nekopoiScraper.scrapeGenre(slug, page);
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Genre error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi genre',
+            data: null
+        });
+    }
+});
+
 // Test endpoint to check if streaming URL can be downloaded
 app.post('/api/v7/nekopoi/test-download', async (req, res) => {
     return sendV7Maintenance(res);

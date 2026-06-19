@@ -1,11 +1,12 @@
-// AnimMe V7 - Nekopoi Hentai List Application
+// AnimMe V7 - Nekopoi A-Z List Application
 const API_BASE = '/api/v7/nekopoi';
 
 const appState = {
     fullData: null,
     currentLetter: '',
     isLoading: false,
-    error: null
+    error: null,
+    listType: 'hentai'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -19,25 +20,28 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initializeApp() {
     const urlParams = new URLSearchParams(window.location.search);
     const letter = urlParams.get('letter') || '';
+    appState.listType = window.location.pathname.includes('jav-list') ? 'jav' : 'hentai';
+    updateListChrome();
 
     try {
-        await loadHentaiList(letter);
+        await loadAnimeList(letter);
     } catch (error) {
         console.error('[V7] Failed to initialize list:', error);
         showError('Terjadi kesalahan saat memuat daftar anime.');
     }
 }
 
-async function loadHentaiList(letter = '') {
+async function loadAnimeList(letter = '') {
     appState.isLoading = true;
     appState.currentLetter = letter;
     hideError();
     showLoadingState();
 
     try {
+        const endpoint = appState.listType === 'jav' ? 'jav-list' : 'hentai-list';
         const url = letter ?
-            `${API_BASE}/hentai-list?letter=${encodeURIComponent(letter)}` :
-            `${API_BASE}/hentai-list`;
+            `${API_BASE}/${endpoint}?letter=${encodeURIComponent(letter)}` :
+            `${API_BASE}/${endpoint}`;
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -65,12 +69,26 @@ async function loadHentaiList(letter = '') {
         renderAnimeList();
         updateStats();
     } catch (error) {
-        console.error('[V7] Hentai list API error:', error);
-        showError('Gagal memuat daftar anime dari Nekopoi.');
+        console.error('[V7] A-Z list API error:', error);
+        showError('Gagal memuat daftar dari Nekopoi.');
         renderFallbackState();
     } finally {
         appState.isLoading = false;
     }
+}
+
+function updateListChrome() {
+    const isJav = appState.listType === 'jav';
+    const title = document.querySelector('.list-title');
+    const topbar = document.querySelector('.topbar-title');
+    const activeHref = isJav ? '/v7/jav-list' : '/v7/list';
+
+    document.title = isJav ? 'AnimMe V7 - JAV List' : 'AnimMe V7 - Hentai List';
+    if (title) title.textContent = isJav ? '🎬 JAV List A-Z' : '📚 Hentai List A-Z';
+    if (topbar) topbar.textContent = isJav ? 'AnimMe V7 - JAV List' : 'AnimMe V7 - Hentai List';
+    document.querySelectorAll('.sidebar-menu .nav-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === activeHref);
+    });
 }
 
 function renderLetterNavigation() {
@@ -217,9 +235,9 @@ function updateStats() {
     if (appState.currentLetter) {
         const letterData = appState.fullData.letters.find(l => l.letter === appState.currentLetter);
         const count = letterData ? letterData.count : 0;
-        statsContainer.textContent = `${count} anime (Huruf: ${appState.currentLetter})`;
+        statsContainer.textContent = `${count} item (Huruf: ${appState.currentLetter})`;
     } else {
-        statsContainer.textContent = `Total: ${appState.fullData.totalAnime} anime`;
+        statsContainer.textContent = `Total: ${appState.fullData.totalAnime} item`;
     }
 }
 

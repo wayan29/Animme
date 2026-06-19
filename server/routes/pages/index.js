@@ -154,7 +154,10 @@ function registerPages(app) {
         'v7/episode': 'episode',
         'v7/search': 'search',
         'v7/category': 'category',
-        'v7/list': 'list'
+        'v7/list': 'list',
+        'v7/jav-list': 'list',
+        'v7/genre-list': 'genre-list',
+        'v7/genre': 'genre'
     };
     Object.entries(v7StaticRoutes).forEach(([route, file]) => {
         registerHtmlAliases(app, route, file, 'v7');

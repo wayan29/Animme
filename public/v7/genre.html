@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimMe V7 - Search</title>
+    <title>AnimMe V7 - Genre</title>
     <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="/mobile.css">
     <style>
@@ -42,7 +42,7 @@
         }
 
         .search-hero::after {
-            content: 'SEARCH';
+            content: 'GENRE';
             position: absolute;
             right: 18px;
             bottom: -8px;
@@ -249,15 +249,15 @@
             </div>
             <nav class="sidebar-menu">
                 <a href="/v7/home" class="nav-link">🏠 Beranda</a>
-                <a href="/v7/category?slug=hentai" class="nav-link">🔥 Hentai</a>
-                <a href="/v7/category?slug=2d-animation" class="nav-link">🎞️ 2D Animation</a>
-                <a href="/v7/category?slug=3d-hentai" class="nav-link">🧊 3D Hentai</a>
-                <a href="/v7/category?slug=jav" class="nav-link">🎥 JAV</a>
-                <a href="/v7/category?slug=jav-cosplay" class="nav-link">👘 JAV Cosplay</a>
-                <a href="/v7/search" class="nav-link active">🔎 Search</a>
+                <a href="/v7/category?slug=hentai" class="nav-link" data-category-link="hentai">🔥 Hentai</a>
+                <a href="/v7/category?slug=2d-animation" class="nav-link" data-category-link="2d-animation">🎞️ 2D Animation</a>
+                <a href="/v7/category?slug=3d-hentai" class="nav-link" data-category-link="3d-hentai">🧊 3D Hentai</a>
+                <a href="/v7/category?slug=jav" class="nav-link" data-category-link="jav">🎥 JAV</a>
+                <a href="/v7/category?slug=jav-cosplay" class="nav-link" data-category-link="jav-cosplay">👘 JAV Cosplay</a>
+                <a href="/v7/search" class="nav-link">🔎 Search</a>
                 <a href="/v7/list" class="nav-link">📚 Hentai List</a>
                 <a href="/v7/jav-list" class="nav-link">🎬 JAV List</a>
-                <a href="/v7/genre-list" class="nav-link">🏷️ Genre List</a>
+                <a href="/v7/genre-list" class="nav-link active">🏷️ Genre List</a>
             </nav>
         </aside>
 
@@ -270,7 +270,7 @@
                     <span></span>
                     <span></span>
                 </button>
-                <div class="topbar-title" onclick="window.location.href='/v7/home'">AnimMe V7 - Search</div>
+                <div class="topbar-title" onclick="window.location.href='/v7/home'">AnimMe V7 - Genre</div>
                 <div class="search-container">
                     <button class="search-icon-mobile" id="searchIconBtn" aria-label="Search">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -285,12 +285,12 @@
 
             <main class="main-content">
                 <div class="search-hero">
-                    <span class="search-kicker">V7 · Nekopoi Search</span>
-                    <h1 class="search-title" id="searchTitle">Search Nekopoi</h1>
-                    <p class="search-subtitle" id="searchSubtitle">Masukkan kata kunci untuk mencari episode dan update Nekopoi.</p>
+                    <span class="search-kicker" id="categoryKicker">V7 · Nekopoi Genre</span>
+                    <h1 class="search-title" id="searchTitle">Genre Nekopoi</h1>
+                    <p class="search-subtitle" id="searchSubtitle">Pilih genre dari Genre List untuk melihat update terbaru.</p>
                 </div>
 
-                <div id="searchContent" class="search-loading">Memuat hasil pencarian...</div>
+                <div id="searchContent" class="search-loading">Memuat genre...</div>
 
                 <div class="pagination" id="paginationControls" style="display:none;">
                     <button id="prevPageBtn">← Sebelumnya</button>
@@ -305,7 +305,7 @@
         </div>
     </div>
 
-    <script src="/v7/search.js"></script>
+    <script src="/v7/genre.js"></script>
     <script src="/shared/server-select.js"></script>
 </body>
 </html>

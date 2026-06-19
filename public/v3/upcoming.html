@@ -486,13 +486,14 @@
                     tagsHTML += `<span class="anime-tag">${anime.status}</span>`;
                 }
 
-                // Movie badge
+                // Upcoming badge + release date
                 const movieBadge = '<div class="trending-badge">⏳ Upcoming</div>';
+                const releaseText = anime.release_text || anime.episode_text || (anime.release_date ? `Tayang: ${anime.release_date}` : '');
 
                 card.innerHTML = `
                     <img src="${anime.poster}" alt="${anime.title}" class="anime-poster" onerror="this.src='https://via.placeholder.com/180x260?text=No+Image'">
                     ${movieBadge}
-                    ${anime.episode ? `<div class="episode-badge">${anime.episode}</div>` : ''}
+                    ${releaseText ? `<div class="episode-badge">📅 ${releaseText}</div>` : ''}
                     <div class="anime-info">
                         <div class="anime-title">${anime.title}</div>
                         <div class="anime-tags">

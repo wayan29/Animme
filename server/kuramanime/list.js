@@ -349,6 +349,8 @@ async function scrapeUpcoming(page = 1, orderBy = 'popular') {
             const title = $el.find('.product__item__text h5 a').text().trim();
             const poster = $el.find('.product__item__pic').attr('data-setbg');
             const episodeText = $el.find('.ep span').text().trim();
+            const releaseMatch = episodeText.match(/Tayang:\s*(.+)$/i);
+            const releaseDate = releaseMatch ? releaseMatch[1].trim() : null;
             const isTrending = $el.find('.pin .fa-fire').length > 0;
 
             const tags = [];
@@ -370,6 +372,8 @@ async function scrapeUpcoming(page = 1, orderBy = 'popular') {
                     title,
                     poster: proxyImageUrl(poster),
                     episode_text: episodeText,
+                    release_text: episodeText,
+                    release_date: releaseDate,
                     is_trending: isTrending,
                     tags,
                     upcoming_url: href.startsWith('http') ? href : `${BASE_URL}${href}`,

@@ -360,20 +360,22 @@
             object-fit: contain;
         }
 
-        /* CRITICAL: Fullscreen video fixes for mobile */
-        .video-container:-webkit-full-screen,
-        .video-container:-moz-full-screen,
-        .video-container:-ms-fullscreen,
-        .video-container:fullscreen {
+        /* Fullscreen fallback for native/iframe player containers.
+           Custom YouTubePlayer fullscreen rules live in /shared/youtube-player.css. */
+        .video-container:not(.youtube-player):-webkit-full-screen,
+        .video-container:not(.youtube-player):-moz-full-screen,
+        .video-container:not(.youtube-player):-ms-fullscreen,
+        .video-container:not(.youtube-player):fullscreen {
             padding-bottom: 0 !important;
             height: 100vh !important;
+            height: 100dvh !important;
             width: 100vw !important;
         }
 
-        .video-container:-webkit-full-screen video,
-        .video-container:-moz-full-screen video,
-        .video-container:-ms-fullscreen video,
-        .video-container:fullscreen video {
+        .video-container:not(.youtube-player):-webkit-full-screen video,
+        .video-container:not(.youtube-player):-moz-full-screen video,
+        .video-container:not(.youtube-player):-ms-fullscreen video,
+        .video-container:not(.youtube-player):fullscreen video {
             object-fit: contain !important;
             width: 100% !important;
             height: 100% !important;

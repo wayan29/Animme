@@ -390,6 +390,7 @@
     bottom: 0;
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     max-width: none;
     border-radius: 0;
     z-index: 9999;
@@ -413,15 +414,15 @@
     overflow: hidden;
 }
 
-/* Override aspect ratio padding in fullscreen */
+/* Override aspect ratio padding only for the custom player wrapper in fullscreen */
 .video-container.youtube-player:-webkit-full-screen,
 .video-container.youtube-player:-moz-full-screen,
 .video-container.youtube-player:-ms-fullscreen,
 .video-container.youtube-player:fullscreen,
-:-webkit-full-screen .video-container,
-:-moz-full-screen .video-container,
-:-ms-fullscreen .video-container,
-:fullscreen .video-container {
+.youtube-player:-webkit-full-screen,
+.youtube-player:-moz-full-screen,
+.youtube-player:-ms-fullscreen,
+.youtube-player:fullscreen {
     padding-bottom: 0 !important;
     height: 100vh !important;
     height: 100dvh !important;
@@ -446,11 +447,11 @@
     transform: none !important;
 }
 
-/* Ensure video is never cropped */
-:-webkit-full-screen video,
-:-moz-full-screen video,
-:-ms-fullscreen video,
-:fullscreen video {
+/* Ensure custom-player video is never cropped without affecting other fullscreen media */
+.youtube-player:-webkit-full-screen video,
+.youtube-player:-moz-full-screen video,
+.youtube-player:-ms-fullscreen video,
+.youtube-player:fullscreen video {
     object-fit: contain !important;
     object-position: center !important;
 }

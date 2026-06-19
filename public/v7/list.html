@@ -47,88 +47,184 @@
         }
 
         .letter-navigation {
-            background: rgba(26, 10, 15, 0.95);
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            background: rgba(20, 8, 12, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(231, 76, 60, 0.3);
             border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 30px;
+            padding: 10px 12px;
+            margin-bottom: 18px;
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
         }
 
         .letter-btn {
-            background: rgba(231, 76, 60, 0.2);
+            flex: 0 0 auto;
+            min-width: 42px;
+            background: rgba(231, 76, 60, 0.18);
             border: 1px solid rgba(231, 76, 60, 0.4);
             color: #ffe8e8;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
+            padding: 7px 11px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .letter-btn .letter-count {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            font-weight: 600;
         }
 
         .letter-btn:hover {
-            background: rgba(231, 76, 60, 0.35);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+            background: rgba(231, 76, 60, 0.38);
+            border-color: rgba(231, 76, 60, 0.65);
+        }
+
+        .letter-btn:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
         }
 
         .letter-btn.active {
             background: var(--primary-color);
             color: #1a0a0f;
             border-color: var(--primary-color);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.35);
         }
 
         .letter-btn.all-btn {
-            background: var(--accent-color);
-            border-color: var(--accent-color);
-            color: #1a0a0f;
+            background: rgba(243, 156, 18, 0.18);
+            border-color: rgba(243, 156, 18, 0.5);
+            color: #ffd08a;
+            order: -1;
+            margin-right: 6px;
         }
 
         .letter-btn.all-btn:hover {
-            background: #e67e22;
+            background: rgba(243, 156, 18, 0.32);
+            border-color: rgba(243, 156, 18, 0.7);
+        }
+
+        .letter-btn.all-btn.active {
+            background: var(--accent-color);
+            color: #1a0a0f;
+            border-color: var(--accent-color);
         }
 
         .anime-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
             margin-bottom: 20px;
         }
 
         .anime-item {
-            background: rgba(26, 10, 15, 0.9);
-            border: 1px solid rgba(231, 76, 60, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            transition: all 0.2s;
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.08), rgba(26, 10, 15, 0.92));
+            border: 1px solid rgba(231, 76, 60, 0.22);
+            border-left: 3px solid var(--primary-color);
+            border-radius: 12px;
+            padding: 12px 14px;
+            transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
             text-decoration: none;
             color: inherit;
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 68px;
         }
 
         .anime-item:hover {
+            transform: translateY(-2px);
             border-color: rgba(231, 76, 60, 0.6);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(45, 21, 32, 0.6);
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.16), rgba(45, 21, 32, 0.95));
+            box-shadow: 0 10px 24px rgba(45, 21, 32, 0.55);
+        }
+
+        .anime-item:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
+        }
+
+        .anime-initial {
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: rgba(231, 76, 60, 0.16);
+            border: 1px solid rgba(231, 76, 60, 0.35);
+            color: var(--primary-color);
+            font-weight: 900;
+            font-size: 1.05rem;
+        }
+
+        .anime-card-body {
+            min-width: 0;
+            flex: 1;
         }
 
         .anime-title {
-            font-size: 1.05rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 8px;
-            line-height: 1.3;
+            color: #ffe8e8;
+            margin: 0 0 6px;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .anime-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 0.75rem;
+        }
+
+        .anime-chip {
+            background: rgba(231, 76, 60, 0.14);
+            border: 1px solid rgba(231, 76, 60, 0.28);
+            color: rgba(255, 232, 232, 0.78);
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+
+        .anime-chip-type {
+            background: rgba(243, 156, 18, 0.14);
+            border-color: rgba(243, 156, 18, 0.32);
+            color: #ffd08a;
+        }
+
+        .anime-action {
+            color: rgba(243, 156, 18, 0.92);
+            font-weight: 700;
         }
 
         .anime-letter {
-            font-size: 0.85rem;
-            color: rgba(255, 232, 232, 0.6);
+            display: none;
         }
 
         .loading {
@@ -161,16 +257,92 @@
         }
 
         .letter-section {
-            margin-bottom: 40px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(231, 76, 60, 0.22);
+            border-radius: 12px;
+            background: rgba(26, 10, 15, 0.55);
+            overflow: hidden;
+            scroll-margin-top: 110px;
         }
 
+        .letter-section.collapsed .anime-grid { display: none; }
+
         .letter-section-title {
-            font-size: 1.5rem;
-            font-weight: 700;
+            width: 100%;
+            margin: 0;
+            padding: 13px 16px;
+            background: rgba(231, 76, 60, 0.08);
+            border: 0;
+            border-bottom: 1px solid rgba(231, 76, 60, 0.18);
+            font-size: 1.15rem;
+            font-weight: 800;
             color: var(--primary-color);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid rgba(231, 76, 60, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-align: left;
+            transition: background 0.15s ease;
+        }
+
+        .letter-section-title:hover { background: rgba(231, 76, 60, 0.15); }
+        .letter-section-title:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: -2px;
+        }
+
+        .letter-toggle-mark {
+            width: 1em;
+            color: var(--accent-color);
+            font-size: 0.9em;
+            transition: transform 0.15s ease;
+        }
+
+        .letter-section.collapsed .letter-toggle-mark { transform: rotate(-90deg); }
+
+        .letter-toggle-label { font-size: 1.15rem; }
+
+        .letter-toggle-count {
+            margin-left: auto;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: rgba(255, 232, 232, 0.72);
+            background: rgba(231, 76, 60, 0.15);
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+
+        .letter-section-panel { padding: 14px; }
+
+        .list-toolbar {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-btn {
+            background: transparent;
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            color: #ffe8e8;
+            padding: 5px 11px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease;
+        }
+
+        .ctrl-btn:hover { background: rgba(231, 76, 60, 0.18); border-color: rgba(231, 76, 60, 0.65); }
+        .ctrl-btn:focus-visible { outline: 2px solid var(--accent-color); outline-offset: 2px; }
+
+        .list-stats {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.22);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            color: #ffe8e8;
+            font-weight: 600;
         }
 
         @media (max-width: 768px) {
@@ -181,21 +353,55 @@
             }
 
             .list-title {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
 
             .letter-navigation {
-                padding: 15px;
-                gap: 6px;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(231, 76, 60, 0.5) transparent;
+                top: 0;
+                margin-left: -12px;
+                margin-right: -12px;
+                border-radius: 0;
+                border-left: 0;
+                border-right: 0;
+                padding: 8px 12px;
+                gap: 5px;
+            }
+
+            .letter-navigation::-webkit-scrollbar { height: 5px; }
+            .letter-navigation::-webkit-scrollbar-thumb {
+                background: rgba(231, 76, 60, 0.5);
+                border-radius: 3px;
             }
 
             .letter-btn {
-                padding: 8px 12px;
-                font-size: 0.85rem;
+                min-width: 36px;
+                padding: 6px 9px;
+                font-size: 0.78rem;
             }
 
+            .letter-btn .letter-count { display: none; }
+
             .anime-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                grid-template-columns: 1fr;
+                gap: 9px;
+            }
+
+            .anime-item {
+                min-height: 60px;
+                padding: 10px 12px;
+            }
+
+            .anime-initial {
+                flex-basis: 34px;
+                width: 34px;
+                height: 34px;
+                font-size: 0.95rem;
             }
         }
     </style>
@@ -267,7 +473,11 @@
 
                 <div class="list-header">
                     <h1 class="list-title">📚 Hentai List A-Z</h1>
-                    <div class="list-stats" id="listStats">Memuat...</div>
+                    <div class="list-toolbar" role="group" aria-label="Kontrol tampilan">
+                        <button class="ctrl-btn" id="expandAllBtn" type="button">▾ Expand</button>
+                        <button class="ctrl-btn" id="collapseAllBtn" type="button">▸ Collapse</button>
+                        <span class="list-stats" id="listStats">Memuat...</span>
+                    </div>
                 </div>
 
                 <div class="letter-navigation" id="letterNavigation">

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileSearch();
     setupServerSelector();
     setupSearchHandler();
+    setupAllButton();
 });
 
 async function initializeApp() {
@@ -103,14 +104,17 @@ function renderLetterNavigation() {
         allBtn.classList.toggle('active', appState.currentLetter === '');
     }
 
-    // Add letter buttons
+    // Add letter buttons (compact label + count)
     appState.fullData.letters.forEach(letterData => {
-        const existingBtn = navContainer.querySelector(`[data-letter="${letterData.letter}"]`);
+        const existingBtn = navContainer.querySelector(`[data-letter="${CSS.escape(letterData.letter)}"]`);
         if (!existingBtn) {
             const btn = document.createElement('button');
             btn.className = 'letter-btn';
+            btn.type = 'button';
             btn.setAttribute('data-letter', letterData.letter);
-            btn.textContent = `${letterData.letter} (${letterData.count})`;
+            btn.setAttribute('title', `${letterData.letter} - ${letterData.count} item`);
+            btn.setAttribute('aria-label', `Huruf ${letterData.letter}, ${letterData.count} item`);
+            btn.innerHTML = `<span class="letter-label">${escapeHtml(letterData.letter)}</span><span class="letter-count">${letterData.count}</span>`;
             btn.addEventListener('click', () => filterByLetter(letterData.letter));
             navContainer.appendChild(btn);
         }
@@ -119,7 +123,10 @@ function renderLetterNavigation() {
     // Activate current letter button
     const letterBtns = navContainer.querySelectorAll('.letter-btn:not(.all-btn)');
     letterBtns.forEach(btn => {
-        btn.classList.toggle('active', btn.getAttribute('data-letter') === appState.currentLetter);
+        const isActive = btn.getAttribute('data-letter') === appState.currentLetter;
+        btn.classList.toggle('active', isActive);
+        if (isActive) btn.setAttribute('aria-current', 'true');
+        else btn.removeAttribute('aria-current');
     });
 }
 
@@ -141,12 +148,19 @@ function filterByLetter(letter) {
         const allBtns = navContainer.querySelectorAll('.letter-btn');
         allBtns.forEach(btn => {
             const btnLetter = btn.getAttribute('data-letter') || '';
-            btn.classList.toggle('active', btnLetter === letter);
+            const isActive = btnLetter === letter;
+            btn.classList.toggle('active', isActive);
+            if (isActive) btn.setAttribute('aria-current', 'true');
+            else btn.removeAttribute('aria-current');
         });
     }
 
     renderAnimeList();
     updateStats();
+
+    // Scroll konten ke atas agar tidak tersesat setelah ganti huruf
+    const main = document.querySelector('.main-content');
+    if (main) main.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderAnimeList() {
@@ -164,30 +178,40 @@ function renderAnimeList() {
             animeToDisplay = letterData.anime;
         }
     } else {
-        // Show all anime grouped by letter
+        // Show all anime grouped by letter (collapsed by default to keep page short)
         if (appState.fullData.letters && appState.fullData.letters.length > 0) {
             appState.fullData.letters.forEach(letterData => {
                 if (letterData.anime && letterData.anime.length > 0) {
-                    const section = document.createElement('div');
-                    section.className = 'letter-section';
+                    const section = document.createElement('section');
+                    section.className = 'letter-section collapsed';
+                    section.id = `letter-${letterData.letter}`;
+                    section.setAttribute('data-letter', letterData.letter);
 
-                    const title = document.createElement('h2');
+                    const title = document.createElement('button');
                     title.className = 'letter-section-title';
-                    title.textContent = `${letterData.letter} (${letterData.count})`;
-                    section.appendChild(title);
+                    title.type = 'button';
+                    title.setAttribute('aria-expanded', 'false');
+                    title.innerHTML = `
+                        <span class="letter-toggle-mark" aria-hidden="true">▾</span>
+                        <span class="letter-toggle-label">${escapeHtml(letterData.letter)}</span>
+                        <span class="letter-toggle-count">${letterData.count} item</span>
+                    `;
+                    title.addEventListener('click', () => toggleSection(section, title));
+
+                    const panel = document.createElement('div');
+                    panel.className = 'letter-section-panel';
 
                     const grid = document.createElement('div');
                     grid.className = 'anime-grid';
+                    letterData.anime.forEach(anime => grid.appendChild(createAnimeCard(anime)));
+                    panel.appendChild(grid);
 
-                    letterData.anime.forEach(anime => {
-                        const card = createAnimeCard(anime);
-                        grid.appendChild(card);
-                    });
-
-                    section.appendChild(grid);
+                    section.appendChild(title);
+                    section.appendChild(panel);
                     container.appendChild(section);
                 }
             });
+            setupSectionGlobalControls();
             return;
         }
 
@@ -209,10 +233,28 @@ function renderAnimeList() {
     } else {
         container.innerHTML = `
             <div class="loading">
-                <p>Tidak ada anime ditemukan untuk huruf "${appState.currentLetter}".</p>
+                <p>Tidak ada anime ditemukan untuk huruf "${escapeHtml(appState.currentLetter)}".</p>
             </div>
         `;
     }
+}
+
+function toggleSection(section, titleBtn) {
+    const collapsed = section.classList.toggle('collapsed');
+    titleBtn.setAttribute('aria-expanded', String(!collapsed));
+}
+
+function setAllSectionsCollapsed(collapsed) {
+    document.querySelectorAll('.letter-section').forEach(section => {
+        section.classList.toggle('collapsed', collapsed);
+        const titleBtn = section.querySelector('.letter-section-title');
+        if (titleBtn) titleBtn.setAttribute('aria-expanded', String(!collapsed));
+    });
+}
+
+function setupSectionGlobalControls() {
+    document.getElementById('expandAllBtn')?.addEventListener('click', () => setAllSectionsCollapsed(false));
+    document.getElementById('collapseAllBtn')?.addEventListener('click', () => setAllSectionsCollapsed(true));
 }
 
 function createAnimeCard(anime) {
@@ -220,9 +262,19 @@ function createAnimeCard(anime) {
     card.className = 'anime-item';
     card.href = `/v7/detail?slug=${encodeURIComponent(anime.slug)}`;
 
+    const initial = (anime.letter || anime.title || '?').charAt(0).toUpperCase();
+    const typeLabel = appState.listType === 'jav' ? 'JAV' : 'Hentai';
+
     card.innerHTML = `
-        <div class="anime-title">${escapeHtml(anime.title)}</div>
-        <div class="anime-letter">📑 Huruf: ${escapeHtml(anime.letter)}</div>
+        <span class="anime-initial" aria-hidden="true">${escapeHtml(initial)}</span>
+        <span class="anime-card-body">
+            <h3 class="anime-title">${escapeHtml(anime.title)}</h3>
+            <span class="anime-meta">
+                <span class="anime-chip anime-chip-type">${escapeHtml(typeLabel)}</span>
+                <span class="anime-action">Detail →</span>
+            </span>
+        </span>
+        <span class="anime-letter" aria-hidden="true">${escapeHtml(anime.letter || '')}</span>
     `;
 
     return card;
@@ -232,12 +284,15 @@ function updateStats() {
     const statsContainer = document.getElementById('listStats');
     if (!statsContainer || !appState.fullData) return;
 
+    const totalLetters = appState.fullData.letters?.length || 0;
+
     if (appState.currentLetter) {
         const letterData = appState.fullData.letters.find(l => l.letter === appState.currentLetter);
         const count = letterData ? letterData.count : 0;
-        statsContainer.textContent = `${count} item (Huruf: ${appState.currentLetter})`;
+        statsContainer.textContent = `${count} item • Huruf ${appState.currentLetter}`;
     } else {
-        statsContainer.textContent = `Total: ${appState.fullData.totalAnime} item`;
+        const total = appState.fullData.totalAnime || 0;
+        statsContainer.textContent = `${total.toLocaleString('id-ID')} item • ${totalLetters} grup A-Z`;
     }
 }
 
@@ -365,13 +420,13 @@ function initMobileSearch() {
     });
 }
 
-// Setup "Semua" button handler
-document.addEventListener('DOMContentLoaded', () => {
+// Setup "Semua" button handler (dipanggil sekali setelah DOM ready)
+function setupAllButton() {
     const allBtn = document.querySelector('.letter-btn.all-btn');
     if (allBtn) {
         allBtn.addEventListener('click', () => filterByLetter(''));
     }
-});
+}
 
 function showError(message) {
     const errorContainer = document.getElementById('errorContainer');

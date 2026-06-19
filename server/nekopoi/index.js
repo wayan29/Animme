@@ -19,6 +19,8 @@ const { scrapeEpisode } = require('./episode');
 const { scrapeSearch } = require('./search');
 const { CATEGORIES, scrapeCategory } = require('./category');
 const { scrapeGenreList, scrapeGenre } = require('./genre');
+const { scrapeRandom } = require('./random');
+const { scrapeSchedule } = require('./schedule');
 const { scrapeHentaiList, scrapeHentaiListByLetter, scrapeJavList, scrapeJavListByLetter } = require('./list');
 
 // Export all modules
@@ -44,6 +46,8 @@ module.exports = {
     scrapeCategory,
     scrapeGenreList,
     scrapeGenre,
+    scrapeRandom,
+    scrapeSchedule,
     scrapeHentaiList,
     scrapeHentaiListByLetter,
     scrapeJavList,

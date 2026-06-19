@@ -1136,6 +1136,38 @@ app.get('/api/v7/nekopoi/home', async (req, res) => {
     }
 });
 
+app.get('/api/v7/nekopoi/random', async (req, res) => {
+    try {
+        console.log('[V7] Nekopoi API - Random request');
+        const data = await nekopoiScraper.scrapeRandom();
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Random error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi random',
+            data: null
+        });
+    }
+});
+
+app.get('/api/v7/nekopoi/schedule', async (req, res) => {
+    try {
+        console.log('[V7] Nekopoi API - Schedule request');
+        const data = await nekopoiScraper.scrapeSchedule();
+        const statusCode = data.status === 'success' ? 200 : 502;
+        res.status(statusCode).json(data);
+    } catch (error) {
+        console.error('[V7] Nekopoi API - Schedule error:', error.message);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to fetch Nekopoi schedule',
+            data: null
+        });
+    }
+});
+
 app.get('/api/v7/nekopoi/category/:slug', async (req, res) => {
     try {
         const slug = String(req.params.slug || '').trim().toLowerCase();

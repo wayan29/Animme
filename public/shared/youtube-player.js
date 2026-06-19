@@ -272,6 +272,9 @@ class YouTubePlayer {
         this.video.addEventListener('pause', () => this.onPause());
         this.video.addEventListener('ended', () => this.onEnded());
         this.video.addEventListener('volumechange', () => this.onVolumeChange());
+        // iOS Safari native video fullscreen does not always emit document fullscreenchange.
+        this.video.addEventListener('webkitbeginfullscreen', () => this.applyFullscreenStyles());
+        this.video.addEventListener('webkitendfullscreen', () => this.resetFullscreenStyles());
 
         // Play button - use touchend to avoid conflicts on mobile
         this.elements.playBtn.addEventListener('click', (e) => {
@@ -846,6 +849,38 @@ class YouTubePlayer {
     enterFullscreen() {
         const element = this.container;
 
+        this.applyFullscreenStyles();
+
+        let fullscreenRequest = null;
+        if (element.requestFullscreen) {
+            fullscreenRequest = element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            fullscreenRequest = element.webkitRequestFullscreen();
+        } else if (this.video.webkitEnterFullscreen) {
+            // iOS Safari fallback uses the native video fullscreen API.
+            this.video.webkitEnterFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            fullscreenRequest = element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            fullscreenRequest = element.msRequestFullscreen();
+        }
+
+        if (fullscreenRequest && typeof fullscreenRequest.catch === 'function') {
+            fullscreenRequest.catch(error => {
+                console.warn('Fullscreen request failed:', error);
+                this.resetFullscreenStyles();
+            });
+        }
+
+        // Lock orientation to landscape on mobile
+        if (screen.orientation && screen.orientation.lock) {
+            screen.orientation.lock('landscape').catch(err => {
+                console.log('Orientation lock not supported:', err);
+            });
+        }
+    }
+
+    applyFullscreenStyles() {
         // Ensure video object-fit is set to contain - CRITICAL for mobile
         this.video.style.objectFit = 'contain';
         this.video.style.objectPosition = 'center';
@@ -860,34 +895,15 @@ class YouTubePlayer {
         this.video.style.bottom = '0';
         this.video.style.transform = 'none';
 
-        // Also fix container
-        element.style.paddingBottom = '0';
-        element.style.height = '100vh';
-        element.style.width = '100vw';
-
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if (element.webkitEnterFullscreen) {
-            // iOS Safari fallback
-            element.webkitEnterFullscreen();
-        } else if (element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-        } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
-        }
-
-        // Lock orientation to landscape on mobile
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(err => {
-                console.log('Orientation lock not supported:', err);
-            });
-        }
+        // Also fix container while fullscreen is active.
+        this.container.style.paddingBottom = '0';
+        this.container.style.height = '100vh';
+        this.container.style.width = '100vw';
     }
 
-    exitFullscreen() {
-        // Reset video styles
+    resetFullscreenStyles() {
+        // Reset video styles that were applied before entering fullscreen. This must also
+        // run for native/browser fullscreen exits, not only when our exit button is used.
         this.video.style.width = '';
         this.video.style.height = '';
         this.video.style.maxWidth = '';
@@ -897,12 +913,27 @@ class YouTubePlayer {
         this.video.style.left = '';
         this.video.style.right = '';
         this.video.style.bottom = '';
+        this.video.style.transform = '';
+        this.video.style.objectFit = '';
+        this.video.style.objectPosition = '';
 
-        // Reset container styles
         this.container.style.paddingBottom = '';
         this.container.style.height = '';
         this.container.style.width = '';
+        this.container.style.maxWidth = '';
+        this.container.style.maxHeight = '';
 
+        // Force a layout pass after mobile orientation/fullscreen transitions so the
+        // aspect-ratio wrapper returns to its normal 16:9 height instead of 100vh.
+        requestAnimationFrame(() => {
+            this.container.style.removeProperty('height');
+            this.container.style.removeProperty('width');
+            this.video.style.removeProperty('height');
+            this.video.style.removeProperty('width');
+        });
+    }
+
+    exitFullscreen() {
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.webkitExitFullscreen) {
@@ -913,6 +944,8 @@ class YouTubePlayer {
             document.mozCancelFullScreen();
         } else if (document.msExitFullscreen) {
             document.msExitFullscreen();
+        } else {
+            this.resetFullscreenStyles();
         }
 
         // Unlock orientation
@@ -923,10 +956,12 @@ class YouTubePlayer {
 
     onFullscreenChange() {
         if (this.isFullscreen()) {
+            this.applyFullscreenStyles();
             this.elements.fullscreenEnter.style.display = 'none';
             this.elements.fullscreenExit.style.display = '';
             this.showNotification('Fullscreen ON');
         } else {
+            this.resetFullscreenStyles();
             this.elements.fullscreenEnter.style.display = '';
             this.elements.fullscreenExit.style.display = 'none';
             this.showNotification('Fullscreen OFF');

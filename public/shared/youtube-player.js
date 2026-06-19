@@ -16,6 +16,7 @@ class YouTubePlayer {
         this.lastMouseMove = Date.now();
         this.isNativeVideoFullscreen = false;
         this.destroyed = false;
+        this.controlsHiddenAt = 0;
 
         this.boundKeydown = (event) => this.handleKeyboardShortcut(event);
         this.boundFullscreenChange = () => this.onFullscreenChange();
@@ -1078,7 +1079,12 @@ class YouTubePlayer {
         this.lastMouseMove = Date.now() + 999999; // Far future so controls stay visible
     }
 
+    shouldSuppressControlsReveal() {
+        return Date.now() - this.controlsHiddenAt < 450;
+    }
+
     onMouseMove() {
+        if (this.shouldSuppressControlsReveal()) return;
         this.lastMouseMove = Date.now();
         this.showControls();
     }
@@ -1094,12 +1100,14 @@ class YouTubePlayer {
             return;
         }
 
+        if (this.shouldSuppressControlsReveal()) return;
         this.lastMouseMove = Date.now();
         this.showControls();
     }
 
     onTouchMove(e) {
-        // Show controls on touch move (swipe)
+        // Show controls on touch move (swipe), but don't immediately undo an explicit hide.
+        if (this.shouldSuppressControlsReveal()) return;
         this.lastMouseMove = Date.now();
         this.showControls();
     }
@@ -1137,6 +1145,7 @@ class YouTubePlayer {
     hideControls() {
         this.container.classList.remove('show-controls');
         this.container.classList.add('controls-hidden');
+        this.controlsHiddenAt = Date.now();
         this.elements.settingsMenu?.classList.remove('show');
         this.container.style.cursor = 'none';
     }

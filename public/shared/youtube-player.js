@@ -17,6 +17,7 @@ class YouTubePlayer {
         this.isNativeVideoFullscreen = false;
         this.destroyed = false;
         this.controlsHiddenAt = 0;
+        this.eventController = typeof AbortController !== 'undefined' ? new AbortController() : null;
 
         this.boundKeydown = (event) => this.handleKeyboardShortcut(event);
         this.boundFullscreenChange = () => this.onFullscreenChange();
@@ -41,6 +42,14 @@ class YouTubePlayer {
         // Enable auto-hide timer for better UX
         this.startControlsTimer();
         console.log('YouTube Player initialized');
+    }
+
+    addPlayerEventListener(target, type, handler, options = {}) {
+        if (!target || typeof target.addEventListener !== 'function') return;
+        const listenerOptions = this.eventController
+            ? { ...options, signal: this.eventController.signal }
+            : options;
+        target.addEventListener(type, handler, listenerOptions);
     }
 
     buildControls() {
@@ -272,124 +281,124 @@ class YouTubePlayer {
 
     attachEventListeners() {
         // Video events
-        this.video.addEventListener('loadedmetadata', () => this.onLoadedMetadata());
-        this.video.addEventListener('timeupdate', () => this.onTimeUpdate());
-        this.video.addEventListener('progress', () => this.onProgress());
-        this.video.addEventListener('waiting', () => this.showSpinner());
-        this.video.addEventListener('canplay', () => this.hideSpinner());
-        this.video.addEventListener('play', () => this.onPlay());
-        this.video.addEventListener('pause', () => this.onPause());
-        this.video.addEventListener('ended', () => this.onEnded());
-        this.video.addEventListener('volumechange', () => this.onVolumeChange());
+        this.addPlayerEventListener(this.video, 'loadedmetadata', () => this.onLoadedMetadata());
+        this.addPlayerEventListener(this.video, 'timeupdate', () => this.onTimeUpdate());
+        this.addPlayerEventListener(this.video, 'progress', () => this.onProgress());
+        this.addPlayerEventListener(this.video, 'waiting', () => this.showSpinner());
+        this.addPlayerEventListener(this.video, 'canplay', () => this.hideSpinner());
+        this.addPlayerEventListener(this.video, 'play', () => this.onPlay());
+        this.addPlayerEventListener(this.video, 'pause', () => this.onPause());
+        this.addPlayerEventListener(this.video, 'ended', () => this.onEnded());
+        this.addPlayerEventListener(this.video, 'volumechange', () => this.onVolumeChange());
         // iOS Safari native video fullscreen does not always emit document fullscreenchange.
-        this.video.addEventListener('webkitbeginfullscreen', this.boundWebkitBeginFullscreen);
-        this.video.addEventListener('webkitendfullscreen', this.boundWebkitEndFullscreen);
+        this.addPlayerEventListener(this.video, 'webkitbeginfullscreen', this.boundWebkitBeginFullscreen);
+        this.addPlayerEventListener(this.video, 'webkitendfullscreen', this.boundWebkitEndFullscreen);
 
         // Play button - use touchend to avoid conflicts on mobile
-        this.elements.playBtn.addEventListener('click', (e) => {
+        this.addPlayerEventListener(this.elements.playBtn, 'click', (e) => {
             if (!this.isTouchDevice()) {
                 this.togglePlay();
             }
         });
-        this.elements.playBtn.addEventListener('touchend', (e) => {
+        this.addPlayerEventListener(this.elements.playBtn, 'touchend', (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.togglePlay();
         });
 
-        this.elements.playPauseBtn.addEventListener('click', () => this.togglePlay());
+        this.addPlayerEventListener(this.elements.playPauseBtn, 'click', () => this.togglePlay());
 
         // Overlay click - only on desktop, mobile uses tap zones
-        this.elements.overlay.addEventListener('click', (e) => {
+        this.addPlayerEventListener(this.elements.overlay, 'click', (e) => {
             if (!this.isTouchDevice()) {
                 this.togglePlay();
             }
         });
 
         // Close controls button
-        this.elements.closeControlsBtn.addEventListener('click', (e) => {
+        this.addPlayerEventListener(this.elements.closeControlsBtn, 'click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.hideControls();
         });
         // Touch event for close button (mobile) - prevent conflicts
-        this.elements.closeControlsBtn.addEventListener('touchstart', (e) => {
+        this.addPlayerEventListener(this.elements.closeControlsBtn, 'touchstart', (e) => {
             e.stopPropagation();
         });
-        this.elements.closeControlsBtn.addEventListener('touchend', (e) => {
+        this.addPlayerEventListener(this.elements.closeControlsBtn, 'touchend', (e) => {
             e.preventDefault();
             e.stopPropagation();
             this.hideControls();
         });
 
         // Double click for fullscreen
-        this.elements.overlay.addEventListener('dblclick', () => this.toggleFullscreen());
+        this.addPlayerEventListener(this.elements.overlay, 'dblclick', () => this.toggleFullscreen());
 
         // Progress bar
-        this.elements.progressContainer.addEventListener('pointerdown', (e) => this.onProgressPointerDown(e));
-        this.elements.progressContainer.addEventListener('pointermove', (e) => this.onProgressPointerMove(e));
-        this.elements.progressContainer.addEventListener('pointerup', (e) => this.onProgressPointerUp(e));
-        this.elements.progressContainer.addEventListener('pointercancel', (e) => this.onProgressPointerUp(e));
-        this.elements.progressContainer.addEventListener('lostpointercapture', (e) => this.onProgressPointerUp(e));
-        this.elements.progressContainer.addEventListener('pointerleave', () => this.hideTimeTooltip());
+        this.addPlayerEventListener(this.elements.progressContainer, 'pointerdown', (e) => this.onProgressPointerDown(e));
+        this.addPlayerEventListener(this.elements.progressContainer, 'pointermove', (e) => this.onProgressPointerMove(e));
+        this.addPlayerEventListener(this.elements.progressContainer, 'pointerup', (e) => this.onProgressPointerUp(e));
+        this.addPlayerEventListener(this.elements.progressContainer, 'pointercancel', (e) => this.onProgressPointerUp(e));
+        this.addPlayerEventListener(this.elements.progressContainer, 'lostpointercapture', (e) => this.onProgressPointerUp(e));
+        this.addPlayerEventListener(this.elements.progressContainer, 'pointerleave', () => this.hideTimeTooltip());
 
         // Volume
-        this.elements.volumeBtn.addEventListener('click', () => this.toggleMute());
-        this.elements.volumeSlider.addEventListener('click', (e) => this.setVolume(e));
+        this.addPlayerEventListener(this.elements.volumeBtn, 'click', () => this.toggleMute());
+        this.addPlayerEventListener(this.elements.volumeSlider, 'click', (e) => this.setVolume(e));
 
         // Settings
-        this.elements.settingsBtn.addEventListener('click', () => this.toggleSettings());
-        this.elements.qualitySetting.addEventListener('click', () => this.showQualityMenu());
-        this.elements.speedSetting.addEventListener('click', () => this.showSpeedMenu());
+        this.addPlayerEventListener(this.elements.settingsBtn, 'click', () => this.toggleSettings());
+        this.addPlayerEventListener(this.elements.qualitySetting, 'click', () => this.showQualityMenu());
+        this.addPlayerEventListener(this.elements.speedSetting, 'click', () => this.showSpeedMenu());
 
         // Theater mode
-        this.elements.theaterBtn.addEventListener('click', () => this.toggleTheaterMode());
+        this.addPlayerEventListener(this.elements.theaterBtn, 'click', () => this.toggleTheaterMode());
 
         // PiP
         if (this.elements.pipBtn) {
-            this.elements.pipBtn.addEventListener('click', () => this.togglePiP());
+            this.addPlayerEventListener(this.elements.pipBtn, 'click', () => this.togglePiP());
         }
 
         // Fullscreen
-        this.elements.fullscreenBtn.addEventListener('click', () => this.toggleFullscreen());
+        this.addPlayerEventListener(this.elements.fullscreenBtn, 'click', () => this.toggleFullscreen());
 
         // Skip buttons
         if (this.elements.skipBackward) {
-            this.elements.skipBackward.addEventListener('click', () => this.skip(-10));
+            this.addPlayerEventListener(this.elements.skipBackward, 'click', () => this.skip(-10));
         }
         if (this.elements.skipForward) {
-            this.elements.skipForward.addEventListener('click', () => this.skip(10));
+            this.addPlayerEventListener(this.elements.skipForward, 'click', () => this.skip(10));
         }
 
         // Mouse move to show controls
-        this.container.addEventListener('mousemove', () => this.onMouseMove());
+        this.addPlayerEventListener(this.container, 'mousemove', () => this.onMouseMove());
 
         // Touch events for mobile to show controls
-        this.container.addEventListener('touchstart', (e) => this.onTouchStart(e));
-        this.container.addEventListener('touchmove', (e) => this.onTouchMove(e));
+        this.addPlayerEventListener(this.container, 'touchstart', (e) => this.onTouchStart(e));
+        this.addPlayerEventListener(this.container, 'touchmove', (e) => this.onTouchMove(e));
 
         // Single tap overlay to toggle controls
-        this.elements.overlay.addEventListener('touchend', (e) => this.onOverlayTap(e));
+        this.addPlayerEventListener(this.elements.overlay, 'touchend', (e) => this.onOverlayTap(e));
 
         // Mobile double tap zones
         if (this.elements.tapZoneLeft) {
-            this.elements.tapZoneLeft.addEventListener('click', (e) => this.handleDoubleTapLeft(e));
+            this.addPlayerEventListener(this.elements.tapZoneLeft, 'click', (e) => this.handleDoubleTapLeft(e));
         }
         if (this.elements.tapZoneRight) {
-            this.elements.tapZoneRight.addEventListener('click', (e) => this.handleDoubleTapRight(e));
+            this.addPlayerEventListener(this.elements.tapZoneRight, 'click', (e) => this.handleDoubleTapRight(e));
         }
 
         // Fullscreen change
-        document.addEventListener('fullscreenchange', this.boundFullscreenChange);
-        document.addEventListener('webkitfullscreenchange', this.boundFullscreenChange);
-        document.addEventListener('mozfullscreenchange', this.boundFullscreenChange);
-        document.addEventListener('msfullscreenchange', this.boundFullscreenChange);
-        document.addEventListener('fullscreenerror', this.boundFullscreenError);
-        document.addEventListener('webkitfullscreenerror', this.boundFullscreenError);
+        this.addPlayerEventListener(document, 'fullscreenchange', this.boundFullscreenChange);
+        this.addPlayerEventListener(document, 'webkitfullscreenchange', this.boundFullscreenChange);
+        this.addPlayerEventListener(document, 'mozfullscreenchange', this.boundFullscreenChange);
+        this.addPlayerEventListener(document, 'msfullscreenchange', this.boundFullscreenChange);
+        this.addPlayerEventListener(document, 'fullscreenerror', this.boundFullscreenError);
+        this.addPlayerEventListener(document, 'webkitfullscreenerror', this.boundFullscreenError);
     }
 
     setupKeyboardShortcuts() {
-        document.addEventListener('keydown', this.boundKeydown);
+        this.addPlayerEventListener(document, 'keydown', this.boundKeydown);
     }
 
     handleKeyboardShortcut(e) {
@@ -814,13 +823,13 @@ class YouTubePlayer {
                 transition: background 0.2s;
                 font-size: 14px;
             `;
-            item.addEventListener('mouseenter', () => {
+            this.addPlayerEventListener(item, 'mouseenter', () => {
                 item.style.background = 'rgba(255, 255, 255, 0.1)';
             });
-            item.addEventListener('mouseleave', () => {
+            this.addPlayerEventListener(item, 'mouseleave', () => {
                 item.style.background = '';
             });
-            item.addEventListener('click', () => {
+            this.addPlayerEventListener(item, 'click', () => {
                 onSelect(option, index);
                 overlay.remove();
                 this.elements.settingsMenu.classList.remove('show');
@@ -831,7 +840,7 @@ class YouTubePlayer {
         overlay.appendChild(menu);
 
         // Close on overlay click
-        overlay.addEventListener('click', (e) => {
+        this.addPlayerEventListener(overlay, 'click', (e) => {
             if (e.target === overlay) {
                 overlay.remove();
             }
@@ -1238,6 +1247,9 @@ class YouTubePlayer {
         clearTimeout(this.notificationTimeout);
         clearTimeout(this.tapTimeout);
 
+        this.eventController?.abort();
+
+        // Fallback cleanup for browsers without AbortController support.
         document.removeEventListener('keydown', this.boundKeydown);
         document.removeEventListener('fullscreenchange', this.boundFullscreenChange);
         document.removeEventListener('webkitfullscreenchange', this.boundFullscreenChange);

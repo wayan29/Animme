@@ -90,6 +90,8 @@ function registerPages(app) {
         'v3/ongoing': 'ongoing',
         'v3/finished': 'finished',
         'v3/movie': 'movie',
+        'v3/upcoming': 'upcoming',
+        'v3/donghua': 'donghua',
         'v3/schedule': 'schedule',
         'v3/properties': 'properties',
         'v3/studios': 'studios',

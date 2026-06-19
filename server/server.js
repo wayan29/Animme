@@ -360,6 +360,32 @@ app.get('/api/v3/kuramanime/movie', async (req, res) => {
     }
 });
 
+app.get('/api/v3/kuramanime/upcoming', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const orderBy = req.query.order_by || req.query.orderBy || 'popular';
+        console.log(`[V3] Scraping kuramanime upcoming anime (page ${page}, order: ${orderBy})`);
+        const data = await kuramanimeScraper.scrapeUpcoming(page, orderBy);
+        res.json({ status: 'success', data });
+    } catch (error) {
+        console.error('[V3] API Error /upcoming:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+app.get('/api/v3/kuramanime/donghua', async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const orderBy = req.query.order_by || req.query.orderBy || 'updated';
+        console.log(`[V3] Scraping kuramanime donghua anime (page ${page}, order: ${orderBy})`);
+        const data = await kuramanimeScraper.scrapeDonghua(page, orderBy);
+        res.json({ status: 'success', data });
+    } catch (error) {
+        console.error('[V3] API Error /donghua:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 app.get('/api/v3/kuramanime/schedule', async (req, res) => {
     try {
         const day = req.query.day || req.query.scheduled_day || 'all';

@@ -335,6 +335,150 @@ async function scrapeMovie(page = 1, orderBy = 'updated') {
     }
 }
 
+async function scrapeUpcoming(page = 1, orderBy = 'popular') {
+    try {
+        const url = `${BASE_URL}/quick/upcoming?order_by=${orderBy}&page=${page}`;
+        const data = await fetchWithPuppeteer(url);
+        const $ = cheerio.load(data);
+        const animeList = [];
+
+        $('.product__item').each((i, el) => {
+            const $el = $(el);
+            const $link = $el.find('a').first();
+            const href = $link.attr('href');
+            const title = $el.find('.product__item__text h5 a').text().trim();
+            const poster = $el.find('.product__item__pic').attr('data-setbg');
+            const episodeText = $el.find('.ep span').text().trim();
+            const isTrending = $el.find('.pin .fa-fire').length > 0;
+
+            const tags = [];
+            $el.find('.product__item__text ul a').each((j, tag) => {
+                const tagText = $(tag).text().trim();
+                const tagHref = $(tag).attr('href');
+                if (tagText && tagHref) {
+                    tags.push({ label: tagText, url: tagHref });
+                }
+            });
+
+            if (title && href) {
+                const animeId = extractAnimeId(href);
+                const slug = extractSlug(href);
+
+                animeList.push({
+                    anime_id: animeId,
+                    slug,
+                    title,
+                    poster: proxyImageUrl(poster),
+                    episode_text: episodeText,
+                    is_trending: isTrending,
+                    tags,
+                    upcoming_url: href.startsWith('http') ? href : `${BASE_URL}${href}`,
+                    anime_url: `${BASE_URL}/anime/${animeId}/${slug}`
+                });
+            }
+        });
+
+        const $pagination = $('.product__pagination');
+        let totalPages = null;
+        $pagination.find('a').each((i, el) => {
+            const pageNum = parseInt($(el).text());
+            if (!isNaN(pageNum) && (totalPages === null || pageNum > totalPages)) {
+                totalPages = pageNum;
+            }
+        });
+
+        return {
+            anime_list: animeList,
+            pagination: {
+                current_page: page,
+                has_next: totalPages ? page < totalPages : false,
+                has_prev: page > 1,
+                total_pages: totalPages
+            },
+            total_anime: animeList.length,
+            order_by: orderBy
+        };
+    } catch (error) {
+        console.error('Kuramanime scrapeUpcoming error:', error.message);
+        throw error;
+    }
+}
+
+async function scrapeDonghua(page = 1, orderBy = 'updated') {
+    try {
+        const url = `${BASE_URL}/quick/donghua?order_by=${orderBy}&page=${page}`;
+        const data = await fetchWithPuppeteer(url);
+        const $ = cheerio.load(data);
+        const animeList = [];
+
+        $('.product__item').each((i, el) => {
+            const $el = $(el);
+            const $link = $el.find('a').first();
+            const href = $link.attr('href');
+            const title = $el.find('.product__item__text h5 a').text().trim();
+            const poster = $el.find('.product__item__pic').attr('data-setbg');
+            const episodeText = $el.find('.ep span').text().trim();
+            const isTrending = $el.find('.pin .fa-fire').length > 0;
+
+            const episodeMatch = episodeText.match(/Ep\s+(\d+)\s*\/\s*(.+)/);
+            const currentEpisode = episodeMatch ? episodeMatch[1] : null;
+            const totalEpisodes = episodeMatch ? episodeMatch[2] : null;
+
+            const tags = [];
+            $el.find('.product__item__text ul a').each((j, tag) => {
+                const tagText = $(tag).text().trim();
+                const tagHref = $(tag).attr('href');
+                if (tagText && tagHref) {
+                    tags.push({ label: tagText, url: tagHref });
+                }
+            });
+
+            if (title && href) {
+                const animeId = extractAnimeId(href);
+                const slug = extractSlug(href);
+
+                animeList.push({
+                    anime_id: animeId,
+                    slug,
+                    title,
+                    poster: proxyImageUrl(poster),
+                    current_episode: currentEpisode,
+                    total_episodes: totalEpisodes,
+                    episode_text: episodeText,
+                    is_trending: isTrending,
+                    tags,
+                    latest_episode_url: href.startsWith('http') ? href : `${BASE_URL}${href}`,
+                    anime_url: `${BASE_URL}/anime/${animeId}/${slug}`
+                });
+            }
+        });
+
+        const $pagination = $('.product__pagination');
+        let totalPages = null;
+        $pagination.find('a').each((i, el) => {
+            const pageNum = parseInt($(el).text());
+            if (!isNaN(pageNum) && (totalPages === null || pageNum > totalPages)) {
+                totalPages = pageNum;
+            }
+        });
+
+        return {
+            anime_list: animeList,
+            pagination: {
+                current_page: page,
+                has_next: totalPages ? page < totalPages : false,
+                has_prev: page > 1,
+                total_pages: totalPages
+            },
+            total_anime: animeList.length,
+            order_by: orderBy
+        };
+    } catch (error) {
+        console.error('Kuramanime scrapeDonghua error:', error.message);
+        throw error;
+    }
+}
+
 async function scrapeSchedule(day = 'all') {
     try {
         const url = `${BASE_URL}/schedule?scheduled_day=${day}`;
@@ -403,5 +547,7 @@ module.exports = {
     scrapeOngoing,
     scrapeFinished,
     scrapeMovie,
+    scrapeUpcoming,
+    scrapeDonghua,
     scrapeSchedule
 };

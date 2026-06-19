@@ -27,6 +27,8 @@ module.exports = {
     scrapeOngoing: list.scrapeOngoing,
     scrapeFinished: list.scrapeFinished,
     scrapeMovie: list.scrapeMovie,
+    scrapeUpcoming: list.scrapeUpcoming,
+    scrapeDonghua: list.scrapeDonghua,
     scrapeSchedule: list.scrapeSchedule,
 
     // Search functions

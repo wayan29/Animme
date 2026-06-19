@@ -107,9 +107,22 @@
     z-index: 10;
 }
 
-.youtube-player:hover .youtube-controls,
 .youtube-player.show-controls .youtube-controls {
     opacity: 1;
+}
+
+/* Desktop hover reveal must not override explicit/timer hide, especially in fullscreen. */
+@media (hover: hover) and (pointer: fine) {
+    .youtube-player:not(.controls-hidden):hover .youtube-controls {
+        opacity: 1;
+    }
+}
+
+.youtube-player.controls-hidden .youtube-controls,
+.youtube-player.controls-hidden .youtube-close-controls,
+.youtube-player.controls-hidden .youtube-settings-menu {
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
 
 /* Close Controls Button */

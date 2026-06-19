@@ -1085,7 +1085,8 @@ class YouTubePlayer {
 
     onTouchStart(e) {
         // Don't interfere with tap zones, control buttons, or close button
-        if (e.target.closest('.youtube-tap-zone') ||
+        if (e.target.closest('.youtube-player-overlay') ||
+            e.target.closest('.youtube-tap-zone') ||
             e.target.closest('.youtube-control-btn') ||
             e.target.closest('.youtube-progress-container') ||
             e.target.closest('.youtube-close-controls') ||
@@ -1128,12 +1129,15 @@ class YouTubePlayer {
     }
 
     showControls() {
+        this.container.classList.remove('controls-hidden');
         this.container.classList.add('show-controls');
         this.container.style.cursor = '';
     }
 
     hideControls() {
         this.container.classList.remove('show-controls');
+        this.container.classList.add('controls-hidden');
+        this.elements.settingsMenu?.classList.remove('show');
         this.container.style.cursor = 'none';
     }
 

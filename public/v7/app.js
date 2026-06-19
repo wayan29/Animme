@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initializeApp() {
     try {
-        await loadHomePage(1);
+        const params = new URLSearchParams(window.location.search);
+        const page = Math.max(1, parseInt(params.get('page'), 10) || 1);
+        await loadHomePage(page);
     } catch (error) {
         console.error('[V7] Failed to initialize home:', error);
         showError('Terjadi kesalahan saat memuat data dari Nekopoi.');
@@ -51,18 +53,20 @@ async function loadHomePage(page = 1) {
         }
 
         appState.isUpstreamBlocked = false;
-        const { episodes, currentPage, hasNextPage, hasPrevPage, totalPagesFetched } = payload.data;
+        const { episodes, currentPage, totalPages, hasNextPage, hasPrevPage, totalPagesFetched } = payload.data;
 
         appState.episodes = Array.isArray(episodes) ? episodes : [];
         appState.pagination = {
             currentPage: currentPage || page,
+            totalPages: totalPages || currentPage || page,
             hasNextPage: hasNextPage || false,
             hasPrevPage: hasPrevPage || false,
-            totalPagesFetched: totalPagesFetched || 2
+            totalPagesFetched: totalPagesFetched || 1
         };
 
         renderEpisodes();
         renderPagination();
+        syncPageUrl(appState.pagination.currentPage);
     } catch (error) {
         console.error('[V7] Home API error:', error);
         const isBlocked = /SafeLine|Chaitin|anti-bot|HTTP 468/i.test(error.message || '');
@@ -147,19 +151,24 @@ function renderPagination() {
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
     const pageInfo = document.getElementById('pageInfo');
+    const pageJumpInput = document.getElementById('pageJumpInput');
 
     if (!paginationControls || !prevBtn || !nextBtn) return;
 
-    const { currentPage, hasPrevPage, hasNextPage, totalPagesFetched } = appState.pagination;
+    const { currentPage, totalPages, hasPrevPage, hasNextPage } = appState.pagination;
 
     paginationControls.style.display = 'flex';
     prevBtn.disabled = !hasPrevPage;
     nextBtn.disabled = !hasNextPage;
 
     if (pageInfo) {
-        const startPage = (currentPage - 1) * totalPagesFetched + 1;
-        const endPage = currentPage * totalPagesFetched;
-        pageInfo.textContent = `Halaman ${startPage}-${endPage}`;
+        pageInfo.textContent = `Halaman ${currentPage}${totalPages ? ` dari ${totalPages}` : ''}`;
+    }
+
+    if (pageJumpInput) {
+        pageJumpInput.value = currentPage;
+        pageJumpInput.max = totalPages || '';
+        pageJumpInput.placeholder = totalPages ? `1-${totalPages}` : '15';
     }
 }
 
@@ -184,11 +193,12 @@ function renderFallbackState() {
 function setupPaginationControls() {
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
+    const jumpForm = document.getElementById('pageJumpForm');
+    const jumpInput = document.getElementById('pageJumpInput');
 
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
             if (appState.pagination.hasPrevPage && !appState.isLoading) {
-                // Go back by 2 pages (since we fetch 2 at a time)
                 const newPage = Math.max(1, appState.page - 1);
                 loadHomePage(newPage);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -199,12 +209,31 @@ function setupPaginationControls() {
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             if (appState.pagination.hasNextPage && !appState.isLoading) {
-                // Go forward by 2 pages (since we fetch 2 at a time)
                 loadHomePage(appState.page + 1);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         });
     }
+
+    jumpForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (appState.isLoading) return;
+
+        const maxPage = appState.pagination.totalPages || 1000;
+        const requestedPage = Math.max(1, Math.min(maxPage, parseInt(jumpInput?.value, 10) || 1));
+        loadHomePage(requestedPage);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
+function syncPageUrl(page) {
+    const url = new URL(window.location);
+    if (page > 1) {
+        url.searchParams.set('page', page);
+    } else {
+        url.searchParams.delete('page');
+    }
+    window.history.replaceState({}, '', url);
 }
 
 function setupSearchHandler() {

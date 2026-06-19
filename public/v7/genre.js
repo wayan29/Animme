@@ -39,9 +39,9 @@ async function loadGenre(slug, page = 1) {
         const response = await fetch(`${API_BASE}/genre/${encodeURIComponent(slug)}?page=${page}`);
         const payload = await response.json();
         if (!response.ok || payload.status !== 'success' || !payload.data) throw new Error(payload.message || `HTTP ${response.status}`);
-        const { items, currentPage, hasNextPage, hasPrevPage, title } = payload.data;
+        const { items, currentPage, totalPages, hasNextPage, hasPrevPage, title } = payload.data;
         appState.results = Array.isArray(items) ? items : [];
-        appState.pagination = { currentPage: currentPage || page, hasNextPage: Boolean(hasNextPage), hasPrevPage: Boolean(hasPrevPage) };
+        appState.pagination = { currentPage: currentPage || page, totalPages: totalPages || currentPage || page, hasNextPage: Boolean(hasNextPage), hasPrevPage: Boolean(hasPrevPage) };
         updateHeroTitle(title || slug, appState.pagination.currentPage);
         renderResults();
         renderPagination();
@@ -114,6 +114,15 @@ function setupPaginationControls() {
     document.getElementById('nextPageBtn')?.addEventListener('click', () => {
         if (!appState.isLoading && appState.pagination.hasNextPage) { loadGenre(appState.slug, appState.pagination.currentPage + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }
     });
+    document.getElementById('pageJumpForm')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (appState.isLoading) return;
+        const maxPage = appState.pagination.totalPages || 100;
+        const input = document.getElementById('pageJumpInput');
+        const page = Math.max(1, Math.min(maxPage, parseInt(input?.value, 10) || 1));
+        loadGenre(appState.slug, page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 
 function renderPagination() {
@@ -125,7 +134,14 @@ function renderPagination() {
     controls.style.display = 'flex';
     prev.disabled = !appState.pagination.hasPrevPage;
     next.disabled = !appState.pagination.hasNextPage;
-    info.textContent = `Genre · Halaman ${appState.pagination.currentPage}`;
+    const totalPages = appState.pagination.totalPages;
+    info.textContent = `Genre · Halaman ${appState.pagination.currentPage}${totalPages ? ` dari ${totalPages}` : ''}`;
+    const jumpInput = document.getElementById('pageJumpInput');
+    if (jumpInput) {
+        jumpInput.value = appState.pagination.currentPage;
+        jumpInput.max = totalPages || '';
+        jumpInput.placeholder = totalPages ? `1-${totalPages}` : '15';
+    }
 }
 function hidePagination() { const controls = document.getElementById('paginationControls'); if (controls) controls.style.display = 'none'; }
 function setupSearchHandler() { const i=document.getElementById('searchInput'), b=document.getElementById('searchBtn'); const s=()=>{const q=i?.value?.trim(); if(q) window.location.href=`/v7/search?q=${encodeURIComponent(q)}`;}; b?.addEventListener('click',s); i?.addEventListener('keypress',e=>{if(e.key==='Enter')s();}); }

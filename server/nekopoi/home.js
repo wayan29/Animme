@@ -19,6 +19,19 @@ function pushEpisode(episodes, { title, url, poster, date = '', series = '' }) {
     });
 }
 
+function extractTotalPages($, fallbackPage = 1) {
+    let total = fallbackPage;
+    $('.page-numbers, .pagination a, .nav-links a').each((_, element) => {
+        const textPage = parseInt(cleanText($(element).text()), 10);
+        if (Number.isFinite(textPage)) total = Math.max(total, textPage);
+
+        const href = $(element).attr('href') || '';
+        const match = href.match(/\/page\/(\d+)\/?/i);
+        if (match) total = Math.max(total, parseInt(match[1], 10) || total);
+    });
+    return total;
+}
+
 // Scrape homepage - latest episodes
 async function scrapeHomepage(page = 1) {
     try {
@@ -98,7 +111,8 @@ async function scrapeHomepage(page = 1) {
         }
 
         // Pagination info
-        const hasNextPage = $('.pagination .next, .nav-links .next, a.next, .page-numbers.next').length > 0;
+        const totalPages = extractTotalPages($, page);
+        const hasNextPage = $('.pagination .next, .nav-links .next, a.next, .page-numbers.next').length > 0 || page < totalPages;
         const hasPrevPage = page > 1;
 
         return {
@@ -106,6 +120,7 @@ async function scrapeHomepage(page = 1) {
             data: {
                 episodes,
                 currentPage: page,
+                totalPages,
                 hasNextPage,
                 hasPrevPage
             }

@@ -25,6 +25,19 @@ function buildCategoryUrl(slug, page = 1) {
         : `${BASE_URL}/category/${safeSlug}/`;
 }
 
+function extractTotalPages($, fallbackPage = 1) {
+    let total = fallbackPage;
+    $('.page-numbers, .pagination a, .nav-links a').each((_, element) => {
+        const textPage = parseInt(cleanText($(element).text()), 10);
+        if (Number.isFinite(textPage)) total = Math.max(total, textPage);
+
+        const href = $(element).attr('href') || '';
+        const match = href.match(/\/page\/(\d+)\/?/i);
+        if (match) total = Math.max(total, parseInt(match[1], 10) || total);
+    });
+    return total;
+}
+
 function parseCategoryItem($, element) {
     const $item = $(element);
     const url = $item.attr('href');
@@ -95,7 +108,8 @@ async function scrapeCategory(slug, page = 1) {
         }
 
         const title = cleanText($('.nk-section-header h1').first().text() || $('h1').first().text()) || CATEGORIES[categorySlug];
-        const hasNextPage = $('.pagination .next, .nav-links .next, a.next, .page-numbers.next').length > 0;
+        const totalPages = extractTotalPages($, currentPage);
+        const hasNextPage = $('.pagination .next, .nav-links .next, a.next, .page-numbers.next').length > 0 || currentPage < totalPages;
 
         return {
             status: 'success',
@@ -106,6 +120,7 @@ async function scrapeCategory(slug, page = 1) {
                 items,
                 totalItems: items.length,
                 currentPage,
+                totalPages,
                 hasNextPage,
                 hasPrevPage: currentPage > 1
             }

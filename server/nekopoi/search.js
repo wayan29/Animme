@@ -15,6 +15,19 @@ function buildSearchUrl(query, page = 1) {
     return page > 1 ? `${BASE_URL}/search/${encoded}/page/${page}/` : `${BASE_URL}/search/${encoded}/`;
 }
 
+function extractTotalPages($, fallbackPage = 1) {
+    let total = fallbackPage;
+    $('.page-numbers, .pagination a, .nav-links a').each((_, element) => {
+        const textPage = parseInt(cleanText($(element).text()), 10);
+        if (Number.isFinite(textPage)) total = Math.max(total, textPage);
+
+        const href = $(element).attr('href') || '';
+        const match = href.match(/\/page\/(\d+)\/?/i);
+        if (match) total = Math.max(total, parseInt(match[1], 10) || total);
+    });
+    return total;
+}
+
 function pushResult(results, item) {
     if (!item.title || !item.url) return;
     results.push({
@@ -84,7 +97,8 @@ async function scrapeSearch(query, page = 1) {
             });
         }
 
-        const hasNextPage = $('.pagination .next, .nav-links .next, a.next, .page-numbers.next').length > 0;
+        const totalPages = extractTotalPages($, currentPage);
+        const hasNextPage = $('.pagination .next, .nav-links .next, a.next, .page-numbers.next').length > 0 || currentPage < totalPages;
         const hasPrevPage = currentPage > 1;
 
         return {
@@ -94,6 +108,7 @@ async function scrapeSearch(query, page = 1) {
                 results,
                 totalResults: results.length,
                 currentPage,
+                totalPages,
                 hasNextPage,
                 hasPrevPage
             }

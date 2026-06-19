@@ -58,10 +58,11 @@ async function loadCategory(slug, page = 1) {
             throw new Error(payload.message || `HTTP ${response.status}`);
         }
 
-        const { items, currentPage, hasNextPage, hasPrevPage } = payload.data;
+        const { items, currentPage, totalPages, hasNextPage, hasPrevPage } = payload.data;
         appState.results = Array.isArray(items) ? items : [];
         appState.pagination = {
             currentPage: currentPage || page,
+            totalPages: totalPages || currentPage || page,
             hasNextPage: Boolean(hasNextPage),
             hasPrevPage: Boolean(hasPrevPage)
         };
@@ -179,6 +180,16 @@ function setupPaginationControls() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
+
+    document.getElementById('pageJumpForm')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (appState.isLoading) return;
+        const maxPage = appState.pagination.totalPages || 100;
+        const input = document.getElementById('pageJumpInput');
+        const page = Math.max(1, Math.min(maxPage, parseInt(input?.value, 10) || 1));
+        loadCategory(appState.slug, page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 
 function renderPagination() {
@@ -186,13 +197,20 @@ function renderPagination() {
     const prev = document.getElementById('prevPageBtn');
     const next = document.getElementById('nextPageBtn');
     const info = document.getElementById('pageInfo');
+    const jumpInput = document.getElementById('pageJumpInput');
     if (!controls || !prev || !next || !info) return;
 
     controls.style.display = 'flex';
     prev.disabled = !appState.pagination.hasPrevPage;
     next.disabled = !appState.pagination.hasNextPage;
     const meta = CATEGORY_META[appState.slug] || CATEGORY_META.hentai;
-    info.textContent = `${meta.label} · Halaman ${appState.pagination.currentPage}`;
+    const totalPages = appState.pagination.totalPages;
+    info.textContent = `${meta.label} · Halaman ${appState.pagination.currentPage}${totalPages ? ` dari ${totalPages}` : ''}`;
+    if (jumpInput) {
+        jumpInput.value = appState.pagination.currentPage;
+        jumpInput.max = totalPages || '';
+        jumpInput.placeholder = totalPages ? `1-${totalPages}` : '15';
+    }
 }
 
 function hidePagination() {

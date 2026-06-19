@@ -14,6 +14,14 @@ class YouTubePlayer {
         this.isTheaterMode = false;
         this.controlsTimeout = null;
         this.lastMouseMove = Date.now();
+        this.isNativeVideoFullscreen = false;
+        this.destroyed = false;
+
+        this.boundKeydown = (event) => this.handleKeyboardShortcut(event);
+        this.boundFullscreenChange = () => this.onFullscreenChange();
+        this.boundFullscreenError = () => this.onFullscreenError();
+        this.boundWebkitBeginFullscreen = () => this.onNativeVideoFullscreenStart();
+        this.boundWebkitEndFullscreen = () => this.onNativeVideoFullscreenEnd();
 
         // Double tap tracking
         this.lastTapLeft = 0;
@@ -273,8 +281,8 @@ class YouTubePlayer {
         this.video.addEventListener('ended', () => this.onEnded());
         this.video.addEventListener('volumechange', () => this.onVolumeChange());
         // iOS Safari native video fullscreen does not always emit document fullscreenchange.
-        this.video.addEventListener('webkitbeginfullscreen', () => this.applyFullscreenStyles());
-        this.video.addEventListener('webkitendfullscreen', () => this.resetFullscreenStyles());
+        this.video.addEventListener('webkitbeginfullscreen', this.boundWebkitBeginFullscreen);
+        this.video.addEventListener('webkitendfullscreen', this.boundWebkitEndFullscreen);
 
         // Play button - use touchend to avoid conflicts on mobile
         this.elements.playBtn.addEventListener('click', (e) => {
@@ -317,9 +325,12 @@ class YouTubePlayer {
         this.elements.overlay.addEventListener('dblclick', () => this.toggleFullscreen());
 
         // Progress bar
-        this.elements.progressContainer.addEventListener('mousedown', (e) => this.onProgressMouseDown(e));
-        this.elements.progressContainer.addEventListener('mousemove', (e) => this.onProgressMouseMove(e));
-        this.elements.progressContainer.addEventListener('mouseleave', () => this.hideTimeTooltip());
+        this.elements.progressContainer.addEventListener('pointerdown', (e) => this.onProgressPointerDown(e));
+        this.elements.progressContainer.addEventListener('pointermove', (e) => this.onProgressPointerMove(e));
+        this.elements.progressContainer.addEventListener('pointerup', (e) => this.onProgressPointerUp(e));
+        this.elements.progressContainer.addEventListener('pointercancel', (e) => this.onProgressPointerUp(e));
+        this.elements.progressContainer.addEventListener('lostpointercapture', (e) => this.onProgressPointerUp(e));
+        this.elements.progressContainer.addEventListener('pointerleave', () => this.hideTimeTooltip());
 
         // Volume
         this.elements.volumeBtn.addEventListener('click', () => this.toggleMute());
@@ -368,73 +379,77 @@ class YouTubePlayer {
         }
 
         // Fullscreen change
-        document.addEventListener('fullscreenchange', () => this.onFullscreenChange());
-        document.addEventListener('webkitfullscreenchange', () => this.onFullscreenChange());
-        document.addEventListener('mozfullscreenchange', () => this.onFullscreenChange());
-        document.addEventListener('msfullscreenchange', () => this.onFullscreenChange());
+        document.addEventListener('fullscreenchange', this.boundFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', this.boundFullscreenChange);
+        document.addEventListener('mozfullscreenchange', this.boundFullscreenChange);
+        document.addEventListener('msfullscreenchange', this.boundFullscreenChange);
+        document.addEventListener('fullscreenerror', this.boundFullscreenError);
+        document.addEventListener('webkitfullscreenerror', this.boundFullscreenError);
     }
 
     setupKeyboardShortcuts() {
-        document.addEventListener('keydown', (e) => {
-            // Skip if typing in input
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        document.addEventListener('keydown', this.boundKeydown);
+    }
 
-            switch(e.code) {
-                case 'Space':
-                case 'KeyK':
-                    e.preventDefault();
-                    this.togglePlay();
-                    break;
-                case 'ArrowLeft':
-                case 'KeyJ':
-                    e.preventDefault();
-                    this.skip(-10);
-                    break;
-                case 'ArrowRight':
-                case 'KeyL':
-                    e.preventDefault();
-                    this.skip(10);
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    this.changeVolume(0.1);
-                    break;
-                case 'ArrowDown':
-                    e.preventDefault();
-                    this.changeVolume(-0.1);
-                    break;
-                case 'KeyM':
-                    e.preventDefault();
-                    this.toggleMute();
-                    break;
-                case 'KeyF':
-                    e.preventDefault();
-                    this.toggleFullscreen();
-                    break;
-                case 'KeyT':
-                    e.preventDefault();
-                    this.toggleTheaterMode();
-                    break;
-                case 'KeyI':
-                    e.preventDefault();
-                    if (document.pictureInPictureEnabled) this.togglePiP();
-                    break;
-                case 'Digit0':
-                case 'Digit1':
-                case 'Digit2':
-                case 'Digit3':
-                case 'Digit4':
-                case 'Digit5':
-                case 'Digit6':
-                case 'Digit7':
-                case 'Digit8':
-                case 'Digit9':
-                    e.preventDefault();
-                    const num = parseInt(e.code.replace('Digit', ''));
-                    this.seekToPercentage(num * 10);
-                    break;
-            }
-        });
+    handleKeyboardShortcut(e) {
+        if (this.destroyed) return;
+        if (e.target.closest?.('input, textarea, select, button, [contenteditable="true"]')) return;
+
+        switch(e.code) {
+            case 'Space':
+            case 'KeyK':
+                e.preventDefault();
+                this.togglePlay();
+                break;
+            case 'ArrowLeft':
+            case 'KeyJ':
+                e.preventDefault();
+                this.skip(-10);
+                break;
+            case 'ArrowRight':
+            case 'KeyL':
+                e.preventDefault();
+                this.skip(10);
+                break;
+            case 'ArrowUp':
+                e.preventDefault();
+                this.changeVolume(0.1);
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                this.changeVolume(-0.1);
+                break;
+            case 'KeyM':
+                e.preventDefault();
+                this.toggleMute();
+                break;
+            case 'KeyF':
+                e.preventDefault();
+                this.toggleFullscreen();
+                break;
+            case 'KeyT':
+                e.preventDefault();
+                this.toggleTheaterMode();
+                break;
+            case 'KeyI':
+                e.preventDefault();
+                if (document.pictureInPictureEnabled) this.togglePiP();
+                break;
+            case 'Digit0':
+            case 'Digit1':
+            case 'Digit2':
+            case 'Digit3':
+            case 'Digit4':
+            case 'Digit5':
+            case 'Digit6':
+            case 'Digit7':
+            case 'Digit8':
+            case 'Digit9':
+                e.preventDefault();
+                const num = parseInt(e.code.replace('Digit', ''));
+                this.seekToPercentage(num * 10);
+                break;
+        }
     }
 
     // Video Control Methods
@@ -496,13 +511,21 @@ class YouTubePlayer {
         this.showNotification('Video ended');
     }
 
+    hasSeekableDuration() {
+        return Number.isFinite(this.video.duration) && this.video.duration > 0;
+    }
+
     skip(seconds) {
-        this.video.currentTime += seconds;
+        if (!this.hasSeekableDuration()) return;
+        const nextTime = Math.max(0, Math.min(this.video.duration, this.video.currentTime + seconds));
+        this.video.currentTime = nextTime;
         this.showNotification(`${seconds > 0 ? '+' : ''}${seconds}s`);
     }
 
     seekToPercentage(percent) {
-        this.video.currentTime = (this.video.duration / 100) * percent;
+        if (!this.hasSeekableDuration()) return;
+        const safePercent = Math.max(0, Math.min(100, percent));
+        this.video.currentTime = (this.video.duration / 100) * safePercent;
     }
 
     // Mobile Double Tap Handlers
@@ -575,33 +598,51 @@ class YouTubePlayer {
 
     // Progress Bar
     onLoadedMetadata() {
-        this.elements.duration.textContent = this.formatTime(this.video.duration);
+        this.elements.duration.textContent = this.hasSeekableDuration() ? this.formatTime(this.video.duration) : '0:00';
     }
 
     onTimeUpdate() {
-        const percent = (this.video.currentTime / this.video.duration) * 100;
-        this.elements.progressPlayed.style.width = percent + '%';
         this.elements.currentTime.textContent = this.formatTime(this.video.currentTime);
+        if (!this.hasSeekableDuration()) {
+            this.elements.progressPlayed.style.width = '0%';
+            return;
+        }
+        const percent = Math.max(0, Math.min(100, (this.video.currentTime / this.video.duration) * 100));
+        this.elements.progressPlayed.style.width = percent + '%';
     }
 
     onProgress() {
-        if (this.video.buffered.length > 0) {
-            const buffered = (this.video.buffered.end(this.video.buffered.length - 1) / this.video.duration) * 100;
-            this.elements.progressBuffered.style.width = buffered + '%';
-        }
+        if (!this.hasSeekableDuration() || this.video.buffered.length === 0) return;
+        const buffered = Math.max(0, Math.min(100, (this.video.buffered.end(this.video.buffered.length - 1) / this.video.duration) * 100));
+        this.elements.progressBuffered.style.width = buffered + '%';
     }
 
-    onProgressMouseDown(e) {
+    onProgressPointerDown(e) {
+        if (!this.hasSeekableDuration()) return;
+        e.preventDefault();
         this.isDragging = true;
+        this.elements.progressContainer.setPointerCapture?.(e.pointerId);
         this.setProgress(e);
-        document.addEventListener('mousemove', this.onDocumentMouseMove);
-        document.addEventListener('mouseup', this.onDocumentMouseUp);
+    }
+
+    onProgressPointerMove(e) {
+        if (this.isDragging) {
+            e.preventDefault();
+            this.setProgress(e);
+            return;
+        }
+        this.onProgressHover(e);
+    }
+
+    onProgressPointerUp(e) {
+        if (!this.isDragging) return;
+        this.isDragging = false;
+        this.elements.progressContainer.releasePointerCapture?.(e.pointerId);
+        this.hideTimeTooltip();
     }
 
     onDocumentMouseMove = (e) => {
-        if (this.isDragging) {
-            this.setProgress(e);
-        }
+        if (this.isDragging) this.setProgress(e);
     }
 
     onDocumentMouseUp = () => {
@@ -611,14 +652,18 @@ class YouTubePlayer {
     }
 
     setProgress(e) {
+        if (!this.hasSeekableDuration()) return;
         const rect = this.elements.progressContainer.getBoundingClientRect();
+        if (!rect.width) return;
         const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
         this.video.currentTime = (this.video.duration / 100) * percent;
     }
 
-    onProgressMouseMove(e) {
+    onProgressHover(e) {
+        if (!this.hasSeekableDuration()) return;
         const rect = this.elements.progressContainer.getBoundingClientRect();
-        const percent = ((e.clientX - rect.left) / rect.width) * 100;
+        if (!rect.width) return;
+        const percent = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
         const time = (this.video.duration / 100) * percent;
 
         this.elements.timeTooltip.textContent = this.formatTime(time);
@@ -839,6 +884,7 @@ class YouTubePlayer {
 
     isFullscreen() {
         return !!(
+            this.isNativeVideoFullscreen ||
             document.fullscreenElement ||
             document.webkitFullscreenElement ||
             document.mozFullScreenElement ||
@@ -848,34 +894,38 @@ class YouTubePlayer {
 
     enterFullscreen() {
         const element = this.container;
-
-        this.applyFullscreenStyles();
-
         let fullscreenRequest = null;
-        if (element.requestFullscreen) {
-            fullscreenRequest = element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-            fullscreenRequest = element.webkitRequestFullscreen();
-        } else if (this.video.webkitEnterFullscreen) {
-            // iOS Safari fallback uses the native video fullscreen API.
-            this.video.webkitEnterFullscreen();
-        } else if (element.mozRequestFullScreen) {
-            fullscreenRequest = element.mozRequestFullScreen();
-        } else if (element.msRequestFullscreen) {
-            fullscreenRequest = element.msRequestFullscreen();
+
+        try {
+            // iOS Safari fallback uses native video fullscreen. Let webkitbeginfullscreen
+            // apply styles when native fullscreen really starts.
+            if (this.video.webkitEnterFullscreen && !element.requestFullscreen && !element.webkitRequestFullscreen) {
+                this.video.webkitEnterFullscreen();
+                return;
+            }
+
+            if (element.requestFullscreen) {
+                fullscreenRequest = element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+                fullscreenRequest = element.webkitRequestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                fullscreenRequest = element.mozRequestFullScreen();
+            } else if (element.msRequestFullscreen) {
+                fullscreenRequest = element.msRequestFullscreen();
+            } else {
+                this.showNotification('Fullscreen not supported');
+                return;
+            }
+        } catch (error) {
+            console.warn('Fullscreen request failed:', error);
+            this.onFullscreenError();
+            return;
         }
 
         if (fullscreenRequest && typeof fullscreenRequest.catch === 'function') {
             fullscreenRequest.catch(error => {
                 console.warn('Fullscreen request failed:', error);
-                this.resetFullscreenStyles();
-            });
-        }
-
-        // Lock orientation to landscape on mobile
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(err => {
-                console.log('Orientation lock not supported:', err);
+                this.onFullscreenError();
             });
         }
     }
@@ -885,9 +935,9 @@ class YouTubePlayer {
         this.video.style.objectFit = 'contain';
         this.video.style.objectPosition = 'center';
         this.video.style.width = '100vw';
-        this.video.style.height = '100vh';
+        this.video.style.height = '100dvh';
         this.video.style.maxWidth = '100vw';
-        this.video.style.maxHeight = '100vh';
+        this.video.style.maxHeight = '100dvh';
         this.video.style.position = 'absolute';
         this.video.style.top = '0';
         this.video.style.left = '0';
@@ -897,7 +947,7 @@ class YouTubePlayer {
 
         // Also fix container while fullscreen is active.
         this.container.style.paddingBottom = '0';
-        this.container.style.height = '100vh';
+        this.container.style.height = '100dvh';
         this.container.style.width = '100vw';
     }
 
@@ -948,22 +998,64 @@ class YouTubePlayer {
             this.resetFullscreenStyles();
         }
 
-        // Unlock orientation
-        if (screen.orientation && screen.orientation.unlock) {
-            screen.orientation.unlock();
+        this.unlockOrientation();
+    }
+
+    lockOrientation() {
+        if (screen.orientation && typeof screen.orientation.lock === 'function') {
+            screen.orientation.lock('landscape').catch(err => {
+                console.log('Orientation lock not supported:', err);
+            });
         }
+    }
+
+    unlockOrientation() {
+        if (screen.orientation && typeof screen.orientation.unlock === 'function') {
+            try {
+                screen.orientation.unlock();
+            } catch (error) {
+                console.log('Orientation unlock not supported:', error);
+            }
+        }
+    }
+
+    syncFullscreenUI(isFullscreen) {
+        this.elements.fullscreenEnter.style.display = isFullscreen ? 'none' : '';
+        this.elements.fullscreenExit.style.display = isFullscreen ? '' : 'none';
+    }
+
+    onNativeVideoFullscreenStart() {
+        this.isNativeVideoFullscreen = true;
+        this.applyFullscreenStyles();
+        this.syncFullscreenUI(true);
+        this.lockOrientation();
+    }
+
+    onNativeVideoFullscreenEnd() {
+        this.isNativeVideoFullscreen = false;
+        this.resetFullscreenStyles();
+        this.syncFullscreenUI(false);
+        this.unlockOrientation();
+    }
+
+    onFullscreenError() {
+        this.isNativeVideoFullscreen = false;
+        this.resetFullscreenStyles();
+        this.syncFullscreenUI(false);
+        this.unlockOrientation();
     }
 
     onFullscreenChange() {
         if (this.isFullscreen()) {
             this.applyFullscreenStyles();
-            this.elements.fullscreenEnter.style.display = 'none';
-            this.elements.fullscreenExit.style.display = '';
+            this.syncFullscreenUI(true);
+            this.lockOrientation();
             this.showNotification('Fullscreen ON');
         } else {
+            this.isNativeVideoFullscreen = false;
             this.resetFullscreenStyles();
-            this.elements.fullscreenEnter.style.display = '';
-            this.elements.fullscreenExit.style.display = 'none';
+            this.syncFullscreenUI(false);
+            this.unlockOrientation();
             this.showNotification('Fullscreen OFF');
         }
     }
@@ -1128,9 +1220,26 @@ class YouTubePlayer {
     }
 
     destroy() {
+        this.destroyed = true;
         clearInterval(this.controlsInterval);
         clearTimeout(this.notificationTimeout);
-        // Remove all event listeners
+        clearTimeout(this.tapTimeout);
+
+        document.removeEventListener('keydown', this.boundKeydown);
+        document.removeEventListener('fullscreenchange', this.boundFullscreenChange);
+        document.removeEventListener('webkitfullscreenchange', this.boundFullscreenChange);
+        document.removeEventListener('mozfullscreenchange', this.boundFullscreenChange);
+        document.removeEventListener('msfullscreenchange', this.boundFullscreenChange);
+        document.removeEventListener('fullscreenerror', this.boundFullscreenError);
+        document.removeEventListener('webkitfullscreenerror', this.boundFullscreenError);
+        document.removeEventListener('mousemove', this.onDocumentMouseMove);
+        document.removeEventListener('mouseup', this.onDocumentMouseUp);
+
+        this.video.removeEventListener('webkitbeginfullscreen', this.boundWebkitBeginFullscreen);
+        this.video.removeEventListener('webkitendfullscreen', this.boundWebkitEndFullscreen);
+
+        this.resetFullscreenStyles();
+        this.unlockOrientation();
         console.log('YouTube Player destroyed');
     }
 }

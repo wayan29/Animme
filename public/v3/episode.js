@@ -654,14 +654,22 @@ async function cleanupAllHLSSessions() {
     console.log('All HLS sessions cleaned up');
 }
 
+function destroyCurrentYouTubePlayer() {
+    if (youtubePlayer) {
+        youtubePlayer.destroy();
+        youtubePlayer = null;
+    }
+}
+
+function clearPlayerContainer(container) {
+    destroyCurrentYouTubePlayer();
+    container.innerHTML = '';
+}
+
 // Initialize YouTube Player
 function initializeYouTubePlayer(videoElement, containerElement) {
     try {
-        // Destroy existing player
-        if (youtubePlayer) {
-            youtubePlayer.destroy();
-            youtubePlayer = null;
-        }
+        destroyCurrentYouTubePlayer();
 
         // Check if YouTubePlayer class is available
         if (typeof YouTubePlayer === 'undefined') {
@@ -883,7 +891,7 @@ function loadVideoWithHLS(url, startTime = 0) {
     cleanupHLS();
 
     // Clear container completely (removes conversion loading)
-    container.innerHTML = '';
+    clearPlayerContainer(container);
 
     // Create video element
     const video = document.createElement('video');
@@ -1090,7 +1098,7 @@ function loadVideo(sources, startTime = 0) {
     const skipFeedback = container.querySelector('.skip-feedback');
 
     // Clear container
-    container.innerHTML = '';
+    clearPlayerContainer(container);
 
     // Create video element
     const video = document.createElement('video');
@@ -1219,7 +1227,7 @@ function loadIframe(url) {
     const skipControls = container.querySelector('.video-skip-controls');
     const skipFeedback = container.querySelector('.skip-feedback');
 
-    container.innerHTML = '';
+    clearPlayerContainer(container);
 
     // Create iframe
     const iframe = document.createElement('iframe');
@@ -1290,7 +1298,7 @@ function hideLoading() {
 // Show error message
 function showError(message) {
     const container = document.getElementById('videoContainer');
-    container.innerHTML = '';
+    clearPlayerContainer(container);
 
     const wrapper = document.createElement('div');
     wrapper.className = 'error-message';
@@ -1309,7 +1317,7 @@ function showError(message) {
 // Render episode list
 function renderEpisodeList() {
     const container = document.getElementById('episodeList');
-    container.innerHTML = '';
+    clearPlayerContainer(container);
 
     if (!episodeData.episode_list || episodeData.episode_list.length === 0) {
         container.innerHTML = '<div class="loading-message">No episodes available</div>';
@@ -1350,7 +1358,7 @@ function navigateToEpisode(url) {
 // Render download links
 function renderDownloadLinks() {
     const container = document.getElementById('downloadContainer');
-    container.innerHTML = '';
+    clearPlayerContainer(container);
 
     if (!episodeData.download_links || episodeData.download_links.length === 0) {
         container.innerHTML = '<div class="loading-message">No download links available</div>';
@@ -1581,62 +1589,21 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // Keyboard shortcuts
+// Playback shortcuts are handled by the custom YouTubePlayer. Keep only explicit
+// episode navigation shortcuts here to avoid double play/pause/seek handling.
 document.addEventListener('keydown', (e) => {
-    // Prevent shortcuts when typing in input fields
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+    if (e.target.closest?.('input, textarea, select, button, [contenteditable="true"]')) {
         return;
     }
 
-    const video = document.querySelector('#videoContainer video');
-
-    // Space = play/pause
-    if (e.code === 'Space') {
+    if (e.shiftKey && e.code === 'ArrowLeft' && episodeData?.navigation.prev_episode) {
         e.preventDefault();
-        if (video) {
-            if (video.paused) {
-                video.play();
-            } else {
-                video.pause();
-            }
-        }
+        window.location.href = convertToPlayerUrl(episodeData.navigation.prev_episode);
     }
 
-    // Desktop: Arrow keys for skip 10 seconds (if enabled in settings)
-    // Mobile: Arrow keys for previous/next episode
-    if (isDesktop()) {
-
-
-        // Desktop: Shift + Arrow for previous/next episode
-        if (e.shiftKey && e.code === 'ArrowLeft' && episodeData?.navigation.prev_episode) {
-            e.preventDefault();
-            window.location.href = convertToPlayerUrl(episodeData.navigation.prev_episode);
-        }
-
-        if (e.shiftKey && e.code === 'ArrowRight' && episodeData?.navigation.next_episode) {
-            e.preventDefault();
-            window.location.href = convertToPlayerUrl(episodeData.navigation.next_episode);
-        }
-    } else {
-        // Mobile: Arrow keys for episode navigation (original behavior)
-        if (e.code === 'ArrowLeft' && episodeData?.navigation.prev_episode) {
-            window.location.href = convertToPlayerUrl(episodeData.navigation.prev_episode);
-        }
-
-        if (e.code === 'ArrowRight' && episodeData?.navigation.next_episode) {
-            window.location.href = convertToPlayerUrl(episodeData.navigation.next_episode);
-        }
-    }
-
-
-
-    // K = play/pause (YouTube style)
-    if (e.code === 'KeyK' && video) {
+    if (e.shiftKey && e.code === 'ArrowRight' && episodeData?.navigation.next_episode) {
         e.preventDefault();
-        if (video.paused) {
-            video.play();
-        } else {
-            video.pause();
-        }
+        window.location.href = convertToPlayerUrl(episodeData.navigation.next_episode);
     }
 });
 

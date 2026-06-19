@@ -219,8 +219,10 @@ function renderAnimeList() {
 
                     const grid = document.createElement('div');
                     grid.className = 'anime-grid';
-                    letterData.anime.forEach(anime => grid.appendChild(createAnimeCard(anime)));
                     panel.appendChild(grid);
+
+                    section._animeData = letterData.anime;
+                    section._rendered = false;
 
                     section.appendChild(title);
                     section.appendChild(panel);
@@ -258,6 +260,20 @@ function renderAnimeList() {
 function toggleSection(section, titleBtn) {
     const collapsed = section.classList.toggle('collapsed');
     titleBtn.setAttribute('aria-expanded', String(!collapsed));
+
+    if (!collapsed) {
+        renderSectionCards(section);
+    }
+}
+
+function renderSectionCards(section) {
+    if (!section || section._rendered) return;
+    const grid = section.querySelector('.anime-grid');
+    const animeList = Array.isArray(section._animeData) ? section._animeData : [];
+    if (!grid) return;
+
+    animeList.forEach(anime => grid.appendChild(createAnimeCard(anime)));
+    section._rendered = true;
 }
 
 function setAllSectionsCollapsed(collapsed) {
@@ -265,6 +281,7 @@ function setAllSectionsCollapsed(collapsed) {
         section.classList.toggle('collapsed', collapsed);
         const titleBtn = section.querySelector('.letter-section-title');
         if (titleBtn) titleBtn.setAttribute('aria-expanded', String(!collapsed));
+        if (!collapsed) renderSectionCards(section);
     });
 }
 

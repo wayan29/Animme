@@ -192,6 +192,25 @@
             cursor: not-allowed;
         }
 
+        .page-jump-form {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 232, 232, 0.78);
+            font-weight: 700;
+        }
+
+        .page-jump-input {
+            width: 92px;
+            border: 1px solid rgba(231, 76, 60, 0.35);
+            border-radius: 999px;
+            background: rgba(26, 10, 15, 0.92);
+            color: #ffe8e8;
+            padding: 10px 12px;
+            text-align: center;
+            font-weight: 800;
+        }
+
         @media (max-width: 768px) {
             .home-layout .main-content {
                 padding: 0 14px 60px;
@@ -297,6 +316,11 @@
                 <div class="pagination" id="paginationControls" style="display:none;">
                     <button id="prevPageBtn">← Sebelumnya</button>
                     <span id="pageInfo" style="color:#ffe8e8;font-weight:800;"></span>
+                    <form class="page-jump-form" id="pageJumpForm">
+                        <label for="pageJumpInput">Ke halaman</label>
+                        <input class="page-jump-input" id="pageJumpInput" type="number" min="1" inputmode="numeric" placeholder="15">
+                        <button type="submit">Go</button>
+                    </form>
                     <button id="nextPageBtn">Selanjutnya →</button>
                 </div>
             </main>

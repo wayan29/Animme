@@ -51,10 +51,11 @@ async function loadSearch(query, page = 1) {
             throw new Error(payload.message || `HTTP ${response.status}`);
         }
 
-        const { results, currentPage, hasNextPage, hasPrevPage } = payload.data;
+        const { results, currentPage, totalPages, hasNextPage, hasPrevPage } = payload.data;
         appState.results = Array.isArray(results) ? results : [];
         appState.pagination = {
             currentPage: currentPage || page,
+            totalPages: totalPages || currentPage || page,
             hasNextPage: Boolean(hasNextPage),
             hasPrevPage: Boolean(hasPrevPage)
         };
@@ -176,6 +177,16 @@ function setupPaginationControls() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     });
+
+    document.getElementById('pageJumpForm')?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (appState.isLoading) return;
+        const maxPage = appState.pagination.totalPages || 1000;
+        const input = document.getElementById('pageJumpInput');
+        const page = Math.max(1, Math.min(maxPage, parseInt(input?.value, 10) || 1));
+        loadSearch(appState.query, page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 
 function renderPagination() {
@@ -183,12 +194,21 @@ function renderPagination() {
     const prev = document.getElementById('prevPageBtn');
     const next = document.getElementById('nextPageBtn');
     const info = document.getElementById('pageInfo');
+    const jumpInput = document.getElementById('pageJumpInput');
     if (!controls || !prev || !next || !info) return;
+
+    const { currentPage, totalPages } = appState.pagination;
 
     controls.style.display = 'flex';
     prev.disabled = !appState.pagination.hasPrevPage;
     next.disabled = !appState.pagination.hasNextPage;
-    info.textContent = `Halaman ${appState.pagination.currentPage}`;
+    info.textContent = `Halaman ${currentPage}${totalPages ? ` dari ${totalPages}` : ''}`;
+
+    if (jumpInput) {
+        jumpInput.value = currentPage;
+        jumpInput.max = totalPages || '';
+        jumpInput.placeholder = totalPages ? `1-${totalPages}` : '15';
+    }
 }
 
 function hidePagination() {

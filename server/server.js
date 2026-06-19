@@ -82,6 +82,11 @@ const v8KusonimeAnimeListCache = createKeyedStaleCache({
     staleMs: Number(process.env.KUSONIME_ANIME_LIST_CACHE_STALE_MS) || 60 * 60 * 1000,
     maxEntries: Number(process.env.KUSONIME_ANIME_LIST_CACHE_MAX_ENTRIES) || 300
 });
+const v7NekopoiCache = createKeyedStaleCache({
+    freshMs: Number(process.env.NEKOPOI_CACHE_FRESH_MS) || 10 * 60 * 1000,
+    staleMs: Number(process.env.NEKOPOI_CACHE_STALE_MS) || 60 * 60 * 1000,
+    maxEntries: Number(process.env.NEKOPOI_CACHE_MAX_ENTRIES) || 300
+});
 
 const apiRateLimiter = rateLimit({
     windowMs: 60 * 1000,
@@ -201,6 +206,13 @@ async function sendCachedJson(res, cache, key, loader) {
     const { value, cache: cacheStatus } = await cache.get(key, loader);
     res.set('X-Cache', cacheStatus);
     res.json(value);
+}
+
+async function sendCachedV7Json(res, key, loader) {
+    const { value, cache: cacheStatus } = await v7NekopoiCache.get(key, loader);
+    res.set('X-Cache', cacheStatus);
+    const statusCode = value?.status === 'success' ? 200 : 502;
+    res.status(statusCode).json(value);
 }
 
 app.get('/api/v3/kuramanime/home', async (req, res) => {
@@ -1122,10 +1134,10 @@ app.get('/api/v7/nekopoi/home', async (req, res) => {
     try {
         const rawPage = parseInt(req.query.page, 10) || 1;
         const page = Math.min(1000, Math.max(1, rawPage));
-        console.log(`[V7] Nekopoi API - Home request page ${page}`);
-        const data = await nekopoiScraper.scrapeHomepage(page);
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, `home:${page}`, async () => {
+            console.log(`[V7] Nekopoi API - Home request page ${page}`);
+            return nekopoiScraper.scrapeHomepage(page);
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Home error:', error.message);
         res.status(500).json({
@@ -1154,10 +1166,10 @@ app.get('/api/v7/nekopoi/random', async (req, res) => {
 
 app.get('/api/v7/nekopoi/schedule', async (req, res) => {
     try {
-        console.log('[V7] Nekopoi API - Schedule request');
-        const data = await nekopoiScraper.scrapeSchedule();
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, 'schedule', async () => {
+            console.log('[V7] Nekopoi API - Schedule request');
+            return nekopoiScraper.scrapeSchedule();
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Schedule error:', error.message);
         res.status(500).json({
@@ -1183,10 +1195,10 @@ app.get('/api/v7/nekopoi/category/:slug', async (req, res) => {
             });
         }
 
-        console.log(`[V7] Nekopoi API - Category request: ${slug} page ${page}`);
-        const data = await nekopoiScraper.scrapeCategory(slug, page);
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, `category:${slug}:${page}`, async () => {
+            console.log(`[V7] Nekopoi API - Category request: ${slug} page ${page}`);
+            return nekopoiScraper.scrapeCategory(slug, page);
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Category error:', error.message);
         res.status(500).json({
@@ -1208,10 +1220,10 @@ app.get('/api/v7/nekopoi/detail/:slug(*)', async (req, res) => {
             });
         }
 
-        console.log(`[V7] Nekopoi API - Detail request: ${slug}`);
-        const data = await nekopoiScraper.scrapeAnimeDetail(slug);
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, `detail:${slug}`, async () => {
+            console.log(`[V7] Nekopoi API - Detail request: ${slug}`);
+            return nekopoiScraper.scrapeAnimeDetail(slug);
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Detail error:', error.message);
         res.status(500).json({
@@ -1265,10 +1277,11 @@ app.get('/api/v7/nekopoi/search', async (req, res) => {
             });
         }
 
-        console.log(`[V7] Nekopoi API - Search request: ${query} page ${page}`);
-        const data = await nekopoiScraper.scrapeSearch(query, page);
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        const normalizedQuery = query.toLowerCase();
+        await sendCachedV7Json(res, `search:${normalizedQuery}:${page}`, async () => {
+            console.log(`[V7] Nekopoi API - Search request: ${query} page ${page}`);
+            return nekopoiScraper.scrapeSearch(query, page);
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Search error:', error.message);
         res.status(500).json({
@@ -1290,12 +1303,12 @@ app.get('/api/v7/nekopoi/hentai-list', async (req, res) => {
             });
         }
 
-        console.log(`[V7] Nekopoi API - Hentai list request${letter ? ` letter ${letter}` : ''}`);
-        const data = letter
-            ? await nekopoiScraper.scrapeHentaiListByLetter(letter)
-            : await nekopoiScraper.scrapeHentaiList();
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, `hentai-list:${letter || 'all'}`, async () => {
+            console.log(`[V7] Nekopoi API - Hentai list request${letter ? ` letter ${letter}` : ''}`);
+            return letter
+                ? nekopoiScraper.scrapeHentaiListByLetter(letter)
+                : nekopoiScraper.scrapeHentaiList();
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Hentai list error:', error.message);
         res.status(500).json({
@@ -1317,12 +1330,12 @@ app.get('/api/v7/nekopoi/jav-list', async (req, res) => {
             });
         }
 
-        console.log(`[V7] Nekopoi API - JAV list request${letter ? ` letter ${letter}` : ''}`);
-        const data = letter
-            ? await nekopoiScraper.scrapeJavListByLetter(letter)
-            : await nekopoiScraper.scrapeJavList();
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, `jav-list:${letter || 'all'}`, async () => {
+            console.log(`[V7] Nekopoi API - JAV list request${letter ? ` letter ${letter}` : ''}`);
+            return letter
+                ? nekopoiScraper.scrapeJavListByLetter(letter)
+                : nekopoiScraper.scrapeJavList();
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - JAV list error:', error.message);
         res.status(500).json({
@@ -1335,10 +1348,10 @@ app.get('/api/v7/nekopoi/jav-list', async (req, res) => {
 
 app.get('/api/v7/nekopoi/genres', async (req, res) => {
     try {
-        console.log('[V7] Nekopoi API - Genre list request');
-        const data = await nekopoiScraper.scrapeGenreList();
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, 'genres', async () => {
+            console.log('[V7] Nekopoi API - Genre list request');
+            return nekopoiScraper.scrapeGenreList();
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Genre list error:', error.message);
         res.status(500).json({
@@ -1363,10 +1376,10 @@ app.get('/api/v7/nekopoi/genre/:slug', async (req, res) => {
             });
         }
 
-        console.log(`[V7] Nekopoi API - Genre request: ${slug} page ${page}`);
-        const data = await nekopoiScraper.scrapeGenre(slug, page);
-        const statusCode = data.status === 'success' ? 200 : 502;
-        res.status(statusCode).json(data);
+        await sendCachedV7Json(res, `genre:${slug}:${page}`, async () => {
+            console.log(`[V7] Nekopoi API - Genre request: ${slug} page ${page}`);
+            return nekopoiScraper.scrapeGenre(slug, page);
+        });
     } catch (error) {
         console.error('[V7] Nekopoi API - Genre error:', error.message);
         res.status(500).json({

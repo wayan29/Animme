@@ -818,11 +818,9 @@
                         }).join('')}
                     </div>
                 </div>
-                <div class="episode-section"><h2>📺 Daftar Episode (${episodes.length})</h2>
-                    ${episodes.length > 0 ? `<div class="episode-list">
-                        ${episodes.map(episode => {
-                            const epNum = extractEpisodeNum(episode);
-                            const epTitle = String(episode?.title || `Episode ${epNum}`);
+                <div class="episode-section"><h2>📺 Daftar Episode (${episodeItems.length})</h2>
+                    ${episodeItems.length > 0 ? `<div class="episode-list">
+                        ${episodeItems.map(({ epNum, epTitle }) => {
                             return `<a href="/v3/episode?animeId=${animeIdParam}&slug=${slugParam}&episode=${enc(epNum)}" class="episode-btn" title="${escapeAttribute(epTitle)}">${escapeHtml(epTitle)}</a>`;
                         }).join('')}
                     </div>` : '<p class="empty-state">Episode belum tersedia.</p>'}

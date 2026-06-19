@@ -33,6 +33,97 @@ function sortEpisodesByNumber(episodes = []) {
     });
 }
 
+function addEpisodesFromPopover($popover, episodes, episodeNumbers) {
+    let added = 0;
+
+    $popover('a[href*="/episode/"]').each((i, el) => {
+        const $el = $popover(el);
+        const episodeHref = $el.attr('href');
+        const episodeTitle = $el.text().trim();
+        const epNum = extractEpisodeNumber(episodeHref, episodeTitle);
+
+        if (episodeHref && episodeTitle && epNum && !episodeNumbers.has(epNum)) {
+            episodeNumbers.add(epNum);
+            episodes.push(createEpisodeItem(episodeHref, episodeTitle));
+            added++;
+        }
+    });
+
+    return added;
+}
+
+function getEpisodePageNumber(url) {
+    try {
+        const parsed = new URL(url, BASE_URL);
+        const page = Number.parseInt(parsed.searchParams.get('page') || '1', 10);
+        return Number.isFinite(page) ? page : 1;
+    } catch (error) {
+        return 1;
+    }
+}
+
+function getNextEpisodePageUrl($popover, currentPage, visitedPages) {
+    const candidates = $popover('.page__link__episode')
+        .map((i, el) => $popover(el).attr('href'))
+        .get()
+        .filter(Boolean)
+        .map(href => {
+            const absoluteUrl = href.startsWith('http') ? href : `${BASE_URL}${href}`;
+            return {
+                url: absoluteUrl,
+                page: getEpisodePageNumber(absoluteUrl)
+            };
+        })
+        .filter(candidate => candidate.page > currentPage && !visitedPages.has(candidate.page))
+        .sort((a, b) => a.page - b.page);
+
+    return candidates.length > 0 ? candidates[0] : null;
+}
+
+async function scrapeEpisodesFromDetailHtml(detailHtml) {
+    const $ = cheerio.load(detailHtml);
+    const episodes = [];
+    const episodeNumbers = new Set();
+    const visitedPages = new Set([1]);
+
+    const popoverContent = $('#episodeLists').attr('data-content');
+    if (!popoverContent) {
+        return episodes;
+    }
+
+    let currentPage = 1;
+    let $popover = cheerio.load(popoverContent);
+    addEpisodesFromPopover($popover, episodes, episodeNumbers);
+
+    let nextCandidate = getNextEpisodePageUrl($popover, currentPage, visitedPages);
+    while (nextCandidate && visitedPages.size < maxDetailEpisodePages) {
+        try {
+            console.log(`[Detail] Fetching episode page ${nextCandidate.page}: ${nextCandidate.url}`);
+            visitedPages.add(nextCandidate.page);
+            const pageData = await fetchWithPuppeteer(nextCandidate.url);
+            const $page = cheerio.load(pageData);
+            const pagePopoverContent = $page('#episodeLists').attr('data-content');
+
+            if (!pagePopoverContent) break;
+
+            currentPage = nextCandidate.page;
+            $popover = cheerio.load(pagePopoverContent);
+            const added = addEpisodesFromPopover($popover, episodes, episodeNumbers);
+            console.log(`[Detail] Added ${added} episodes from page ${currentPage}, total: ${episodes.length}`);
+            nextCandidate = getNextEpisodePageUrl($popover, currentPage, visitedPages);
+        } catch (pageError) {
+            console.warn(`[Detail] Error fetching episode page ${nextCandidate.page}:`, pageError.message);
+            break;
+        }
+    }
+
+    if (nextCandidate && visitedPages.size >= maxDetailEpisodePages) {
+        console.log(`[Detail] Reached max episode pages limit: ${maxDetailEpisodePages}`);
+    }
+
+    return sortEpisodesByNumber(episodes);
+}
+
 async function scrapeHome() {
     try {
         const data = await fetchWithPuppeteer(BASE_URL, { waitForSelector: '.product__item, #sliderSection' });
@@ -258,101 +349,7 @@ async function scrapeDetail(animeId, slug) {
         });
 
         // Episodes dari popover dengan pagination support
-        const $episodeBtn = $('#episodeLists');
-        if ($episodeBtn.length > 0) {
-            const popoverContent = $episodeBtn.attr('data-content');
-            if (popoverContent) {
-                // Scrape episodes from first page popover
-                const $popover = cheerio.load(popoverContent);
-
-                // Track episode numbers to avoid duplicates
-                const episodeNumbers = new Set();
-
-                $popover('a[href*="/episode/"]').each((i, el) => {
-                    const $el = $popover(el);
-                    const episodeHref = $el.attr('href');
-                    const episodeTitle = $el.text().trim();
-
-                    if (episodeHref && episodeTitle) {
-                        // Extract episode number for deduplication
-                        const epMatch = episodeHref.match(/\/episode\/(\d+)/);
-                        const epNum = epMatch ? epMatch[1] : null;
-
-                        if (epNum && !episodeNumbers.has(epNum)) {
-                            episodeNumbers.add(epNum);
-                            result.episodes.push(createEpisodeItem(episodeHref, episodeTitle));
-                        }
-                    }
-                });
-
-                // Check for pagination in popover
-                const nextPageLink = $popover('.page__link__episode').attr('href');
-                if (nextPageLink) {
-                    console.log(`[Detail] Found episode pagination, fetching additional pages...`);
-
-                    let currentPage = 2;
-                    let hasMorePages = true;
-                    let currentUrl = nextPageLink.startsWith('http') ? nextPageLink : `${BASE_URL}${nextPageLink}`;
-
-                    while (hasMorePages && currentPage <= maxDetailEpisodePages) {
-                        try {
-                            console.log(`[Detail] Fetching page ${currentPage}: ${currentUrl}`);
-                            const pageData = await fetchWithPuppeteer(currentUrl);
-
-                            const $page = cheerio.load(pageData);
-                            const $pageEpisodeBtn = $page('#episodeLists');
-
-                            if ($pageEpisodeBtn.length > 0) {
-                                const pagePopoverContent = $pageEpisodeBtn.attr('data-content');
-                                if (pagePopoverContent) {
-                                    const $pagePopover = cheerio.load(pagePopoverContent);
-                                    let episodesOnPage = 0;
-
-                                    $pagePopover('a[href*="/episode/"]').each((i, el) => {
-                                        const $el = $pagePopover(el);
-                                        const episodeHref = $el.attr('href');
-                                        const episodeTitle = $el.text().trim();
-
-                                        if (episodeHref && episodeTitle) {
-                                            const epMatch = episodeHref.match(/\/episode\/(\d+)/);
-                                            const epNum = epMatch ? epMatch[1] : null;
-
-                                            if (epNum && !episodeNumbers.has(epNum)) {
-                                                episodeNumbers.add(epNum);
-                                                result.episodes.push(createEpisodeItem(episodeHref, episodeTitle));
-                                                episodesOnPage++;
-                                            }
-                                        }
-                                    });
-
-                                    console.log(`[Detail] Found ${episodesOnPage} episodes on page ${currentPage}, total: ${result.episodes.length}`);
-
-                                    // Check for next page
-                                    const nextLink = $pagePopover('.page__link__episode').attr('href');
-                                    if (nextLink && episodesOnPage > 0) {
-                                        currentUrl = nextLink.startsWith('http') ? nextLink : `${BASE_URL}${nextLink}`;
-                                        currentPage++;
-                                    } else {
-                                        hasMorePages = false;
-                                    }
-                                } else {
-                                    hasMorePages = false;
-                                }
-                            } else {
-                                hasMorePages = false;
-                            }
-                        } catch (pageError) {
-                            console.warn(`[Detail] Error fetching page ${currentPage}:`, pageError.message);
-                            hasMorePages = false;
-                        }
-                    }
-
-                    if (hasMorePages && currentPage > maxDetailEpisodePages) {
-                        console.log(`[Detail] Reached max episode pages limit: ${maxDetailEpisodePages}`);
-                    }
-                }
-            }
-        }
+        result.episodes = await scrapeEpisodesFromDetailHtml(data);
 
         // Fallback
         if (result.episodes.length === 0) {
@@ -495,27 +492,50 @@ async function scrapeEpisode(animeId, slug, episodeNum) {
             result.anime_detail_url = animeDetailLink.startsWith('http') ? animeDetailLink : `${BASE_URL}${animeDetailLink}`;
         }
 
-        $('.anime__details__episodes #animeEpisodes a.ep-button').each((i, el) => {
-            const $el = $(el);
-            const href = $el.attr('href');
-            const episodeText = $el.text().trim();
-            const isActive = $el.hasClass('active-ep');
-
-            const epMatch = episodeText.match(/Ep\s*(\d+)/i);
-            const epNum = epMatch ? epMatch[1] : '';
-
-            const hasFireIcon = $el.find('.fa-fire').length > 0;
-
-            if (href && episodeText) {
-                result.episode_list.push({
-                    episode: epNum,
-                    title: episodeText,
-                    url: href.startsWith('http') ? href : `${BASE_URL}${href}`,
-                    is_active: isActive,
-                    is_new: hasFireIcon
-                });
+        let allEpisodes = await scrapeEpisodesFromDetailHtml(data);
+        if (allEpisodes.length === 0 && result.anime_detail_url) {
+            try {
+                const detailHtml = await fetchWithPuppeteer(result.anime_detail_url, { waitForSelector: '#episodeLists, .anime__details__title' });
+                allEpisodes = await scrapeEpisodesFromDetailHtml(detailHtml);
+            } catch (episodeListError) {
+                console.warn('Unable to fetch full episode list from detail page:', episodeListError.message);
             }
-        });
+        }
+
+        if (allEpisodes.length > 0) {
+            result.episode_list = allEpisodes.map(episode => ({
+                episode: episode.episode_num || extractEpisodeNumber(episode.url, episode.title) || '',
+                title: episode.title,
+                url: episode.url,
+                is_active: String(episode.episode_num || extractEpisodeNumber(episode.url, episode.title) || '') === String(episodeNum),
+                is_new: false
+            }));
+        }
+
+        // Fallback to the current episode page window when the paginated popover is unavailable.
+        if (result.episode_list.length === 0) {
+            $('.anime__details__episodes #animeEpisodes a.ep-button').each((i, el) => {
+                const $el = $(el);
+                const href = $el.attr('href');
+                const episodeText = $el.text().trim();
+                const isActive = $el.hasClass('active-ep');
+
+                const epMatch = episodeText.match(/Ep\s*(\d+)/i);
+                const epNum = epMatch ? epMatch[1] : '';
+
+                const hasFireIcon = $el.find('.fa-fire').length > 0;
+
+                if (href && episodeText) {
+                    result.episode_list.push({
+                        episode: epNum,
+                        title: episodeText,
+                        url: href.startsWith('http') ? href : `${BASE_URL}${href}`,
+                        is_active: isActive,
+                        is_new: hasFireIcon
+                    });
+                }
+            });
+        }
 
         const currentServerText = $('.anime__video__player h5 .text-danger, h5 .text-danger').first().text().trim();
         result.current_server = currentServerText || 'BGlobal';

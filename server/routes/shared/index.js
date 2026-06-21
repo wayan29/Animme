@@ -113,6 +113,52 @@ function createSharedRoutes({
         }
     }
 
+    function resolveRedirectUrl(location, currentUrl) {
+        if (!location) return null;
+        try {
+            const nextUrl = new URL(location, currentUrl);
+            return ['http:', 'https:'].includes(nextUrl.protocol) ? nextUrl : null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    async function fetchWithValidatedRedirects(initialUrl, axiosOptions = {}, maxRedirects = 5) {
+        let currentUrl = initialUrl.toString();
+
+        for (let redirectCount = 0; redirectCount <= maxRedirects; redirectCount++) {
+            const parsedCurrentUrl = new URL(currentUrl);
+            await assertPublicProxyTarget(parsedCurrentUrl);
+
+            const response = await axios.get(currentUrl, {
+                ...axiosOptions,
+                maxRedirects: 0,
+                validateStatus: () => true
+            });
+
+            if (![301, 302, 303, 307, 308].includes(response.status)) {
+                response.finalUrl = currentUrl;
+                return response;
+            }
+
+            const nextUrl = resolveRedirectUrl(response.headers.location, currentUrl);
+            response.data?.destroy?.();
+
+            if (!nextUrl) {
+                const error = new Error('Invalid redirect target');
+                error.statusCode = 400;
+                throw error;
+            }
+
+            await assertPublicProxyTarget(nextUrl);
+            currentUrl = nextUrl.toString();
+        }
+
+        const error = new Error('Too many redirects');
+        error.statusCode = 508;
+        throw error;
+    }
+
     function rewriteDashManifest(manifestContent, sourceUrl) {
         if (!manifestContent) return manifestContent;
 
@@ -273,11 +319,9 @@ function createSharedRoutes({
                 const isDashManifest = /\.mpd$/i.test(parsedUrl.pathname);
 
                 if (isDashManifest) {
-                    const upstream = await axios.get(parsedUrl.toString(), {
+                    const upstream = await fetchWithValidatedRedirects(parsedUrl, {
                         responseType: 'text',
                         timeout: 25000,
-                        maxRedirects: 5,
-                        validateStatus: () => true,
                         headers: buildRequestHeaders({
                             Accept: 'application/dash+xml,application/xml,text/xml;q=0.9,*/*;q=0.8',
                             Origin: (() => {
@@ -300,14 +344,12 @@ function createSharedRoutes({
                     res.setHeader('Content-Type', 'application/dash+xml; charset=utf-8');
                     res.setHeader('Access-Control-Allow-Origin', '*');
                     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-                    return res.status(upstream.status).send(rewriteDashManifest(upstream.data, parsedUrl.toString()));
+                    return res.status(upstream.status).send(rewriteDashManifest(upstream.data, upstream.finalUrl || parsedUrl.toString()));
                 }
 
-                const upstream = await axios.get(parsedUrl.toString(), {
+                const upstream = await fetchWithValidatedRedirects(parsedUrl, {
                     responseType: 'stream',
                     timeout: 25000,
-                    maxRedirects: 5,
-                    validateStatus: () => true,
                     headers: buildRequestHeaders({
                         Accept: '*/*',
                         Origin: (() => {
@@ -349,7 +391,11 @@ function createSharedRoutes({
                 upstream.data.pipe(res);
             } catch (error) {
                 console.error('[Media Proxy] Error fetching media:', error.message);
-                res.status(502).json({ status: 'error', message: 'Failed to proxy media' });
+                const statusCode = error.statusCode || (/Blocked private media host|Unsupported protocol/.test(error.message) ? 400 : 502);
+                res.status(statusCode).json({
+                    status: 'error',
+                    message: statusCode === 400 ? error.message : 'Failed to proxy media'
+                });
             }
         });
 

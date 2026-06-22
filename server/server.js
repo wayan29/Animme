@@ -136,7 +136,8 @@ const sharedRoutes = createSharedRoutes({
         nekopoiScraper,
         kusonimeScraper,
         auratailScraper,
-        vidkuScraper
+        vidkuScraper,
+        oploverzScraper
     ]
 });
 const { buildRequestHeaders, rewriteDashManifest, resolveStreamUrl } = sharedRoutes.helpers;

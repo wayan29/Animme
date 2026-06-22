@@ -1,8 +1,12 @@
 const axios = require('axios');
+const crypto = require('crypto');
 const vm = require('vm');
 
 const BASE_URL = 'https://plus.oploverz.ltd';
 const API_BASE_URL = 'https://backapi.oploverz.ac';
+
+const imageUrlMap = new Map();
+const MAX_IMAGE_URLS = 2000;
 
 const DEFAULT_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -122,13 +126,30 @@ function mapGenre(genre) {
     };
 }
 
+function proxyImageUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    const normalizedUrl = url.trim();
+    if (!/^https?:\/\//i.test(normalizedUrl)) return normalizedUrl;
+    const hash = crypto.createHash('md5').update(normalizedUrl).digest('hex');
+    if (imageUrlMap.size >= MAX_IMAGE_URLS && !imageUrlMap.has(hash)) {
+        const firstKey = imageUrlMap.keys().next().value;
+        if (firstKey) imageUrlMap.delete(firstKey);
+    }
+    imageUrlMap.set(hash, normalizedUrl);
+    return `/img/${hash}`;
+}
+
+function getImageUrlMap() {
+    return imageUrlMap;
+}
+
 function mapSeries(item = {}) {
     const slug = item.slug || '';
     return {
         title: item.title || '',
         japanese_title: item.japaneseTitle || '',
         slug,
-        poster: item.poster || item.image || '',
+        poster: proxyImageUrl(item.poster || item.image || ''),
         description: item.description || '',
         status: item.status || '',
         type: item.releaseType || '',
@@ -252,5 +273,7 @@ module.exports = {
     mapEpisode,
     mapStreams,
     mapDownloads,
+    proxyImageUrl,
+    getImageUrlMap,
     uniqueBy
 };

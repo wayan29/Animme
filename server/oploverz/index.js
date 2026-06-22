@@ -8,6 +8,8 @@ const {
     mapEpisode,
     mapStreams,
     mapDownloads,
+    proxyImageUrl,
+    getImageUrlMap,
     uniqueBy
 } = require('./helpers');
 
@@ -25,7 +27,7 @@ async function scrapeHome() {
         ? episodesPayload.data.map((episode) => ({
             ...mapEpisode(episode, episode.series || {}),
             series_title: episode.series?.title || '',
-            poster: episode.series?.poster || '',
+            poster: proxyImageUrl(episode.series?.poster || ''),
             detail_slug: episode.series?.slug || ''
         }))
         : [];
@@ -277,5 +279,6 @@ module.exports = {
     scrapeEpisodeById,
     scrapeSearch,
     scrapeGenres,
-    getFilterConfig
+    getFilterConfig,
+    getImageUrlMap
 };

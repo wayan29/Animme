@@ -14,7 +14,7 @@ const V11 = (() => {
     function card(item = {}) {
         const slug = item.detail_slug || item.series_slug || item.slug || '';
         const isEpisode = item.episode_num && item.series_slug;
-        const href = isEpisode ? `/v11/episode?slug=${enc(item.series_slug)}&episode=${enc(item.episode_num)}` : `/v11/detail?slug=${enc(slug)}`;
+        const href = isEpisode ? `/v11/episode?slug=${enc(item.series_slug)}&episode=${enc(item.episode_num)}${item.id ? `&id=${enc(item.id)}` : ''}` : `/v11/detail?slug=${enc(slug)}`;
         return `<a class="card" href="${href}">
             <div class="poster"><img src="${escapeHtml(img(item.poster))}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x600/111/fff?text=Oploverz'"></div>
             <div class="card-body"><h3 class="card-title">${escapeHtml(item.series_title || item.title || 'Untitled')}</h3>

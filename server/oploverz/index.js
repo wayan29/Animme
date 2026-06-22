@@ -110,6 +110,43 @@ async function findLatestEpisodeBySlugAndNumber(slug, episodeNumber, maxPages = 
     return null;
 }
 
+function buildEpisodeResponse(episode, fallbackSlug = '', source = 'api') {
+    if (!episode) throw new Error('Episode data not found');
+
+    const series = mapSeries(episode.series || { slug: fallbackSlug });
+    const current = mapEpisode(episode, series);
+    const totalEpisodes = Number(series.total_episodes) || null;
+    const numericEpisode = Number(current.episode_num);
+
+    return {
+        status: 'success',
+        data: {
+            ...current,
+            title: current.title,
+            series_title: series.title,
+            series_slug: series.slug || fallbackSlug,
+            poster: series.poster,
+            description: series.description,
+            series,
+            streams: mapStreams(episode.streamUrl),
+            downloads: mapDownloads(episode.downloadUrl),
+            previous_episode: numericEpisode > 1 ? String(numericEpisode - 1) : null,
+            next_episode: totalEpisodes && numericEpisode < totalEpisodes ? String(numericEpisode + 1) : null,
+            source
+        }
+    };
+}
+
+async function scrapeEpisodeById(id) {
+    const safeId = String(id || '').trim();
+    if (!/^\d{1,20}$/.test(safeId)) {
+        throw new Error('Invalid episode id');
+    }
+
+    const payload = await fetchApi(`/api/episodes/${safeId}`);
+    return buildEpisodeResponse(payload.data, payload.data?.series?.slug || '', 'api-id');
+}
+
 async function scrapeEpisode(slug, episodeNumber) {
     const safeSlug = String(slug || '').trim();
     const safeEpisode = String(episodeNumber || '').trim();
@@ -126,30 +163,7 @@ async function scrapeEpisode(slug, episodeNumber) {
         source = 'ssr';
     }
 
-    if (!episode) throw new Error('Episode data not found');
-
-    const series = mapSeries(episode.series || { slug: safeSlug });
-    const current = mapEpisode(episode, series);
-    const totalEpisodes = Number(series.total_episodes) || null;
-    const numericEpisode = Number(current.episode_num);
-
-    return {
-        status: 'success',
-        data: {
-            ...current,
-            title: current.title,
-            series_title: series.title,
-            series_slug: series.slug || safeSlug,
-            poster: series.poster,
-            description: series.description,
-            series,
-            streams: mapStreams(episode.streamUrl),
-            downloads: mapDownloads(episode.downloadUrl),
-            previous_episode: numericEpisode > 1 ? String(numericEpisode - 1) : null,
-            next_episode: totalEpisodes && numericEpisode < totalEpisodes ? String(numericEpisode + 1) : null,
-            source
-        }
-    };
+    return buildEpisodeResponse(episode, safeSlug, source);
 }
 
 async function scrapeSearch(query, page = 1) {
@@ -177,5 +191,6 @@ module.exports = {
     scrapeDetail,
     scrapeAnimeDetail: scrapeDetail,
     scrapeEpisode,
+    scrapeEpisodeById,
     scrapeSearch
 };

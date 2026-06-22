@@ -1934,6 +1934,19 @@ app.get('/api/v11/oploverz/series/:slug', async (req, res) => {
     }
 });
 
+app.get('/api/v11/oploverz/episode-id/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!/^\d{1,20}$/.test(id)) {
+            return res.status(400).json({ status: 'error', message: 'Invalid episode id' });
+        }
+        await sendCachedOploverz(res, `episode-id:${id}`, () => oploverzScraper.scrapeEpisodeById(id));
+    } catch (error) {
+        console.error('[V11] API Error /episode-id:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 app.get('/api/v11/oploverz/episode/:slug/:episode', async (req, res) => {
     try {
         const { slug, episode } = req.params;

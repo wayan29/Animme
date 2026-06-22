@@ -9,7 +9,8 @@
         ['v7', 'Nekopoi', '/v7/home'],
         ['v8', 'Kusonime', '/v8/home'],
         ['v9', 'Auratail', '/v9/home'],
-        ['v10', 'Vidku', '/v10/']
+        ['v10', 'Vidku', '/v10/'],
+        ['v11', 'Oploverz', '/v11/home']
     ];
 
     const SERVER_HOME = Object.fromEntries(SERVERS.map(([id, , home]) => [id, home]));

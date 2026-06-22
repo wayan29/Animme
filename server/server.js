@@ -17,6 +17,7 @@ const kusonimeScraper = require('./kusonime');
 const auratailScraper = require('./auratail');
 const hlsService = require('./hls-service');
 const vidkuScraper = require('./vidku');
+const oploverzScraper = require('./oploverz');
 const { registerPages } = require('./routes/pages');
 const { createSharedRoutes } = require('./routes/shared');
 const { registerHlsRoutes } = require('./routes/hls');
@@ -87,6 +88,11 @@ const v7NekopoiCache = createKeyedStaleCache({
     staleMs: Number(process.env.NEKOPOI_CACHE_STALE_MS) || 60 * 60 * 1000,
     maxEntries: Number(process.env.NEKOPOI_CACHE_MAX_ENTRIES) || 300
 });
+const v11OploverzCache = createKeyedStaleCache({
+    freshMs: Number(process.env.OPLOVERZ_CACHE_FRESH_MS) || 10 * 60 * 1000,
+    staleMs: Number(process.env.OPLOVERZ_CACHE_STALE_MS) || 60 * 60 * 1000,
+    maxEntries: Number(process.env.OPLOVERZ_CACHE_MAX_ENTRIES) || 300
+});
 
 const apiRateLimiter = rateLimit({
     windowMs: 60 * 1000,
@@ -150,6 +156,7 @@ app.use('/v7', express.static(path.join(__dirname, '../public/v7')));
 app.use('/v8', express.static(path.join(__dirname, '../public/v8')));
 app.use('/v9', express.static(path.join(__dirname, '../public/v9')));
 app.use('/v10', express.static(path.join(__dirname, '../public/v10')));
+app.use('/v11', express.static(path.join(__dirname, '../public/v11')));
 
 // Serve shared assets globally (CSS, docs)
 app.use(express.static(path.join(__dirname, '../public/shared')));
@@ -1873,6 +1880,84 @@ app.get('/api/v10/vidku/advanced-search', async (req, res) => {
     }
 });
 
+
+// ========== V11 API: Oploverz Plus ==========
+
+async function sendCachedOploverz(res, key, loader) {
+    const { value, cache: cacheStatus } = await v11OploverzCache.get(key, loader);
+    res.set('X-Cache', cacheStatus);
+    res.json(value);
+}
+
+app.get('/api/v11/oploverz/home', async (req, res) => {
+    try {
+        await sendCachedOploverz(res, 'home', () => oploverzScraper.scrapeHome());
+    } catch (error) {
+        console.error('[V11] API Error /home:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+app.get('/api/v11/oploverz/anime-list/:page?', async (req, res) => {
+    try {
+        const page = Math.max(1, Math.min(parseInt(req.params.page || req.query.page, 10) || 1, 100));
+        await sendCachedOploverz(res, `anime-list:${page}`, () => oploverzScraper.scrapeAnimeList(page));
+    } catch (error) {
+        console.error('[V11] API Error /anime-list:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+app.get('/api/v11/oploverz/anime/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        if (!/^[a-zA-Z0-9_-]{1,200}$/.test(slug)) {
+            return res.status(400).json({ status: 'error', message: 'Invalid slug' });
+        }
+        await sendCachedOploverz(res, `detail:${slug}`, () => oploverzScraper.scrapeDetail(slug));
+    } catch (error) {
+        console.error('[V11] API Error /anime:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+app.get('/api/v11/oploverz/series/:slug', async (req, res) => {
+    try {
+        const { slug } = req.params;
+        if (!/^[a-zA-Z0-9_-]{1,200}$/.test(slug)) {
+            return res.status(400).json({ status: 'error', message: 'Invalid slug' });
+        }
+        await sendCachedOploverz(res, `detail:${slug}`, () => oploverzScraper.scrapeDetail(slug));
+    } catch (error) {
+        console.error('[V11] API Error /series:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+app.get('/api/v11/oploverz/episode/:slug/:episode', async (req, res) => {
+    try {
+        const { slug, episode } = req.params;
+        if (!/^[a-zA-Z0-9_-]{1,200}$/.test(slug) || !/^\d+(?:\.\d+)?$/.test(episode)) {
+            return res.status(400).json({ status: 'error', message: 'Invalid episode request' });
+        }
+        await sendCachedOploverz(res, `episode:${slug}:${episode}`, () => oploverzScraper.scrapeEpisode(slug, episode));
+    } catch (error) {
+        console.error('[V11] API Error /episode:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+app.get('/api/v11/oploverz/search', async (req, res) => {
+    try {
+        const q = String(req.query.q || '').trim();
+        const page = Math.max(1, Math.min(parseInt(req.query.page, 10) || 1, 100));
+        if (!q) return res.status(400).json({ status: 'error', message: 'Query parameter "q" is required' });
+        await sendCachedOploverz(res, `search:${page}:${q.toLowerCase()}`, () => oploverzScraper.scrapeSearch(q, page));
+    } catch (error) {
+        console.error('[V11] API Error /search:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
 
 // 404 handler
 app.use((req, res) => {

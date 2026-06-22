@@ -66,6 +66,14 @@ function registerPages(app) {
     registerHtmlRoute(app, '/v10/tv-show', path.join(__dirname, '../../../public/v10/all-anime.html'));
     registerHtmlRoute(app, '/v10/movie', path.join(__dirname, '../../../public/v10/all-anime.html'));
 
+    registerHtmlRoute(app, '/v11', path.join(__dirname, '../../../public/v11/index.html'));
+    registerHtmlRoute(app, '/v11/home', path.join(__dirname, '../../../public/v11/index.html'));
+    registerHtmlRoute(app, '/v11/detail', path.join(__dirname, '../../../public/v11/detail.html'));
+    registerHtmlRoute(app, '/v11/detail/:slug([^.]+)', path.join(__dirname, '../../../public/v11/detail.html'));
+    registerHtmlRoute(app, '/v11/episode', path.join(__dirname, '../../../public/v11/episode.html'));
+    registerHtmlRoute(app, '/v11/anime-list', path.join(__dirname, '../../../public/v11/anime-list.html'));
+    registerHtmlRoute(app, '/v11/search', path.join(__dirname, '../../../public/v11/search.html'));
+
 
     registerHtmlRoute(app, '/detail/:slug([^.]+)', path.join(__dirname, '../../../public/v1/detail.html'));
     registerHtmlRoute(app, '/detail-v2/:slug([a-zA-Z0-9_-]+)', path.join(__dirname, '../../../public/v2/detail.html'));

@@ -56,9 +56,23 @@ function normalizeMeta(meta = {}, fallbackPage = 1, fallbackTotal = 0) {
     };
 }
 
-async function scrapeAnimeList(page = 1) {
+function buildSeriesParams(page = 1, filters = {}) {
+    const params = { page };
+    if (filters.q) params.q = String(filters.q).trim().slice(0, 80);
+    ['hot', 'mature', 'censored'].forEach((key) => {
+        if (['true', 'false'].includes(String(filters[key]).toLowerCase())) {
+            params[key] = String(filters[key]).toLowerCase();
+        }
+    });
+    if (/^[a-z0-9-]{2,80}$/i.test(String(filters.season || ''))) {
+        params.season = String(filters.season).toLowerCase();
+    }
+    return params;
+}
+
+async function scrapeAnimeList(page = 1, filters = {}) {
     const safePage = Math.max(1, Math.min(Number(page) || 1, 100));
-    const payload = await fetchApi('/api/series', { page: safePage });
+    const payload = await fetchApi('/api/series', buildSeriesParams(safePage, filters));
     const series = Array.isArray(payload.data) ? payload.data.map(mapSeries) : [];
 
     return {
@@ -166,12 +180,12 @@ async function scrapeEpisode(slug, episodeNumber) {
     return buildEpisodeResponse(episode, safeSlug, source);
 }
 
-async function scrapeSearch(query, page = 1) {
+async function scrapeSearch(query, page = 1, filters = {}) {
     const q = String(query || '').trim();
     const safePage = Math.max(1, Math.min(Number(page) || 1, 100));
     if (!q) return { status: 'success', data: { query: '', anime_list: [], meta: { current_page: 1, last_page: 1 } } };
 
-    const payload = await fetchApi('/api/series', { q, page: safePage });
+    const payload = await fetchApi('/api/series', buildSeriesParams(safePage, { ...filters, q }));
     const series = Array.isArray(payload.data) ? payload.data.map(mapSeries) : [];
 
     return {

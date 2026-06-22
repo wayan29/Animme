@@ -1901,7 +1901,14 @@ app.get('/api/v11/oploverz/home', async (req, res) => {
 app.get('/api/v11/oploverz/anime-list/:page?', async (req, res) => {
     try {
         const page = Math.max(1, Math.min(parseInt(req.params.page || req.query.page, 10) || 1, 100));
-        await sendCachedOploverz(res, `anime-list:${page}`, () => oploverzScraper.scrapeAnimeList(page));
+        const filters = {
+            hot: req.query.hot,
+            mature: req.query.mature,
+            censored: req.query.censored,
+            season: req.query.season
+        };
+        const cacheKey = `anime-list:${page}:${JSON.stringify(filters)}`;
+        await sendCachedOploverz(res, cacheKey, () => oploverzScraper.scrapeAnimeList(page, filters));
     } catch (error) {
         console.error('[V11] API Error /anime-list:', error.message);
         res.status(500).json({ status: 'error', message: error.message });
@@ -1964,8 +1971,14 @@ app.get('/api/v11/oploverz/search', async (req, res) => {
     try {
         const q = String(req.query.q || '').trim();
         const page = Math.max(1, Math.min(parseInt(req.query.page, 10) || 1, 100));
+        const filters = {
+            hot: req.query.hot,
+            mature: req.query.mature,
+            censored: req.query.censored,
+            season: req.query.season
+        };
         if (!q) return res.status(400).json({ status: 'error', message: 'Query parameter "q" is required' });
-        await sendCachedOploverz(res, `search:${page}:${q.toLowerCase()}`, () => oploverzScraper.scrapeSearch(q, page));
+        await sendCachedOploverz(res, `search:${page}:${q.toLowerCase()}:${JSON.stringify(filters)}`, () => oploverzScraper.scrapeSearch(q, page, filters));
     } catch (error) {
         console.error('[V11] API Error /search:', error.message);
         res.status(500).json({ status: 'error', message: error.message });

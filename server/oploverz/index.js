@@ -1,5 +1,6 @@
 const {
     fetchPage,
+    fetchApi,
     extractLiteral,
     extractAllSeries,
     extractMeta,
@@ -30,22 +31,26 @@ async function scrapeHome() {
     };
 }
 
+function normalizeMeta(meta = {}, fallbackPage = 1, fallbackTotal = 0) {
+    return {
+        current_page: Number(meta.currentPage) || fallbackPage,
+        first_page: Number(meta.firstPage) || 1,
+        last_page: Number(meta.lastPage) || 1,
+        per_page: Number(meta.perPage) || 10,
+        total: Number(meta.total) || fallbackTotal
+    };
+}
+
 async function scrapeAnimeList(page = 1) {
     const safePage = Math.max(1, Math.min(Number(page) || 1, 100));
-    const html = await fetchPage(safePage > 1 ? `/series?page=${safePage}` : '/series');
-    const series = extractAllSeries(html);
-    const meta = extractMeta(html);
+    const payload = await fetchApi('/api/series', { page: safePage });
+    const series = Array.isArray(payload.data) ? payload.data.map(mapSeries) : [];
 
     return {
         status: 'success',
         data: {
             anime_list: series,
-            meta: {
-                current_page: Number(meta.currentPage) || safePage,
-                last_page: Number(meta.lastPage) || 1,
-                per_page: Number(meta.perPage) || series.length,
-                total: Number(meta.total) || series.length
-            }
+            meta: normalizeMeta(payload.meta, safePage, series.length)
         }
     };
 }
@@ -54,9 +59,9 @@ async function scrapeDetail(slug) {
     const safeSlug = String(slug || '').trim();
     if (!safeSlug) throw new Error('Slug is required');
 
+    const payload = await fetchApi(`/api/series/${encodeURIComponent(safeSlug)}`);
+    const series = mapSeries(payload.data || { slug: safeSlug });
     const html = await fetchPage(`/series/${encodeURIComponent(safeSlug)}`);
-    const seriesRaw = extractLiteral(html, 'series:');
-    const series = mapSeries(seriesRaw || { slug: safeSlug });
     let episodes = [];
 
     try {
@@ -112,24 +117,20 @@ async function scrapeEpisode(slug, episodeNumber) {
 }
 
 async function scrapeSearch(query, page = 1) {
-    const q = String(query || '').trim().toLowerCase();
+    const q = String(query || '').trim();
+    const safePage = Math.max(1, Math.min(Number(page) || 1, 100));
     if (!q) return { status: 'success', data: { query: '', anime_list: [], meta: { current_page: 1, last_page: 1 } } };
 
-    const list = await scrapeAnimeList(page);
-    const filtered = list.data.anime_list.filter((item) => [
-        item.title,
-        item.japanese_title,
-        item.description,
-        ...(item.genres || []).map((genre) => genre.name)
-    ].join(' ').toLowerCase().includes(q));
+    const payload = await fetchApi('/api/series', { q, page: safePage });
+    const series = Array.isArray(payload.data) ? payload.data.map(mapSeries) : [];
 
     return {
         status: 'success',
         data: {
             query,
-            anime_list: filtered,
-            meta: list.data.meta,
-            limited: true
+            anime_list: series,
+            meta: normalizeMeta(payload.meta, safePage, series.length),
+            limited: false
         }
     };
 }

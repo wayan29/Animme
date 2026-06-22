@@ -2,6 +2,7 @@ const axios = require('axios');
 const vm = require('vm');
 
 const BASE_URL = 'https://plus.oploverz.ltd';
+const API_BASE_URL = 'https://backapi.oploverz.ac';
 
 const DEFAULT_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -22,6 +23,22 @@ async function fetchPage(pathOrUrl) {
         timeout: 30000,
         maxRedirects: 3,
         responseType: 'text',
+        validateStatus: (status) => status >= 200 && status < 400
+    });
+    return response.data;
+}
+
+async function fetchApi(path, params = {}) {
+    const url = `${API_BASE_URL}${path.startsWith('/') ? '' : '/'}${path}`;
+    const response = await axios.get(url, {
+        params,
+        headers: {
+            ...DEFAULT_HEADERS,
+            Accept: 'application/json, text/plain, */*',
+            Origin: BASE_URL
+        },
+        timeout: 25000,
+        maxRedirects: 3,
         validateStatus: (status) => status >= 200 && status < 400
     });
     return response.data;
@@ -224,7 +241,9 @@ function extractMeta(html) {
 
 module.exports = {
     BASE_URL,
+    API_BASE_URL,
     fetchPage,
+    fetchApi,
     extractLiteral,
     extractAllSeries,
     extractMeta,

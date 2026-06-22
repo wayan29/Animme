@@ -15,10 +15,12 @@ const V11 = (() => {
         const slug = item.detail_slug || item.series_slug || item.slug || '';
         const isEpisode = item.episode_num && item.series_slug;
         const href = isEpisode ? `/v11/episode?slug=${enc(item.series_slug)}&episode=${enc(item.episode_num)}${item.id ? `&id=${enc(item.id)}` : ''}` : `/v11/detail?slug=${enc(slug)}`;
-        return `<a class="card" href="${href}">
-            <div class="poster"><img src="${escapeHtml(img(item.poster))}" alt="${escapeHtml(item.title)}" loading="lazy" onerror="this.src='https://placehold.co/400x600/111/fff?text=Oploverz'"></div>
-            <div class="card-body"><h3 class="card-title">${escapeHtml(item.series_title || item.title || 'Untitled')}</h3>
-            ${isEpisode ? `<span class="pill">Episode ${escapeHtml(item.episode_num)}</span>` : `<span class="pill">${escapeHtml(item.type || item.status || 'Series')}</span>`}${item.score ? `<span class="pill">⭐ ${escapeHtml(item.score)}</span>` : ''}</div>
+        const title = item.series_title || item.title || 'Untitled';
+        const chip = isEpisode ? `EP ${escapeHtml(item.episode_num)}` : escapeHtml(item.type || item.status || 'Series');
+        return `<a class="card" href="${href}" aria-label="${escapeHtml(title)}">
+            <div class="poster"><img src="${escapeHtml(img(item.poster))}" alt="${escapeHtml(title)}" loading="lazy" decoding="async" onerror="this.src='https://placehold.co/400x600/111/fff?text=Oploverz'"><span class="poster-chip">${chip}</span>${item.score ? `<span class="poster-score">⭐ ${escapeHtml(item.score)}</span>` : ''}<span class="poster-play">▶</span></div>
+            <div class="card-body"><h3 class="card-title">${escapeHtml(title)}</h3>
+            ${isEpisode ? `<span class="pill">Episode ${escapeHtml(item.episode_num)}</span>` : `<span class="pill">${escapeHtml(item.type || item.status || 'Series')}</span>`}${item.released_at ? `<span class="pill">${escapeHtml(item.released_at)}</span>` : ''}</div>
         </a>`;
     }
     function renderGrid(el, items = []) {

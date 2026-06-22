@@ -31,17 +31,12 @@ const V11 = (() => {
         btn?.addEventListener('click', go); input?.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
     }
     function shell(active = 'home') {
-        const nav = [
-            ['home', '/v11/home', '⌂', 'Beranda'],
-            ['list', '/v11/anime-list', '≡', 'Daftar Anime'],
-            ['oploverz', '/v11/home', '◆', 'Oploverz'],
-            ['schedule', '/v11/anime-list?sortBy=releaseDate-desc', '◷', 'Jadwal Rilis'],
-            ['contact', 'https://link.oploverz.ac/', '☏', 'Hubungi Kami']
-        ];
-        const items = nav.map(([id, href, icon, label]) => `<a class="nav-link ${active===id?'active':''}" href="${href}"${href.startsWith('http')?' target="_blank" rel="noopener"':''}><span>${icon}</span><span>${label}</span></a>`).join('');
-        const mobileItems = nav.map(([id, href, icon, label]) => `<a class="mobile-nav-link ${active===id?'active':''}" href="${href}"${href.startsWith('http')?' target="_blank" rel="noopener"':''}><span>${icon}</span><small>${label}</small></a>`).join('');
-        return `<aside class="sidebar oploverz-sidebar"><div class="sidebar-group-label">Aplikasi</div><nav class="nav-menu">${items}</nav><div class="sidebar-server"><select id="serverSelect" class="server-select"></select></div><p class="muted">plus.oploverz.ltd</p></aside><nav class="v11-mobile-nav">${mobileItems}</nav>`;
+        return `<aside class="sidebar"><a class="logo" href="/v11/home">V11 <span>Oploverz</span></a><select id="serverSelect" class="server-select"></select><nav class="nav-menu">
+            <a class="nav-link ${active==='home'?'active':''}" href="/v11/home">🏠 Home</a>
+            <a class="nav-link ${active==='list'?'active':''}" href="/v11/anime-list">📚 Anime List</a>
+            <a class="nav-link ${active==='search'?'active':''}" href="/v11/search">🔎 Search</a>
+        </nav><p class="muted">Source: plus.oploverz.ltd</p></aside>`;
     }
-    function topbar() { return `<div class="topbar oploverz-topbar"><div class="topbar-links"><a href="/v11/home">Beranda</a><a href="/v11/anime-list">Daftar Anime</a><a href="/v11/anime-list?sortBy=releaseDate-desc">Jadwal Rilis</a></div><a class="topbar-logo" href="/v11/home">OP</a><div class="search-box"><input id="searchInput" class="search-input" placeholder="Cari anime..."><button id="searchBtn" class="btn">Cari</button></div></div>`; }
+    function topbar() { return `<div class="topbar"><div><strong>Oploverz Plus</strong><div class="muted">Streaming anime subtitle Indonesia</div></div><div class="search-box"><input id="searchInput" class="search-input" placeholder="Cari anime..."><button id="searchBtn" class="btn">Cari</button></div></div>`; }
     return { enc, $, escapeHtml, api, card, renderGrid, params, bindSearch, shell, topbar };
 })();

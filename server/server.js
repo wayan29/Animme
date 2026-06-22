@@ -1898,6 +1898,25 @@ app.get('/api/v11/oploverz/home', async (req, res) => {
     }
 });
 
+app.get('/api/v11/oploverz/filters', async (req, res) => {
+    try {
+        res.json(oploverzScraper.getFilterConfig());
+    } catch (error) {
+        console.error('[V11] API Error /filters:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
+app.get('/api/v11/oploverz/genres', async (req, res) => {
+    try {
+        const page = Math.max(1, Math.min(parseInt(req.query.page, 10) || 1, 20));
+        await sendCachedOploverz(res, `genres:${page}`, () => oploverzScraper.scrapeGenres(page));
+    } catch (error) {
+        console.error('[V11] API Error /genres:', error.message);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 app.get('/api/v11/oploverz/anime-list/:page?', async (req, res) => {
     try {
         const page = Math.max(1, Math.min(parseInt(req.params.page || req.query.page, 10) || 1, 100));
@@ -1905,7 +1924,11 @@ app.get('/api/v11/oploverz/anime-list/:page?', async (req, res) => {
             hot: req.query.hot,
             mature: req.query.mature,
             censored: req.query.censored,
-            season: req.query.season
+            season: req.query.season,
+            genres: req.query.genres || req.query.genre,
+            type: req.query.type,
+            sortBy: req.query.sortBy || req.query.sort_by,
+            pageSize: req.query.pageSize || req.query.page_size
         };
         const cacheKey = `anime-list:${page}:${JSON.stringify(filters)}`;
         await sendCachedOploverz(res, cacheKey, () => oploverzScraper.scrapeAnimeList(page, filters));
@@ -1975,7 +1998,11 @@ app.get('/api/v11/oploverz/search', async (req, res) => {
             hot: req.query.hot,
             mature: req.query.mature,
             censored: req.query.censored,
-            season: req.query.season
+            season: req.query.season,
+            genres: req.query.genres || req.query.genre,
+            type: req.query.type,
+            sortBy: req.query.sortBy || req.query.sort_by,
+            pageSize: req.query.pageSize || req.query.page_size
         };
         if (!q) return res.status(400).json({ status: 'error', message: 'Query parameter "q" is required' });
         await sendCachedOploverz(res, `search:${page}:${q.toLowerCase()}:${JSON.stringify(filters)}`, () => oploverzScraper.scrapeSearch(q, page, filters));

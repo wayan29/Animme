@@ -150,6 +150,7 @@ function mapEpisode(item = {}, series = {}) {
     const seriesSlug = series.slug || item.series?.slug || '';
     const episodeNum = String(item.episodeNumber || item.episode_num || '').trim();
     return {
+        id: item.id || null,
         title: item.title || `${series.title || seriesSlug || 'Episode'} ${episodeNum}`.trim(),
         episode_num: episodeNum,
         slug: seriesSlug && episodeNum ? `${seriesSlug}/episode/${episodeNum}` : '',

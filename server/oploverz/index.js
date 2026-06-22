@@ -16,17 +16,32 @@ function sortEpisodes(episodes) {
 }
 
 async function scrapeHome() {
-    const html = await fetchPage('/');
-    const series = extractAllSeries(html);
-    const latest = uniqueBy(series.filter((item) => item.total_episodes || item.status), (item) => item.slug).slice(0, 24);
+    const [episodesPayload, seriesPayload] = await Promise.all([
+        fetchApi('/api/episodes', { page: 1 }),
+        fetchApi('/api/series', { page: 1 })
+    ]);
+
+    const latestEpisodes = Array.isArray(episodesPayload.data)
+        ? episodesPayload.data.map((episode) => ({
+            ...mapEpisode(episode, episode.series || {}),
+            series_title: episode.series?.title || '',
+            poster: episode.series?.poster || '',
+            detail_slug: episode.series?.slug || ''
+        }))
+        : [];
+    const series = Array.isArray(seriesPayload.data) ? seriesPayload.data.map(mapSeries) : [];
     const hot = series.filter((item) => item.hot).slice(0, 12);
 
     return {
         status: 'success',
         data: {
-            latest_episodes: latest,
+            latest_episodes: latestEpisodes,
             popular: hot.length ? hot : series.slice(0, 12),
-            series: series.slice(0, 24)
+            series: series.slice(0, 24),
+            meta: {
+                episodes: normalizeMeta(episodesPayload.meta, 1, latestEpisodes.length),
+                series: normalizeMeta(seriesPayload.meta, 1, series.length)
+            }
         }
     };
 }
@@ -82,6 +97,19 @@ async function scrapeDetail(slug) {
     };
 }
 
+async function findLatestEpisodeBySlugAndNumber(slug, episodeNumber, maxPages = 5) {
+    for (let page = 1; page <= maxPages; page++) {
+        const payload = await fetchApi('/api/episodes', { page });
+        const match = Array.isArray(payload.data)
+            ? payload.data.find((episode) => episode.series?.slug === slug && String(episode.episodeNumber) === String(episodeNumber))
+            : null;
+        if (match) return match;
+        const lastPage = Number(payload.meta?.lastPage) || 1;
+        if (page >= lastPage) break;
+    }
+    return null;
+}
+
 async function scrapeEpisode(slug, episodeNumber) {
     const safeSlug = String(slug || '').trim();
     const safeEpisode = String(episodeNumber || '').trim();
@@ -89,8 +117,15 @@ async function scrapeEpisode(slug, episodeNumber) {
         throw new Error('Invalid episode request');
     }
 
-    const html = await fetchPage(`/series/${encodeURIComponent(safeSlug)}/episode/${encodeURIComponent(safeEpisode)}`);
-    const episode = extractLiteral(html, 'episode:');
+    let episode = await findLatestEpisodeBySlugAndNumber(safeSlug, safeEpisode);
+    let source = 'api';
+
+    if (!episode) {
+        const html = await fetchPage(`/series/${encodeURIComponent(safeSlug)}/episode/${encodeURIComponent(safeEpisode)}`);
+        episode = extractLiteral(html, 'episode:');
+        source = 'ssr';
+    }
+
     if (!episode) throw new Error('Episode data not found');
 
     const series = mapSeries(episode.series || { slug: safeSlug });
@@ -111,7 +146,8 @@ async function scrapeEpisode(slug, episodeNumber) {
             streams: mapStreams(episode.streamUrl),
             downloads: mapDownloads(episode.downloadUrl),
             previous_episode: numericEpisode > 1 ? String(numericEpisode - 1) : null,
-            next_episode: totalEpisodes && numericEpisode < totalEpisodes ? String(numericEpisode + 1) : null
+            next_episode: totalEpisodes && numericEpisode < totalEpisodes ? String(numericEpisode + 1) : null,
+            source
         }
     };
 }

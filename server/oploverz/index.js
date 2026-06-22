@@ -1,3 +1,5 @@
+const cheerio = require('cheerio');
+
 const {
     fetchPage,
     fetchApi,
@@ -17,10 +19,39 @@ function sortEpisodes(episodes) {
     return [...episodes].sort((a, b) => Number(a.episode_num) - Number(b.episode_num));
 }
 
+function extractBannersFromHome(html) {
+    const $ = cheerio.load(html);
+    const banners = [];
+
+    $('[data-embla-slide]').each((_, slide) => {
+        const $slide = $(slide);
+        const image = $slide.find('img').first().attr('src') || '';
+        const title = $slide.find('h1 span').first().text().trim() || $slide.find('img').first().attr('alt') || '';
+        const description = $slide.find('p').filter((__, p) => $(p).text().trim().length > 40).first().text().trim();
+        const detailPath = $slide.find('a[href^="/series/"]').first().attr('href') || '';
+        const watchPath = $slide.find('a[href*="/episode/"]').first().attr('href') || '';
+        const slugMatch = detailPath.match(/^\/series\/([^/]+)/);
+
+        if (image && title && slugMatch) {
+            banners.push({
+                title,
+                slug: slugMatch[1],
+                description,
+                banner: proxyImageUrl(image),
+                detail_url: `/v11/detail?slug=${encodeURIComponent(slugMatch[1])}`,
+                watch_url: watchPath.replace(/^\/series\/([^/]+)\/episode\/([^/]+).*$/, (_match, slug, episode) => `/v11/episode?slug=${encodeURIComponent(slug)}&episode=${encodeURIComponent(episode)}`)
+            });
+        }
+    });
+
+    return uniqueBy(banners, (banner) => banner.slug).slice(0, 8);
+}
+
 async function scrapeHome() {
-    const [episodesPayload, seriesPayload] = await Promise.all([
+    const [episodesPayload, seriesPayload, homeHtml] = await Promise.all([
         fetchApi('/api/episodes', { page: 1 }),
-        fetchApi('/api/series', { page: 1 })
+        fetchApi('/api/series', { page: 1 }),
+        fetchPage('/')
     ]);
 
     const latestEpisodes = Array.isArray(episodesPayload.data)
@@ -34,9 +65,12 @@ async function scrapeHome() {
     const series = Array.isArray(seriesPayload.data) ? seriesPayload.data.map(mapSeries) : [];
     const hot = series.filter((item) => item.hot).slice(0, 12);
 
+    const banners = extractBannersFromHome(homeHtml);
+
     return {
         status: 'success',
         data: {
+            banners,
             latest_episodes: latestEpisodes,
             popular: hot.length ? hot : series.slice(0, 12),
             series: series.slice(0, 24),
